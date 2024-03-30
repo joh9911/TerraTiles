@@ -18,7 +18,8 @@ export default class Credit extends Scene {
 
       // Center the viewport
       const size = this.viewport.getHalfSize();
-      let sizeY = size.y - 250;
+      let sizeY = size.y - 350;
+      let sizeX = size.x - 250;
       const yOffset = 45;
       this.viewport.setFocus(size);
       this.viewport.setZoomLevel(1);
@@ -39,7 +40,11 @@ export default class Credit extends Scene {
           "Wolfie2D created by Joe Weaver and Richard McKenna",
           new Vec2(size.x, sizeY + yOffset * i++)
       );
-      sizeY += 30;
+      sizeY += 130;
+      this.createLabel(
+          `BackStory`,
+          new Vec2(size.x, sizeY + yOffset * i++)
+      );
       this.createLabel(
           `Welcome to your new job. Your predecessor left quite a mess.`,
           new Vec2(size.x, sizeY + yOffset * i++)
@@ -52,7 +57,7 @@ export default class Credit extends Scene {
           `then you'll be tossed into the deep end of the pool.`,
           new Vec2(size.x, sizeY + yOffset * i++)
       );
-      sizeY += 30;
+      sizeY += 130;
 
       // Create cheat codes text
       this.createLabel("Cheat Codes", new Vec2(size.x, sizeY + yOffset * i++), 26);
@@ -80,6 +85,7 @@ export default class Credit extends Scene {
           position: pos,
           text: text,
           fontSize: size || 18,
+          halign: "left"
       });
   }
 }

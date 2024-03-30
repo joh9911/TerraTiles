@@ -20,13 +20,13 @@ export default class Label extends UIElement{
 	/** A flag for if the width of the text has been measured on the canvas for auto width assignment */
 	protected sizeAssigned: boolean;
 
-	constructor(position: Vec2, text: string){
+	constructor(position: Vec2, text: string, halign: string = "center"){
 		super(position);
 		this.text = text;
 		this.textColor = Color.WHITE;
 		this.font = "Arial";
 		this.fontSize = 30;
-		this.hAlign = "center";
+		this.hAlign = halign;
 		this.vAlign = "center";
 
 		this.sizeAssigned = false;

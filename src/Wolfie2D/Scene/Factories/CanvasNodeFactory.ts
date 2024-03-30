@@ -179,6 +179,9 @@ export default class CanvasNodeFactory {
 		this.checkIfPropExists("Label", options, "position", Vec2, "Vec2");
 		this.checkIfPropExists("Label", options, "text", "string");
 
+		if (options.halign){
+			return new Label(options.position, options.text, options.halign)
+		}
 		return new Label(options.position, options.text)
 	}
 
