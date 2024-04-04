@@ -9,10 +9,12 @@ import Timer from "../../Wolfie2D/Timing/Timer";
 import MainMenu from "./MainMenu";
 import Button from "../../Wolfie2D/Nodes/UIElements/Button";
 import { Layers_enum } from "./Utils/Layers_enum";
+import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 
-export default class Splash extends Scene {
-    public loadScene(){
-		this.load.image("Splash", "Game_Resources/sprites/Splash.png");
+export default class Splash extends Scene {    
+
+    public loadScene() {
+		this.load.spritesheet("planet", "Game_Resources/sprites/terraform.json");
     }
 
     public startScene(): void {
@@ -21,20 +23,23 @@ export default class Splash extends Scene {
         this.addUILayer(Layers_enum.BACK);
 
         let size = this.viewport.getHalfSize();
-        let logo = this.add.sprite("Splash", Layers_enum.BACK);
-        logo.position.copy(new Vec2(center.x, center.y));
-        logo.scale = new Vec2(3.5, 3.5);
+        let planet = this.add.animatedSprite(AnimatedSprite, "planet", Layers_enum.BACK)
+        planet.position.set(center.x, center.y);
+        planet.scale = new Vec2(6, 6);
+        planet.animation.play("START");
+        planet.animation.queue("LOOP", true);
 
         let fullScreen = <Button>this.add.uiElement(UIElementType.BUTTON, Layers_enum.BACK, {position: new Vec2(size.x, size.y * 3/2), text: "Click on screen to start"});
         fullScreen.backgroundColor = Color.TRANSPARENT;
         fullScreen.borderColor = Color.WHITE;
         fullScreen.borderRadius = 0;
-        fullScreen.setPadding(new Vec2(size.x, size.y * 3/2));//with pos at center and padding at halfviewport, that puts everything inside the button
-        fullScreen.font = "Pixelifysans-bold";//can't get font to be pixelifysans for some reason
+        fullScreen.setPadding(new Vec2(size.x, size.y * 3/2)); // with pos at center and padding at halfviewport, that puts everything inside the button
+        fullScreen.font = "Pixelifysans-bold"; // can't get font to be pixelifysans for some reason
         
         // When the play button is clicked, go to the next scene
         fullScreen.onClick = () => {
             this.sceneManager.changeToScene(MainMenu);
         }
     }
+
 }

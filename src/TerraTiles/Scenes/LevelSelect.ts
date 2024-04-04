@@ -9,6 +9,7 @@ import MainMenu from "./MainMenu";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import { Layers_enum } from "./Utils/Layers_enum";
 import Layer from "../../Wolfie2D/Scene/Layer";
+import Test_Scene from "./Test_Scene";
 
 export default class LevelSelect extends Scene {
     private mainMenu: Layer;
@@ -61,7 +62,7 @@ export default class LevelSelect extends Scene {
             this.sceneManager.changeToScene(MainMenu);
         };
         level_6.onClick = () => {
-            this.sceneManager.changeToScene(MainMenu);
+            this.sceneManager.changeToScene(Test_Scene);
         };
 
         const back = this.createButton("Back", new Vec2(center.x, center.y + 350));

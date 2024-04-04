@@ -6,9 +6,9 @@ import Layer from "../Layer";
 import Tileset from "../../DataTypes/Tilesets/Tileset";
 import Vec2 from "../../DataTypes/Vec2";
 import { TiledCollectionTile } from "../../DataTypes/Tilesets/TiledData";
-import Sprite from "../../Nodes/Sprites/Sprite";
-import PositionGraph from "../../DataTypes/Graphs/PositionGraph";
-import Navmesh from "../../Pathfinding/Navmesh";
+import AnimatedSprite from "../../Nodes/Sprites/AnimatedSprite";
+// import PositionGraph from "../../DataTypes/Graphs/PositionGraph";
+// import Navmesh from "../../Pathfinding/Navmesh";
 import IsometricTilemap from "../../Nodes/Tilemaps/IsometricTilemap";
 import StaggeredIsometricTilemap from "../../Nodes/Tilemaps/StaggeredIsometricTilemap";
 
@@ -79,8 +79,8 @@ export default class TilemapFactory {
 
         let collectionTiles = new Array<TiledCollectionTile>();
 
-        for(let tileset of tilemapData.tilesets){
-            if(tileset.image){
+        for(let tileset of tilemapData.tilesets) {
+            if(tileset.image) {
                 // If this is a standard tileset and not a collection, create a tileset for it.
                 // TODO - We are ignoring collection tilesets for now. This is likely not a great idea in practice,
                 // as theoretically someone could want to use one for a standard tilemap. We are assuming for now
@@ -93,15 +93,15 @@ export default class TilemapFactory {
         }
 
         // Loop over the layers of the tilemap and create tiledlayers or object layers
-        for(let layer of tilemapData.layers){
+        for(let layer of tilemapData.layers) {
 
             let sceneLayer;
             let isParallaxLayer = false;
             let depth = 0;
             
-            if(layer.properties){
+            if(layer.properties) {
                 for(let prop of layer.properties){
-                    if(prop.name === "Parallax"){
+                    if(prop.name === "Parallax") {
                         isParallaxLayer = prop.value;
                     } else if(prop.name === "Depth") {
                         depth = prop.value;
@@ -109,13 +109,13 @@ export default class TilemapFactory {
                 }
             }
 
-            if(isParallaxLayer){
+            if(isParallaxLayer) {
                 sceneLayer = this.scene.addParallaxLayer(layer.name, new Vec2(1, 1), depth);
             } else {
                 sceneLayer = this.scene.addLayer(layer.name, depth);
             }
             
-            if(layer.type === "tilelayer"){
+            if(layer.type === "tilelayer") {
                 // Create a new tilemap object for the layer
                 let tilemap = new constr(tilemapData, layer, tilesets, scale);
                 tilemap.id = this.scene.generateId();
@@ -126,120 +126,154 @@ export default class TilemapFactory {
     
                 sceneLayer.addNode(tilemap);
     
-                // Register tilemap with physics if it's collidable
-                if(tilemap.isCollidable){
-                    tilemap.addPhysics();
+                // // Register tilemap with physics if it's collidable
+                // if(tilemap.isCollidable){
+                //     tilemap.addPhysics();
 
-                    if(layer.properties){
-                        for(let item of layer.properties){
-                            if(item.name === "Group"){
-                                tilemap.setGroup(item.value);
-                            }
-                        }
-                    }
-                }
+                //     if(layer.properties){
+                //         for(let item of layer.properties){
+                //             if(item.name === "Group"){
+                //                 tilemap.setGroup(item.value);
+                //             }
+                //         }
+                //     }
+                // }
+                
             } else {
 
-                let isNavmeshPoints = false;
-                let navmeshName;
-                let edges;
-                if(layer.properties){
-                    for(let prop of layer.properties){
-                        if(prop.name === "NavmeshPoints"){
-                            isNavmeshPoints = true;
-                        } else if(prop.name === "name"){
-                            navmeshName = prop.value;
-                        } else if(prop.name === "edges"){
-                            edges = prop.value
-                        }
-                    }
-                }
-                
-                if(isNavmeshPoints){
-                    let g = new PositionGraph();
-
-                    for(let obj of layer.objects){
-                        g.addPositionedNode(new Vec2(obj.x, obj.y));
-                    }
-
-                    for(let edge of edges){
-                        g.addEdge(edge.from, edge.to);
-                    }
-
-                    this.scene.getNavigationManager().addNavigableEntity(navmeshName, new Navmesh(g));
-
-                    continue;
-                }
 
                 // Layer is an object layer, so add each object as a sprite to a new layer
-                for(let obj of layer.objects){
-                    // Check if obj is collidable
-                    let hasPhysics = false;
-                    let isCollidable = false;
-                    let isTrigger = false;
-                    let onEnter = null;
-                    let onExit = null;
-                    let triggerGroup = null;
-                    let group = "";
+                for(let obj of layer.objects) {
 
-                    if(obj.properties){
-                        for(let prop of obj.properties){
-                            if(prop.name === "HasPhysics"){
-                                hasPhysics = prop.value;
-                            } else if(prop.name === "Collidable"){
-                                isCollidable = prop.value;
-                            } else if(prop.name === "Group"){
-                                group = prop.value;
-                            } else if(prop.name === "IsTrigger"){
-                                isTrigger = prop.value;
-                            } else if(prop.name === "TriggerGroup"){
-                                triggerGroup = prop.value;
-                            } else if(prop.name === "TriggerOnEnter"){
-                                onEnter = prop.value;
-                            } else if(prop.name === "TriggerOnExit"){
-                                onExit = prop.value;
-                            }
-                        }
-                    }
+                    // // Check if obj is collidable
+                    // let hasPhysics = false;
+                    // let isCollidable = false;
+                    // let isTrigger = false;
+                    // let onEnter = null;
+                    // let onExit = null;
+                    // let triggerGroup = null;
+                    // let group = "";
 
-                    let sprite: Sprite;
+                    // if(obj.properties){
+                    //     for(let prop of obj.properties){
+                    //         if(prop.name === "HasPhysics"){
+                    //             hasPhysics = prop.value;
+                    //         } else if(prop.name === "Collidable"){
+                    //             isCollidable = prop.value;
+                    //         } else if(prop.name === "Group"){
+                    //             group = prop.value;
+                    //         } else if(prop.name === "IsTrigger"){
+                    //             isTrigger = prop.value;
+                    //         } else if(prop.name === "TriggerGroup"){
+                    //             triggerGroup = prop.value;
+                    //         } else if(prop.name === "TriggerOnEnter"){
+                    //             onEnter = prop.value;
+                    //         } else if(prop.name === "TriggerOnExit"){
+                    //             onExit = prop.value;
+                    //         }
+                    //     }
+                    // }
+                    
+                    // let sprite: Sprite;
 
                     // Check if obj is a tile from a tileset
-                    for(let tileset of tilesets){
-                        if(tileset.hasTile(obj.gid)){
-                            // The object is a tile from this set
-                            let imageKey = tileset.getImageKey();
-                            let offset = tileset.getImageOffsetForTile(obj.gid);
-                            sprite = this.scene.add.sprite(imageKey, layer.name);
-                            let size = tileset.getTileSize().clone();
-                            sprite.position.set((obj.x + size.x/2)*scale.x, (obj.y - size.y/2)*scale.y);
-                            sprite.setImageOffset(offset);
-                            sprite.size.copy(size);
-                            sprite.scale.set(scale.x, scale.y);
-                        }
-                    }
+                    for(let tileset of tilesets) {
+                        if(tileset.hasTile(obj.gid)) {
 
-                    // Not in a tileset, must correspond to a collection
-                    if(!sprite){
-                        for(let tile of collectionTiles){
-                            if(obj.gid === tile.id){
-                                let imageKey = tile.image;
-                                sprite = this.scene.add.sprite(imageKey, layer.name);
-                                sprite.position.set((obj.x + tile.imagewidth/2)*scale.x, (obj.y - tile.imageheight/2)*scale.y);
-                                sprite.scale.set(scale.x, scale.y);
+                            // assuming that all animations are 8 frames long
+                            // placement of frame 2/8 = animated tile
+                            // placement of any other tile will result in a static, NON-animated sprite
+
+                            let animated_q = obj.gid % 8;
+                            if (animated_q == 2) {
+                                let tile = this.scene.add.animatedSprite(AnimatedSprite, "tile_animations", "tiles");
+                                let size = tileset.getTileSize().clone();
+                                tile.size.copy(size);
+
+                                // change position / for scaling / etc. later
+                                tile.position.set(obj.x + 16, obj.y - 16);
+        
+                                let animation_num = Math.floor(obj.gid / 8);
+
+                                // hard coded order at the moment
+                                if (animation_num == 0) {
+                                    tile.animation.play("SPACE", true);
+                                }
+                                else if (animation_num == 1) {
+                                    tile.animation.play("SPACE_COMET", true);
+                                }
+                                else if (animation_num == 2) {
+                                    tile.animation.play("DESERT_TUMBLE", true);
+                                }
+                                else if (animation_num == 3) {
+                                    tile.animation.play("DIRT_SPROUT", true);
+                                }
+                                else if (animation_num == 4) {
+                                    tile.animation.play("GRASS_FLOWER", true);                        
+                                }
+                                else if (animation_num == 5) {
+                                    tile.animation.play("GRASS_HOUSE", true);
+                                }
+                                else if (animation_num == 6) {
+                                    tile.animation.play("WATER_UP", true);                        
+                                }
+                                else if (animation_num == 7) {
+                                    tile.animation.play("WATER_LEFT", true);
+                                }
+                                else if (animation_num == 8) {
+                                    tile.animation.play("WATER_DOWN", true);
+                                }
+                                else if (animation_num == 9) {
+                                    tile.animation.play("WATER_RIGHT", true);     
+                                }
+                                else if (animation_num == 10) {
+                                    tile.animation.play("MUD_WAVE", true);
+                                }
+                                else if (animation_num == 11) {
+                                    tile.animation.play("FIRE_WAVE", true);
+                                }
+                                else {
+                                    tile.animation.play("SPACE", true);
+                                }
                             }
+                            else {
+                                let imageKey = tileset.getImageKey();
+                                let offset = tileset.getImageOffsetForTile(obj.gid);
+                                let tile = this.scene.add.sprite(imageKey, "tiles");
+                                let size = tileset.getTileSize().clone();
+                                tile.position.set((obj.x + size.x/2)*scale.x, (obj.y - size.y/2)*scale.y);
+                                tile.setImageOffset(offset);
+                                tile.size.copy(size);
+                                tile.scale.set(scale.x, scale.y);
+                        }
+
+                            // // The object is a tile from this set
+                            // let imageKey = tileset.getImageKey();
+                            // let offset = tileset.getImageOffsetForTile(obj.gid);
+                            // sprite = this.scene.add.sprite(imageKey, layer.name);
+                            // let size = tileset.getTileSize().clone();
+                            // sprite.position.set((obj.x + size.x/2)*scale.x, (obj.y - size.y/2)*scale.y);
+                            // sprite.setImageOffset(offset);
+                            // sprite.size.copy(size);
+                            // sprite.scale.set(scale.x, scale.y);
+                            
                         }
                     }
 
-                    // Now we have sprite. Associate it with our physics object if there is one
-                    if(hasPhysics){
-                        // Make the sprite a static physics object
-                        sprite.addPhysics(sprite.boundary.clone(), Vec2.ZERO, isCollidable, true);
-                        sprite.setGroup(group);
-                        if(isTrigger && triggerGroup !== null){
-                            sprite.setTrigger(triggerGroup, onEnter, onExit);
-                        }
-                    }
+                    // no collection tileset
+
+                    // // Not in a tileset, must correspond to a collection
+                    // if(!sprite){
+                    //     for(let tile of collectionTiles) {
+                    //         if(obj.gid === tile.id) {
+                    //             let imageKey = tile.image;
+                    //             sprite = this.scene.add.sprite(imageKey, layer.name);
+                    //             sprite.position.set((obj.x + tile.imagewidth/2)*scale.x, (obj.y - tile.imageheight/2)*scale.y);
+                    //             sprite.scale.set(scale.x, scale.y);
+                    //         }
+                    //     }
+                    // }
+
                 }
             }
 
