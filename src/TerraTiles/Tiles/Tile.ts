@@ -36,7 +36,7 @@ export class FireTile extends Tile {
 
     constructor(position: Vec2) {
         super("fire", position);
-        this._spreadDelay = 5000; 
+        this._spreadDelay = 5; 
         this._spreadTimer = 0;
     }
 
@@ -45,17 +45,18 @@ export class FireTile extends Tile {
 
     if (this._spreadTimer >= this._spreadDelay) {
         this._spreadTimer = 0;
-
         for (let i = -1; i <= 1; i++) {
             for (let j = -1; j <= 1; j++) {
                 if (i === 0 && j === 0) continue;
 
-                let newPos = new Vec2(this._position.x + i, this._position.y + j);
-                let tileId = tilemap.getTileAtRowCol(newPos);
+                let newPos = new Vec2(this._position.x + 16*i, this._position.y + 16*j);
+                let colRow = tilemap.getColRowAt(newPos); 
 
-                if (tileId === 1) {
+                let tileId = tilemap.getTileAtWorldPosition(newPos)
+                if (tileId === 22) {
                     let colRow = tilemap.getColRowAt(newPos); 
                     tilemap.setTileAtRowCol(colRow, 120);
+                    
                 }
             }
         }
@@ -75,6 +76,7 @@ export class WaterTile extends Tile {
 
     update(deltaT: number, tilemap: OrthogonalTilemap): void {
         this._spreadTimer += deltaT;
+        console.log("업데이트");
 
     if (this._spreadTimer >= this._spreadDelay) {
         this._spreadTimer = 0;

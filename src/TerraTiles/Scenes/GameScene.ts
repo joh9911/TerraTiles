@@ -13,23 +13,40 @@ import Tilemap from "../../Wolfie2D/Nodes/Tilemap";
 export default class GameScene extends Scene {
     private _tilemap: OrthogonalTilemap;
     private _fireTiles: Vec2[] = [];
-    private _fireTimer: Timer;
-    private _tiles: Map<string, Tile>;
+    private _waterTiles: Vec2[] = [];
+    private _roundDelay: number;
+    private _roundTimer: number;
 
-    addTile(tile: Tile): void {
-        this._tiles.set(tile.position.toString(), tile);
+
+
+    spreadWater(){
+        let newWaterTiles: Vec2[] = [];
+
+        for (let waterTile of this._waterTiles) {
+            const directions = [
+                { dx: 0, dy: -1 }, 
+                { dx: 1, dy: 0 },  
+                { dx: 0, dy: 1 },  
+                { dx: -1, dy: 0 }  
+            ];
+        
+            for (let {dx, dy} of directions) {
+                let newPos = new Vec2(waterTile.x + dx, waterTile.y + dy);
+                let colRow = this._tilemap.getColRowAt(newPos); 
+                    let tileId = this._tilemap.getTileAtWorldPosition(colRow)
+                    if (tileId === 1) {
+                        let colRow = this._tilemap.getColRowAt(newPos); 
+                        this._tilemap.setTileAtRowCol(colRow, 120);
+                        newWaterTiles.push(newPos);
+                    }
+            }
+        }
+        
     }
-
-    removeTile(position: Vec2): void {
-        this._tiles.delete(position.toString());
-    }
-
     spreadFire() {
         let newFireTiles: Vec2[] = [];
-        console.log("불번져~ 실행");
 
         for (let fireTile of this._fireTiles) {
-            // Check the adjacent tiles
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     if (i === 1 && j === 1) continue;
@@ -40,11 +57,8 @@ export default class GameScene extends Scene {
                     
                     let colRow = this._tilemap.getColRowAt(newPos); 
                     let tileId = this._tilemap.getTileAtWorldPosition(colRow)
-                    // If the adjacent tile is a ground tile, change it to a fire tile
                     if (tileId === 1) {
-                        
                         let colRow = this._tilemap.getColRowAt(newPos); 
-                        console.log("불번져~", `${tileId}, ${colRow}`);
                         this._tilemap.setTileAtRowCol(colRow, 120);
                         newFireTiles.push(newPos);
                     }
@@ -52,17 +66,19 @@ export default class GameScene extends Scene {
             }
         }
 
-        // Add the new fire tiles to the array for the next spread
         this._fireTiles = this._fireTiles.concat(newFireTiles);
-        this._fireTimer.start();
     }
     
     updateScene(deltaT: number): void {
         super.updateScene(deltaT);
+        this._roundTimer += deltaT;
 
-        for (let tile of this.tiles.values()) {
-            tile.update(deltaT, this.tilemap);
-        }
+    if (this._roundTimer >= this._roundDelay) {
+        this._roundTimer = 0;
+        this.spreadFire();
+        this.spreadWater();
+    }
+
         if(Input.isMouseJustPressed()){
 			let position = Input.getGlobalMousePosition()
 
@@ -71,18 +87,14 @@ export default class GameScene extends Scene {
 
             let currnetBelow = this.tilemap.getTileAtWorldPosition(tileBelow)
 
-            console.log("tile index", `${position},  ${currnetBelow}`);
+            if (currnetBelow == 22) { 
 
-            if (currnetBelow == 1) { 
-                this.tilemap.setTileAtRowCol(colRow, 22);
-                
+                this.tilemap.setTileAtRowCol(colRow, 120);
             }
-            
 		}
         
-
-        
     }
+    
 
     get tilemap(): OrthogonalTilemap {
         return this._tilemap;
@@ -100,19 +112,27 @@ export default class GameScene extends Scene {
         this._fireTiles = tiles;
     }
 
-    get fireTimer(): Timer{
-        return this._fireTimer;
+    get waterTiles(): Vec2[]{
+        return this._waterTiles
     }
 
-    set fireTimer(timer: Timer) {
-        this._fireTimer = timer;
+    set waterTiles(tiles: Vec2[]){
+        this._waterTiles = tiles;
     }
 
-    get tiles(): Map<string, Tile> {
-        return this._tiles;
+    get roundDelay(): number{
+        return this._roundDelay;
+    }
+    set roundDelay(num: number){
+        this._roundDelay = num;
     }
 
-    set tiles(tiles: Map<string, Tile>) {
-        this._tiles = tiles;
+    get roundTimer(): number{
+        return this._roundTimer;
     }
+    set roundTimer(num: number) {
+        this._roundTimer = num;
+    }
+
+
 }
