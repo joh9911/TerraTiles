@@ -5,24 +5,24 @@ import Input from "../../Wolfie2D/Input/Input";
 import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Timer from "../../Wolfie2D/Timing/Timer";
-import { Layers_enum } from "../Utils/Layers_enum";
 import { Tile, DesertTile, FireTile, WaterTile } from "../Tiles/Tile";
 import Tilemap from "../../Wolfie2D/Nodes/Tilemap";
 
 
 export default class GameScene extends Scene {
-    private _tilemap: OrthogonalTilemap;
-    private _fireTiles: Vec2[] = [];
-    private _waterTiles: Vec2[] = [];
-    private _roundDelay: number;
-    private _roundTimer: number;
+    protected tilemap: OrthogonalTilemap;
+    protected fireTiles: Vec2[] = [];
+    protected waterTiles: Vec2[] = [];
+    protected roundDelay: number;
+    protected roundTimer: number;
+    protected a:number;
 
 
 
     spreadWater(){
         let newWaterTiles: Vec2[] = [];
 
-        for (let waterTile of this._waterTiles) {
+        for (let waterTile of this.waterTiles) {
             const directions = [
                 { dx: 0, dy: -1 }, 
                 { dx: 1, dy: 0 },  
@@ -32,11 +32,11 @@ export default class GameScene extends Scene {
         
             for (let {dx, dy} of directions) {
                 let newPos = new Vec2(waterTile.x + dx, waterTile.y + dy);
-                let colRow = this._tilemap.getColRowAt(newPos); 
-                    let tileId = this._tilemap.getTileAtWorldPosition(colRow)
+                let colRow = this.tilemap.getColRowAt(newPos); 
+                    let tileId = this.tilemap.getTileAtWorldPosition(colRow)
                     if (tileId === 1) {
-                        let colRow = this._tilemap.getColRowAt(newPos); 
-                        this._tilemap.setTileAtRowCol(colRow, 120);
+                        let colRow = this.tilemap.getColRowAt(newPos); 
+                        this.tilemap.setTileAtRowCol(colRow, 120);
                         newWaterTiles.push(newPos);
                     }
             }
@@ -46,7 +46,7 @@ export default class GameScene extends Scene {
     spreadFire() {
         let newFireTiles: Vec2[] = [];
 
-        for (let fireTile of this._fireTiles) {
+        for (let fireTile of this.fireTiles) {
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     if (i === 1 && j === 1) continue;
@@ -55,26 +55,28 @@ export default class GameScene extends Scene {
                     if (i == -1 && j == 1) continue;
                     let newPos = new Vec2(fireTile.x + 16*i, fireTile.y + 16*j);
                     
-                    let colRow = this._tilemap.getColRowAt(newPos); 
-                    let tileId = this._tilemap.getTileAtWorldPosition(colRow)
-                    if (tileId === 1) {
-                        let colRow = this._tilemap.getColRowAt(newPos); 
-                        this._tilemap.setTileAtRowCol(colRow, 120);
+                    let colRow = this.tilemap.getColRowAt(newPos); 
+                    let tileId = this.tilemap.getTileAtWorldPosition(colRow)
+                    console.log(tileId , colRow);
+                    if (tileId === 22) {
+                        console.log("spread fire");
+                        let colRow = this.tilemap.getColRowAt(newPos); 
+                        this.tilemap.setTileAtRowCol(colRow, 120);
                         newFireTiles.push(newPos);
                     }
                 }
             }
         }
 
-        this._fireTiles = this._fireTiles.concat(newFireTiles);
+        this.fireTiles = this.fireTiles.concat(newFireTiles);
     }
     
     updateScene(deltaT: number): void {
         super.updateScene(deltaT);
-        this._roundTimer += deltaT;
+        this.roundTimer += deltaT;
 
-    if (this._roundTimer >= this._roundDelay) {
-        this._roundTimer = 0;
+    if (this.roundTimer >= this.roundDelay) {
+        this.roundTimer = 0;
         this.spreadFire();
         this.spreadWater();
     }
@@ -94,45 +96,4 @@ export default class GameScene extends Scene {
 		}
         
     }
-    
-
-    get tilemap(): OrthogonalTilemap {
-        return this._tilemap;
-    }
-
-    set tilemap(map: OrthogonalTilemap) {
-        this._tilemap = map;
-    }
-
-    get fireTiles(): Vec2[] {
-        return this._fireTiles;
-    }
-
-    set fireTiles(tiles: Vec2[]) {
-        this._fireTiles = tiles;
-    }
-
-    get waterTiles(): Vec2[]{
-        return this._waterTiles
-    }
-
-    set waterTiles(tiles: Vec2[]){
-        this._waterTiles = tiles;
-    }
-
-    get roundDelay(): number{
-        return this._roundDelay;
-    }
-    set roundDelay(num: number){
-        this._roundDelay = num;
-    }
-
-    get roundTimer(): number{
-        return this._roundTimer;
-    }
-    set roundTimer(num: number) {
-        this._roundTimer = num;
-    }
-
-
 }

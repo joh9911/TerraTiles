@@ -20,13 +20,14 @@ export default class Level1 extends GameScene {
     startScene(): void {
         let tilemapLayers = this.add.tilemap("level1");
         this.tilemap = <OrthogonalTilemap>tilemapLayers[1].getItems()[0]
+        console.log(this.tilemap.getTileAtRowCol(new Vec2(20, 10)));
 
         // Set the viewport bounds to the tilemap
         let tilemapSize: Vec2 = this.tilemap.size;
         this.viewport.setBounds(0, 0, tilemapSize.x, tilemapSize.y);
         this.viewport.setZoomLevel(2.5);
 
-        this.roundDelay = 5;
+        this.roundDelay = 1;
         this.roundTimer = 0;
 
         
