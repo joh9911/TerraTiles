@@ -34,7 +34,6 @@ export default class Splash extends Scene {
         fullScreen.borderColor = Color.WHITE;
         fullScreen.borderRadius = 0;
         fullScreen.setPadding(new Vec2(size.x, size.y * 3/2)); // with pos at center and padding at halfviewport, that puts everything inside the button
-        fullScreen.font = "Pixelifysans-bold"; // can't get font to be pixelifysans for some reason
         
         // When the play button is clicked, go to the next scene
         fullScreen.onClick = () => {

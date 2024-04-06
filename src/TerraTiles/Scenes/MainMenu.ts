@@ -61,7 +61,6 @@ export default class MainMenu extends Scene {
         btn.borderWidth = 2;
         btn.borderColor = Color.WHITE;
         btn.backgroundColor = Color.BLACK;
-        btn.font = "Pixelifysans-bold";//can't get font to be pixelifysans for some reason
         return btn;
     }
 
