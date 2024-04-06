@@ -187,14 +187,13 @@ export default class TilemapFactory {
                             let animated_q = obj.gid % 8;
                             if (animated_q == 2) {
                                 let tile = this.scene.add.animatedSprite(AnimatedSprite, "tile_animations", "tiles");
-                                let size = tileset.getTileSize().clone();
-                                tile.size.copy(size);
 
-                                // change position / for scaling / etc. later
-                                tile.position.set(obj.x + 16, obj.y - 16);
+                                let size = tileset.getTileSize().clone();
+                                tile.position.set((obj.x + size.x/2)*scale.x, (obj.y - size.y/2)*scale.y);
+                                tile.size.copy(size);
+                                tile.scale.set(scale.x, scale.y);
         
                                 let animation_num = Math.floor(obj.gid / 8);
-
                                 // hard coded order at the moment
                                 if (animation_num == 0) {
                                     tile.animation.play("SPACE", true);
@@ -245,22 +244,9 @@ export default class TilemapFactory {
                                 tile.setImageOffset(offset);
                                 tile.size.copy(size);
                                 tile.scale.set(scale.x, scale.y);
-                        }
-
-                            // // The object is a tile from this set
-                            // let imageKey = tileset.getImageKey();
-                            // let offset = tileset.getImageOffsetForTile(obj.gid);
-                            // sprite = this.scene.add.sprite(imageKey, layer.name);
-                            // let size = tileset.getTileSize().clone();
-                            // sprite.position.set((obj.x + size.x/2)*scale.x, (obj.y - size.y/2)*scale.y);
-                            // sprite.setImageOffset(offset);
-                            // sprite.size.copy(size);
-                            // sprite.scale.set(scale.x, scale.y);
-                            
+                            }                            
                         }
                     }
-
-                    // no collection tileset
 
                     // // Not in a tileset, must correspond to a collection
                     // if(!sprite){
