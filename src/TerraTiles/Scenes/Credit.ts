@@ -6,7 +6,7 @@ import Color from "../../Wolfie2D/Utils/Color";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import MainMenu from "./MainMenu";
-import { Layers_enum } from "./Utils/Layers_enum";
+import { Layers_enum } from "../Utils/Layers_enum";
 
 export default class Credit extends Scene {
 

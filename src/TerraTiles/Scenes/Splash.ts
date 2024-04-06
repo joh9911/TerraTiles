@@ -8,7 +8,7 @@ import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import MainMenu from "./MainMenu";
 import Button from "../../Wolfie2D/Nodes/UIElements/Button";
-import { Layers_enum } from "./Utils/Layers_enum";
+import { Layers_enum } from "../Utils/Layers_enum";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 
 export default class Splash extends Scene {    

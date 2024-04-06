@@ -8,7 +8,7 @@ import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import Credit from "./Credit";
 import Controls from "./Controls";
-import { Layers_enum } from "./Utils/Layers_enum";
+import { Layers_enum } from "../Utils/Layers_enum";
 import LevelSelect from "./LevelSelect";
 import Button from "../../Wolfie2D/Nodes/UIElements/Button";
 
@@ -18,6 +18,7 @@ export default class MainMenu extends Scene {
 
     public loadScene(){
 		this.load.image("Menu", "Game_Resources/sprites/Main_Menu.png");
+        this.load.spritesheet("tile_animations", "Game_Resources/tilemaps/tile_animations.json");
     }
 
     public startScene(){
@@ -66,5 +67,6 @@ export default class MainMenu extends Scene {
 
     public unloadScene(): void {
         this.load.keepImage("Menu");
+        this.load.keepSpritesheet("tile_animations");
     }
 }

@@ -7,7 +7,6 @@ export default class Test_Scene extends Scene {
         this.load.tilemap("tilemap", "Game_Resources/tilemaps/test_3.json");
 
         // Load tile animations
-        this.load.spritesheet("tile_animations", "Game_Resources/tilemaps/tile_animations.json");
     }
 
     public override startScene() {

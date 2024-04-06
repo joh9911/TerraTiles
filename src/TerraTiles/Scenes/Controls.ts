@@ -4,7 +4,7 @@ import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
 import MainMenu from "./MainMenu";
-import { Layers_enum } from "./Utils/Layers_enum";
+import { Layers_enum } from "../Utils/Layers_enum";
 
 export default class Controls extends Scene{
 
