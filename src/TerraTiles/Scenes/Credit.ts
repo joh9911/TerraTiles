@@ -33,7 +33,7 @@ export default class Credit extends Scene {
       // Create info text
       let i = 1;
       this.createLabel(
-          "Developed by Timothy Sit, Tingting Chen-Deng and Sungmin Joh",
+          "Developed by Timothy Sit, Tingting Chen-Deng, and Sungmin Joh",
           new Vec2(size.x, sizeY)
       );
       this.createLabel(
