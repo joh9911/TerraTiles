@@ -54,7 +54,7 @@ export default class GameScene extends Scene {
                     if (i == -1 && j == -1) continue;
                     if (i == 1 && j == -1) continue;
                     if (i == -1 && j == 1) continue;
-                    let newPos = new Vec2(fireTile.x + 16*i, fireTile.y + 16*j);
+                    let newPos = new Vec2(fireTile.x + 32*i, fireTile.y + 32*j);
                     
                     // let colRow = this._tilemap.getColRowAt(newPos); 
                     // let tileId = this._tilemap.getTileAtWorldPosition(colRow)
@@ -70,7 +70,7 @@ export default class GameScene extends Scene {
                     let nodes = this.sceneGraph.getNodesAt(newPos);
                     for (let a = 0; a < nodes.length; a++) {
                         let animated_sprite = <AnimatedSprite>nodes[a];
-                        if (animated_sprite.animation.getcurrentAnimation() === "desert") {
+                        if (animated_sprite.animation.getcurrentAnimation() === "DESERT_TUMBLE") {
                             // console.log("불번져~", `${tileId}, ${colRow}`);
                             console.log("불번져~", `desert --> fire, ${newPos.x}, ${newPos.y}`);
                             animated_sprite.animation.play("FIRE_WAVE", true);
@@ -117,10 +117,11 @@ export default class GameScene extends Scene {
             let nodes = this.sceneGraph.getNodesAt(tileBelow);
             for (let a = 0; a < nodes.length; a++) {
                 let animated_sprite = <AnimatedSprite>nodes[a];
-                if (animated_sprite.animation.getcurrentAnimation().valueOf() == "SPACE") {
+                if (animated_sprite.animation.getcurrentAnimation().valueOf() == "DESERT_TUMBLE") {
                     // console.log("불번져~", `${tileId}, ${colRow}`);
                     console.log("불번져~", `desert --> fire, ${tileBelow.x}, ${tileBelow.y}`);
-                    animated_sprite.animation.playIfNotAlready("DESERT_TUMBLE", true);
+                    animated_sprite.animation.playIfNotAlready("FIRE_WAVE", true);
+                    this.fireTiles.push(new Vec2(tileBelow.x, tileBelow.y));
                 }
             }
 		}
