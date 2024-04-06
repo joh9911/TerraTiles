@@ -12,15 +12,19 @@ import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 
 export default class Level1 extends GameScene {
     loadScene(): void {
-        this.load.tilemap("level1", "Game_Resources/tilemaps/level_1.json");
+        this.load.tilemap("level1", "Game_Resources/tilemaps/lvl_1.json");
     }
 
     unloadScene() {}
 
     startScene(): void {
+        this.addLayer("tiles", 10);
         let tilemapLayers = this.add.tilemap("level1");
         let tilelayer = this.getLayer("tiles");
         let tile_arr = tilelayer.getItems();
+
+        this.roundTimer = 0;
+        this.roundDelay = 5;
 
         // this.beforeTilemap = new Array(tile_arr.length);
         // this.afterTilemap = new Array(tile_arr.length);        

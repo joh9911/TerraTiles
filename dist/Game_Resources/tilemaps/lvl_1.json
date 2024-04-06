@@ -1071,18 +1071,6 @@
                 {
                  "gid":18,
                  "height":32,
-                 "id":90,
-                 "name":"",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":256,
-                 "y":288
-                }, 
-                {
-                 "gid":18,
-                 "height":32,
                  "id":91,
                  "name":"",
                  "rotation":0,
@@ -1163,8 +1151,7 @@
                  "width":32,
                  "x":352,
                  "y":288
-                },
-            
+                }, 
                 {
                  "gid":18,
                  "height":32,
@@ -1176,7 +1163,8 @@
                  "width":32,
                  "x":352,
                  "y":320
-                }, 
+                },
+            
                 {
                  "gid":18,
                  "height":32,
@@ -1356,8 +1344,7 @@
                  "width":32,
                  "x":352,
                  "y":352
-                },
-            
+                }, 
                 {
                  "gid":10,
                  "height":32,
@@ -1369,7 +1356,8 @@
                  "width":32,
                  "x":64,
                  "y":160
-                }, 
+                },
+            
                 {
                  "gid":10,
                  "height":32,
@@ -1549,8 +1537,7 @@
                  "width":32,
                  "x":0,
                  "y":160
-                },
-            
+                }, 
                 {
                  "gid":2,
                  "height":32,
@@ -1562,7 +1549,8 @@
                  "width":32,
                  "x":32,
                  "y":160
-                }, 
+                },
+            
                 {
                  "gid":2,
                  "height":32,
@@ -1742,8 +1730,7 @@
                  "width":32,
                  "x":448,
                  "y":256
-                },
-            
+                }, 
                 {
                  "gid":2,
                  "height":32,
@@ -1755,7 +1742,8 @@
                  "width":32,
                  "x":448,
                  "y":288
-                }, 
+                },
+            
                 {
                  "gid":2,
                  "height":32,
@@ -1935,8 +1923,7 @@
                  "width":32,
                  "x":416,
                  "y":352
-                },
-            
+                }, 
                 {
                  "gid":2,
                  "height":32,
@@ -1948,7 +1935,8 @@
                  "width":32,
                  "x":416,
                  "y":288
-                }, 
+                },
+            
                 {
                  "gid":2,
                  "height":32,
@@ -2128,8 +2116,7 @@
                  "width":32,
                  "x":224,
                  "y":192
-                },
-            
+                }, 
                 {
                  "gid":2,
                  "height":32,
@@ -2141,7 +2128,8 @@
                  "width":32,
                  "x":192,
                  "y":192
-                }, 
+                },
+            
                 {
                  "gid":2,
                  "height":32,
@@ -2321,8 +2309,7 @@
                  "width":32,
                  "x":0,
                  "y":256
-                },
-            
+                }, 
                 {
                  "gid":2,
                  "height":32,
@@ -2334,7 +2321,8 @@
                  "width":32,
                  "x":96,
                  "y":288
-                }, 
+                },
+            
                 {
                  "gid":2,
                  "height":32,
@@ -2514,8 +2502,7 @@
                  "width":32,
                  "x":256,
                  "y":384
-                },
-            
+                }, 
                 {
                  "gid":2,
                  "height":32,
@@ -2527,7 +2514,8 @@
                  "width":32,
                  "x":288,
                  "y":384
-                }, 
+                },
+            
                 {
                  "gid":2,
                  "height":32,
@@ -2707,8 +2695,7 @@
                  "width":32,
                  "x":64,
                  "y":512
-                },
-            
+                }, 
                 {
                  "gid":2,
                  "height":32,
@@ -2720,7 +2707,8 @@
                  "width":32,
                  "x":96,
                  "y":512
-                }, 
+                },
+            
                 {
                  "gid":2,
                  "height":32,
@@ -2900,8 +2888,7 @@
                  "width":32,
                  "x":224,
                  "y":480
-                },
-            
+                }, 
                 {
                  "gid":2,
                  "height":32,
@@ -2913,7 +2900,8 @@
                  "width":32,
                  "x":192,
                  "y":480
-                }, 
+                },
+            
                 {
                  "gid":2,
                  "height":32,
@@ -3093,8 +3081,7 @@
                  "width":32,
                  "x":160,
                  "y":416
-                },
-            
+                }, 
                 {
                  "gid":2,
                  "height":32,
@@ -3106,7 +3093,8 @@
                  "width":32,
                  "x":192,
                  "y":416
-                }, 
+                },
+            
                 {
                  "gid":2,
                  "height":32,
@@ -3214,6 +3202,18 @@
                  "width":32,
                  "x":64,
                  "y":448
+                }, 
+                {
+                 "gid":90,
+                 "height":32,
+                 "id":270,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":256,
+                 "y":288
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -3222,24 +3222,24 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":269,
+ "nextobjectid":271,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
  "tileheight":32,
  "tilesets":[
-       {
-              "columns":8,
-              "firstgid":1,
-              "image":"tileset_1.png",
-              "imageheight":32,
-              "imagewidth":32,
-              "margin":0,
-              "name":"tileset_1",
-              "spacing":0,
-              "tilecount":97,
-              "tileheight": 32,
-              "tilewidth": 32
+        {
+         "columns":8,
+         "firstgid":1,
+         "image":"tileset_1.png",
+         "imageheight":416,
+         "imagewidth":256,
+         "margin":0,
+         "name":"tileset_1",
+         "spacing":0,
+         "tilecount":104,
+         "tileheight":32,
+         "tilewidth":32
         }],
  "tilewidth":32,
  "type":"map",
