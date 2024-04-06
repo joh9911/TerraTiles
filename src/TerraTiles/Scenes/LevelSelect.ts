@@ -7,7 +7,7 @@ import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
 import MainMenu from "./MainMenu";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
-import { Layers_enum } from "./Utils/Layers_enum";
+import { Layers_enum } from "../Utils/Layers_enum";
 import Layer from "../../Wolfie2D/Scene/Layer";
 import Test_Scene from "./Test_Scene";
 import Level1 from "./Level_1";
@@ -80,7 +80,6 @@ export default class LevelSelect extends Scene {
         btn.borderWidth = 2;
         btn.borderColor = Color.WHITE;
         btn.backgroundColor = Color.BLACK;
-        btn.font = "Pixelifysans-bold";//can't get font to be pixelifysans for some reason
         return btn;
     }
 }

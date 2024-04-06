@@ -8,7 +8,7 @@ import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import Credit from "./Credit";
 import Controls from "./Controls";
-import { Layers_enum } from "./Utils/Layers_enum";
+import { Layers_enum } from "../Utils/Layers_enum";
 import LevelSelect from "./LevelSelect";
 import Button from "../../Wolfie2D/Nodes/UIElements/Button";
 
@@ -65,7 +65,6 @@ export default class MainMenu extends Scene {
         btn.borderWidth = 2;
         btn.borderColor = Color.WHITE;
         btn.backgroundColor = Color.BLACK;
-        btn.font = "Pixelifysans-bold";//can't get font to be pixelifysans for some reason
         return btn;
     }
 

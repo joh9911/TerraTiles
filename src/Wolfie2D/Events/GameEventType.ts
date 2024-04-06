@@ -102,5 +102,6 @@ export enum GameEventType {
 	/**
 	 * Triggers a scene change. Has data: {scene: new (...args: any) => T extends Scene, init: Record<string, any>}
 	 */
-	CHANGE_SCENE = "change_scene"
+	CHANGE_SCENE = "change_scene",
+    MOUSE_CLICK = "MOUSE_CLICK"
 }

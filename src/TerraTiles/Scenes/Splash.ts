@@ -8,7 +8,7 @@ import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import MainMenu from "./MainMenu";
 import Button from "../../Wolfie2D/Nodes/UIElements/Button";
-import { Layers_enum } from "./Utils/Layers_enum";
+import { Layers_enum } from "../Utils/Layers_enum";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 
 export default class Splash extends Scene {    
@@ -34,7 +34,6 @@ export default class Splash extends Scene {
         fullScreen.borderColor = Color.WHITE;
         fullScreen.borderRadius = 0;
         fullScreen.setPadding(new Vec2(size.x, size.y * 3/2)); // with pos at center and padding at halfviewport, that puts everything inside the button
-        fullScreen.font = "Pixelifysans-bold"; // can't get font to be pixelifysans for some reason
         
         // When the play button is clicked, go to the next scene
         fullScreen.onClick = () => {
