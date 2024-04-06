@@ -13,6 +13,9 @@ import UILayer from "../Scene/Layers/UILayer";
  * The viewport keeps track of its position in the game world, and can act as a camera to follow objects.
  */
 export default class Viewport {
+    getViewportPosition(arg0: any) {
+        throw new Error("Method not implemented.");
+    }
     /** The AABB that contains the position and size of the viewport view */
     private view: AABB;
     /** The boundary for the viewport. This represents the limits to where the viewport can go */
