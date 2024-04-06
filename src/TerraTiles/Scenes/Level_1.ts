@@ -18,14 +18,15 @@ export default class Level1 extends Scene {
 
 
     loadScene(): void {
-        this.load.tilemap("level1", "Game_Resources/tilemaps/level_1.json");
+        this.load.tilemap("level1", "Game_Resources/tilemaps/lvl_1.json");
     }
 
     unloadScene() {}
 
     startScene(): void {
+        this.addLayer("tiles", 10);
         let tilemapLayers = this.add.tilemap("level1");
-        this.tilemap = <OrthogonalTilemap>tilemapLayers[1].getItems()[0]
+        this.tilemap = <OrthogonalTilemap>tilemapLayers[0].getItems()[0]
 
         // Set the viewport bounds to the tilemap
         let tilemapSize: Vec2 = this.tilemap.size;

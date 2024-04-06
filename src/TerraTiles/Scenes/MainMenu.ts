@@ -18,6 +18,10 @@ export default class MainMenu extends Scene {
 
     public loadScene(){
 		this.load.image("Menu", "Game_Resources/sprites/Main_Menu.png");
+
+        // Load tile animations
+        this.load.spritesheet("tile_animations", "Game_Resources/tilemaps/tile_animations.json");
+
     }
 
     public startScene(){
@@ -67,5 +71,6 @@ export default class MainMenu extends Scene {
 
     public unloadScene(): void {
         this.load.keepImage("Menu");
+        this.load.keepSpritesheet("tile_animations");
     }
 }
