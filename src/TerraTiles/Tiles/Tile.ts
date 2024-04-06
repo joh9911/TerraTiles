@@ -50,6 +50,7 @@ export class FireTile extends Tile {
                 if (i === 0 && j === 0) continue;
 
                 let newPos = new Vec2(this._position.x + i, this._position.y + j);
+
                 // let tileId = tilemap.getTileAtRowCol(newPos);
 
                 // if (tileId === 1) {
@@ -84,12 +85,14 @@ export class WaterTile extends Tile {
                 if (i === 0 && j === 0) continue;
 
                 let newPos = new Vec2(this._position.x + i, this._position.y + j);
+
                 // let tileId = tilemap.getTileAtRowCol(newPos);
 
                 // if (tileId === 120) {
                 //     let colRow = tilemap.getColRowAt(newPos); 
                 //     tilemap.setTileAtRowCol(colRow, 1);
                 // }
+
             }
         }
     }
@@ -119,6 +122,7 @@ export class SpaceTile extends Tile {
                 if (i === 0 && j === 0) continue;
 
                 let newPos = new Vec2(this._position.x + i, this._position.y + j);
+
                 // let tileId = tilemap.getTileAtRowCol(newPos);
 
                 // if (tileId === 120) {

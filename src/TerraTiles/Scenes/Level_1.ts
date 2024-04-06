@@ -18,13 +18,16 @@ export default class Level1 extends GameScene {
     unloadScene() {}
 
     startScene(): void {
-        this.addLayer("tiles",10);
+
+        this.addLayer("tiles", 10);
         let tilemapLayers = this.add.tilemap("level1");
         let tilelayer = this.getLayer("tiles");
         let tile_arr = tilelayer.getItems();
-        
-        this.roundDelay = 3;
+
         this.roundTimer = 0;
+        this.roundDelay = 3;
+
+
         // this.beforeTilemap = new Array(tile_arr.length);
         // this.afterTilemap = new Array(tile_arr.length);        
         for (let i = 0; i < tile_arr.length; i++) {
