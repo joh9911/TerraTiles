@@ -5,36 +5,49 @@ import Input from "../../Wolfie2D/Input/Input";
 import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Timer from "../../Wolfie2D/Timing/Timer";
-import { Layers_enum } from "../Utils/Layers_enum";
 import { Tile, DesertTile, FireTile, WaterTile } from "../Tiles/Tile";
 import Tilemap from "../../Wolfie2D/Nodes/Tilemap";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 
 
 export default class GameScene extends Scene {
-    private _tilemap: OrthogonalTilemap;
-    private _fireTiles: Vec2[] = [];
-    private _fireTimer: Timer;
-    private _tiles: Map<string, Tile>;
+    protected tilemap: OrthogonalTilemap;
+    protected fireTiles: Vec2[] = [];
+    protected waterTiles: Vec2[] = [];
+    protected roundDelay: number;
+    protected roundTimer: number;
+    protected a:number;
 
-    // protected beforeTilemap: Tile[];
-    // protected afterTilemap: Tile[];
 
-    addTile(tile: Tile): void {
-        this._tiles.set(tile.position.toString(), tile);
+
+    spreadWater(){
+        let newWaterTiles: Vec2[] = [];
+
+        for (let waterTile of this.waterTiles) {
+            const directions = [
+                { dx: 0, dy: -1 }, 
+                { dx: 1, dy: 0 },  
+                { dx: 0, dy: 1 },  
+                { dx: -1, dy: 0 }  
+            ];
+        
+            for (let {dx, dy} of directions) {
+                let newPos = new Vec2(waterTile.x + dx, waterTile.y + dy);
+                let colRow = this.tilemap.getColRowAt(newPos); 
+                    let tileId = this.tilemap.getTileAtWorldPosition(colRow)
+                    if (tileId === 1) {
+                        let colRow = this.tilemap.getColRowAt(newPos); 
+                        this.tilemap.setTileAtRowCol(colRow, 120);
+                        newWaterTiles.push(newPos);
+                    }
+            }
+        }
+        
     }
-
-    removeTile(position: Vec2): void {
-        this._tiles.delete(position.toString());
-    }
-
     spreadFire() {
         let newFireTiles: Vec2[] = [];
-        console.log("불번져~ 실행");
 
-        for (let fireTile of this._fireTiles) {
-
-            // Check the adjacent tiles
+        for (let fireTile of this.fireTiles) {
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     if (i === 1 && j === 1) continue;
@@ -70,17 +83,22 @@ export default class GameScene extends Scene {
             }
         }
 
-        // Add the new fire tiles to the array for the next spread
-        this._fireTiles = this._fireTiles.concat(newFireTiles);
-        this._fireTimer.start();
+        this.fireTiles = this.fireTiles.concat(newFireTiles);
     }
     
     updateScene(deltaT: number): void {
         super.updateScene(deltaT);
+        this.roundTimer += deltaT;
 
-        for (let tile of this.tiles.values()) {
-            tile.update(deltaT);
-        }
+    if (this.roundTimer >= this.roundDelay) {
+        this.roundTimer = 0;
+        this.spreadFire();
+        this.spreadWater();
+    }
+
+        // for (let tile of this.tiles.values()) {
+        //     tile.update(deltaT);
+        // }
         if(Input.isMouseJustPressed()){
 			let position = Input.getGlobalMousePosition()
 
@@ -105,42 +123,7 @@ export default class GameScene extends Scene {
                     animated_sprite.animation.playIfNotAlready("DESERT_TUMBLE", true);
                 }
             }
-            
 		}
         
-
-        
-    }
-
-    get tilemap(): OrthogonalTilemap {
-        return this._tilemap;
-    }
-
-    set tilemap(map: OrthogonalTilemap) {
-        this._tilemap = map;
-    }
-
-    get fireTiles(): Vec2[] {
-        return this._fireTiles;
-    }
-
-    set fireTiles(tiles: Vec2[]) {
-        this._fireTiles = tiles;
-    }
-
-    get fireTimer(): Timer{
-        return this._fireTimer;
-    }
-
-    set fireTimer(timer: Timer) {
-        this._fireTimer = timer;
-    }
-
-    get tiles(): Map<string, Tile> {
-        return this._tiles;
-    }
-
-    set tiles(tiles: Map<string, Tile>) {
-        this._tiles = tiles;
     }
 }

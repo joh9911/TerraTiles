@@ -36,7 +36,7 @@ export class FireTile extends Tile {
 
     constructor(position: Vec2) {
         super("fire", position);
-        this._spreadDelay = 5000; 
+        this._spreadDelay = 5; 
         this._spreadTimer = 0;
     }
 
@@ -45,7 +45,6 @@ export class FireTile extends Tile {
 
     if (this._spreadTimer >= this._spreadDelay) {
         this._spreadTimer = 0;
-
         for (let i = -1; i <= 1; i++) {
             for (let j = -1; j <= 1; j++) {
                 if (i === 0 && j === 0) continue;
@@ -75,6 +74,7 @@ export class WaterTile extends Tile {
 
     update(deltaT: number): void {
         this._spreadTimer += deltaT;
+        console.log("업데이트");
 
     if (this._spreadTimer >= this._spreadDelay) {
         this._spreadTimer = 0;
