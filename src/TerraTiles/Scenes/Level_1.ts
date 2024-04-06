@@ -119,21 +119,7 @@ export default class Level1 extends Scene {
             }
             
 		}
-        else if(Input.getKeysJustPressed()){
-            let position = Input.getGlobalMousePosition()
-
-            let tileBelow = new Vec2(position.x, position.y); 
-            let colRow = this.tilemap.getColRowAt(tileBelow); 
-
-            let currnetBelow = this.tilemap.getTileAtWorldPosition(tileBelow)
-
-            console.log("tile index", `${position},  ${currnetBelow}`);
-
-            if (currnetBelow == 1) { 
-                this.tilemap.setTileAtRowCol(colRow, 120);
-                
-            }
-        }
+        
 
         
     }
