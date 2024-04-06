@@ -18,7 +18,7 @@ export abstract class Tile {
         return this._position;
     }
 
-    abstract update(deltaT: number, tilemap: OrthogonalTilemap): void;
+    abstract update(deltaT: number): void;
 }
 
 export class DesertTile extends Tile {
@@ -26,7 +26,7 @@ export class DesertTile extends Tile {
         super("desert", position);
     }
 
-    update(deltaT: number, tilemap: OrthogonalTilemap): void {
+    update(deltaT: number): void {
     }
 }
 
@@ -40,7 +40,7 @@ export class FireTile extends Tile {
         this._spreadTimer = 0;
     }
 
-    update(deltaT: number,tilemap: OrthogonalTilemap): void {
+    update(deltaT: number): void {
         this._spreadTimer += deltaT;
 
     if (this._spreadTimer >= this._spreadDelay) {
@@ -51,12 +51,12 @@ export class FireTile extends Tile {
                 if (i === 0 && j === 0) continue;
 
                 let newPos = new Vec2(this._position.x + i, this._position.y + j);
-                let tileId = tilemap.getTileAtRowCol(newPos);
+                // let tileId = tilemap.getTileAtRowCol(newPos);
 
-                if (tileId === 1) {
-                    let colRow = tilemap.getColRowAt(newPos); 
-                    tilemap.setTileAtRowCol(colRow, 120);
-                }
+                // if (tileId === 1) {
+                //     let colRow = tilemap.getColRowAt(newPos); 
+                //     tilemap.setTileAtRowCol(colRow, 120);
+                // }
             }
         }
     }
@@ -73,7 +73,7 @@ export class WaterTile extends Tile {
         this._spreadTimer = 0;
     }
 
-    update(deltaT: number, tilemap: OrthogonalTilemap): void {
+    update(deltaT: number): void {
         this._spreadTimer += deltaT;
 
     if (this._spreadTimer >= this._spreadDelay) {
@@ -84,16 +84,51 @@ export class WaterTile extends Tile {
                 if (i === 0 && j === 0) continue;
 
                 let newPos = new Vec2(this._position.x + i, this._position.y + j);
-                let tileId = tilemap.getTileAtRowCol(newPos);
+                // let tileId = tilemap.getTileAtRowCol(newPos);
 
-                if (tileId === 120) {
-                    let colRow = tilemap.getColRowAt(newPos); 
-                    tilemap.setTileAtRowCol(colRow, 1);
-                }
+                // if (tileId === 120) {
+                //     let colRow = tilemap.getColRowAt(newPos); 
+                //     tilemap.setTileAtRowCol(colRow, 1);
+                // }
             }
         }
     }
 
         
     }
+}
+
+
+export class SpaceTile extends Tile {
+    private _spreadDelay: number;
+    private _spreadTimer: number;
+    constructor(position: Vec2) {
+        super("SPACE", position);
+        this._spreadDelay = 100; 
+        this._spreadTimer = 0;
+    }
+
+    update(deltaT: number): void {
+        this._spreadTimer += deltaT;
+
+    if (this._spreadTimer >= this._spreadDelay) {
+        this._spreadTimer = 0;
+
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+                if (i === 0 && j === 0) continue;
+
+                let newPos = new Vec2(this._position.x + i, this._position.y + j);
+                // let tileId = tilemap.getTileAtRowCol(newPos);
+
+                // if (tileId === 120) {
+                //     let colRow = tilemap.getColRowAt(newPos); 
+                //     tilemap.setTileAtRowCol(colRow, 1);
+                // }
+            }
+        }
+    }
+        
+    }
+
 }
