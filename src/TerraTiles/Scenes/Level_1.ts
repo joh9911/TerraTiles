@@ -27,7 +27,7 @@ export default class Level1 extends GameScene {
         this.roundTimer = 0;
         this.roundDelay = 3;
 
-
+        console.log("레벨 초기화")
         // this.beforeTilemap = new Array(tile_arr.length);
         // this.afterTilemap = new Array(tile_arr.length);        
         for (let i = 0; i < tile_arr.length; i++) {
@@ -39,11 +39,13 @@ export default class Level1 extends GameScene {
             else if (tile_sprite.animation.getcurrentAnimation() == "DESERT_TUMBLE") {
                 // this.beforeTilemap[i] = new DesertTile(tile_arr[i].position);
                 // this.afterTilemap[i] = new DesertTile(tile_arr[i].position);
+
+                this.desertTiles.add(this.vec2ToString(tile_arr[i].position));
             }
             else if (tile_sprite.animation.getcurrentAnimation() == "FIRE_WAVE") {
                 // this.beforeTilemap[i] = new FireTile(tile_arr[i].position);
                 // this.afterTilemap[i] = new FireTile(tile_arr[i].position);
-                this.fireTiles.push(tile_arr[i].position);
+                this.fireTiles.add(this.vec2ToString(tile_arr[i].position));
             }
         }
 

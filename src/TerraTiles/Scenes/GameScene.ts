@@ -12,16 +12,41 @@ import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 
 export default class GameScene extends Scene {
     protected tilemap: OrthogonalTilemap;
-    protected fireTiles: Vec2[] = [];
-    protected waterTiles: Vec2[] = [];
+    // changed Vec2 to String, because It can't campare between Vec2 objects when deleting tiles.
+    protected desertTiles: Set<String> = new Set<String>();
+    protected grassTiles: Set<String> = new Set<String>();
+    protected fireTiles: Set<String> = new Set<String>();
+    protected waterTiles: Set<String> = new Set<String>();
+    protected rockTiles: Set<String> = new Set<String>();
     protected roundDelay: number;
     protected roundTimer: number;
-    protected a:number;
+    protected currentMode: string = "DESERT"; // temporarily set the tile mode, default mode is DESERT
 
 
+    growGrassFromDesert() {
+
+        for (let desertTile of this.desertTiles) {
+
+            // Convert newPos to a string representation. Due to issues with equality comparison of Vec2 objects
+            let pos = this.stringToVec2(desertTile);
+            let vec2ToString = this.vec2ToString(pos);
+
+            let nodes = this.sceneGraph.getNodesAt(pos);
+            
+            for (let node of nodes) {
+                let animatedSprite = node as AnimatedSprite;
+                animatedSprite.animation.playIfNotAlready("GRASS_FLOWER", true);
+                this.grassTiles.add(vec2ToString);
+                this.desertTiles.delete(vec2ToString);
+                break;
+            }
+        }
+        
+
+    }
 
     spreadWater(){
-        let newWaterTiles: Vec2[] = [];
+        const newWaterTiles: Set<String> = new Set<String>();
 
         for (let waterTile of this.waterTiles) {
             const directions = [
@@ -32,104 +57,177 @@ export default class GameScene extends Scene {
             ];
         
             for (let {dx, dy} of directions) {
-                let newPos = new Vec2(waterTile.x + dx, waterTile.y + dy);
 
-                // let colRow = this.tilemap.getColRowAt(newPos); 
-                //     let tileId = this.tilemap.getTileAtWorldPosition(colRow)
-                //     if (tileId === 1) {
-                //         let colRow = this.tilemap.getColRowAt(newPos); 
-                //         this.tilemap.setTileAtRowCol(colRow, 120);
-                //         newWaterTiles.push(newPos);
-                //     }
+                // Convert newPos to a string representation. Due to issues with equality comparison of Vec2 objects
+                let originPos = this.stringToVec2(waterTile);
+                let newPos = new Vec2(originPos.x + dx * 32, originPos.y + dy * 32);
+                let vec2ToString = this.vec2ToString(newPos);
+                
+                let nodes = this.sceneGraph.getNodesAt(newPos);
+                for (let a = 0; a < nodes.length; a++) {
+                    let animated_sprite = <AnimatedSprite>nodes[a];
 
+                    if (animated_sprite.animation.getcurrentAnimation().valueOf() == "DESERT_TUMBLE") {
+                        animated_sprite.animation.playIfNotAlready("WATER_UP", true);
+                        newWaterTiles.add(vec2ToString);
+                        this.desertTiles.delete(vec2ToString);
+                        break;
+                    }
+                    if (animated_sprite.animation.getcurrentAnimation().valueOf() == "FIRE_WAVE"){
+                        animated_sprite.animation.playIfNotAlready("WATER_UP", true);
+                        newWaterTiles.add(vec2ToString);
+                        this.fireTiles.delete(vec2ToString);
+                        break;
+                    }
+                
+                    if (animated_sprite.animation.getcurrentAnimation().valueOf() == "GRASS_FLOWER"){
+                        animated_sprite.animation.playIfNotAlready("WATER_UP", true);
+                        newWaterTiles.add(vec2ToString);
+                        this.desertTiles.delete(vec2ToString);
+                        this.grassTiles.delete(vec2ToString);
+                        break;
+                    }
+                }
             }
+            this.waterTiles = new Set<String>([...this.waterTiles, ...newWaterTiles]);
         }
         
     }
     spreadFire() {
-        let newFireTiles: Vec2[] = [];
-
+        const newFireTiles: Set<String> = new Set<String>();
+    
         for (let fireTile of this.fireTiles) {
-            for (let i = -1; i <= 1; i++) {
-                for (let j = -1; j <= 1; j++) {
-                    if (i === 1 && j === 1) continue;
-                    if (i == -1 && j == -1) continue;
-                    if (i == 1 && j == -1) continue;
-                    if (i == -1 && j == 1) continue;
-                    let newPos = new Vec2(fireTile.x + 32*i, fireTile.y + 32*j);
-                    
-                    // let colRow = this._tilemap.getColRowAt(newPos); 
-                    // let tileId = this._tilemap.getTileAtWorldPosition(colRow)
-                    // // If the adjacent tile is a ground tile, change it to a fire tile
-                    // if (tileId === 1) {
-                        
-                    //     let colRow = this._tilemap.getColRowAt(newPos); 
-                    //     console.log("불번져~", `${tileId}, ${colRow}`);
-                    //     this._tilemap.setTileAtRowCol(colRow, 120);
-                    //     newFireTiles.push(newPos);
-                    // }
+            const directions = [
+                { dx: 0, dy: -1 },
+                { dx: 1, dy: 0 },
+                { dx: 0, dy: 1 },
+                { dx: -1, dy: 0 }
+            ];
+    
+            for (let {dx, dy} of directions) {
 
-                    let nodes = this.sceneGraph.getNodesAt(newPos);
-                    for (let a = 0; a < nodes.length; a++) {
-                        let animated_sprite = <AnimatedSprite>nodes[a];
+                // Convert newPos to a string representation. Due to issues with equality comparison of Vec2 objects
+                let originPos = this.stringToVec2(fireTile)
+                let newPos = new Vec2(originPos.x + dx * 32, originPos.y + dy * 32);
+                let vec2ToString = this.vec2ToString(newPos);
 
-                        if (animated_sprite.animation.getcurrentAnimation().valueOf() == "DESERT_TUMBLE") {
-                            console.log("불번져~", `desert --> fire, ${newPos.x}, ${newPos.y}`);
-                            animated_sprite.animation.playIfNotAlready("FIRE_WAVE", true);
-                            newFireTiles.push(newPos);
-                        }
+                let nodes = this.sceneGraph.getNodesAt(newPos);
+    
+                for (let node of nodes) {
+                    let animatedSprite = node as AnimatedSprite;
+    
+                    if (animatedSprite.animation.getcurrentAnimation() === "DESERT_TUMBLE") {
+                        animatedSprite.animation.playIfNotAlready("FIRE_WAVE", true);
+                        newFireTiles.add(vec2ToString);
+                        this.desertTiles.delete(vec2ToString);
+                        break;
                     }
-
+    
+                    if (animatedSprite.animation.getcurrentAnimation() === "GRASS_FLOWER") {
+                        animatedSprite.animation.playIfNotAlready("FIRE_WAVE", true);
+                        newFireTiles.add(vec2ToString);
+                        this.desertTiles.delete(vec2ToString);
+                        this.grassTiles.delete(vec2ToString)
+                        break;
+                    }
                 }
             }
         }
-        this.fireTiles = this.fireTiles.concat(newFireTiles);
+    
+        this.fireTiles = new Set<String>([...this.fireTiles, ...newFireTiles]);
+
     }
+
+    // method for comparing tiles' positions
+    vec2ToString(vec: Vec2): string {
+        return `${vec.x}:${vec.y}`;
+    }
+    stringToVec2(s: String): Vec2 {
+        const [x, y] = s.split(':').map(Number);
+        return new Vec2(x, y);
+    }
+    
+    
+    
     
     updateScene(deltaT: number): void {
         super.updateScene(deltaT);
         this.roundTimer += deltaT;
 
-    if (this.roundTimer >= this.roundDelay) {
-        this.roundTimer = 0;
-        this.spreadFire();
-        this.spreadWater();
-    }
+        if (this.roundTimer >= this.roundDelay) {
+            this.roundTimer = 0;
+            this.spreadWater();
+            this.spreadFire();
+            this.growGrassFromDesert();
 
-        // for (let tile of this.tiles.values()) {
-        //     tile.update(deltaT);
-        // }
+            
+        }
+        
+        // temporarily set the tile mode
+        if (Input.isKeyPressed('q')) {
+            this.currentMode = "DESERT";
+        } else if (Input.isKeyPressed('w')) {
+            this.currentMode = "WATER";
+        } else if (Input.isKeyPressed('e')) {
+            this.currentMode = "FIRE";
+        } else if (Input.isKeyPressed('r')) {
+            this.currentMode = "ROCK";
+        }
 
-        if(Input.isMouseJustPressed()){
-			let position = Input.getGlobalMousePosition()
 
-            let tileBelow = new Vec2(position.x, position.y); 
-            // let colRow = this.tilemap.getColRowAt(tileBelow); 
-
-            // let currnetBelow = this.tilemap.getTileAtWorldPosition(tileBelow);
-
-            // console.log("tile index", `${position},  ${currnetBelow}`);
-
-            // if (currnetBelow == 1) { 
-            //     this.tilemap.setTileAtRowCol(colRow, 22);
-                
-            // }
-
-            let nodes = this.sceneGraph.getNodesAt(tileBelow);
-            for (let a = 0; a < nodes.length; a++) {
-                let animated_sprite = <AnimatedSprite>nodes[a];
-
-                if (animated_sprite.animation.getcurrentAnimation().valueOf() == "SPACE"
-                    ||
-                    animated_sprite.animation.getcurrentAnimation().valueOf() == "SPACE_COMET"                    
-                ) {
-                    // console.log("불번져~", `${tileId}, ${colRow}`);
-                    console.log("불번져~", `desert --> fire, ${tileBelow.x}, ${tileBelow.y}`);
-                    animated_sprite.animation.playIfNotAlready("DESERT_TUMBLE", true);
-                    this.fireTiles.push(new Vec2(tileBelow.x, tileBelow.y));
+        if (Input.isMouseJustPressed()) {
+            const position = Input.getGlobalMousePosition();
+            const tilePos = new Vec2(position.x, position.y);
+            const vec2ToString = this.vec2ToString(tilePos);
+            const nodes = this.sceneGraph.getNodesAt(tilePos);
+        
+            for (let node of nodes) {
+                const animatedSprite = node as AnimatedSprite;
+                const currentAnimation = animatedSprite.animation.getcurrentAnimation();
+        
+                switch (this.currentMode) {
+                    case "DESERT":
+                        if (currentAnimation === "SPACE" || currentAnimation === "SPACE_COMET") {
+                            animatedSprite.animation.playIfNotAlready("DESERT_TUMBLE", true);
+                            this.desertTiles.add(vec2ToString);
+                        }
+                        break;
+                    case "WATER":
+                        if (currentAnimation === "DESERT_TUMBLE") {
+                            this.desertTiles.delete(vec2ToString);
+                        } else if (currentAnimation === "FIRE_WAVE") {
+                            this.fireTiles.delete(vec2ToString);
+                        } 
+                         else if (currentAnimation == "GRASS_FLOWER"){
+                            this.grassTiles.delete(vec2ToString);
+                        }
+                        animatedSprite.animation.playIfNotAlready("WATER_UP", true);
+                        this.waterTiles.add(vec2ToString);
+                        break;
+                    case "FIRE":
+                        if (currentAnimation === "DESERT_TUMBLE") {
+                            this.desertTiles.delete(vec2ToString);
+                        } else if (currentAnimation == "GRASS_FLOWER"){
+                            this.grassTiles.delete(vec2ToString);
+                        }
+                        animatedSprite.animation.playIfNotAlready("FIRE_WAVE", true);
+                        this.fireTiles.add(vec2ToString);
+                        break;
+                    case "ROCK":
+                        if (currentAnimation === "DESERT_TUMBLE") {
+                            this.desertTiles.delete(vec2ToString);
+                        } else if (currentAnimation === "FIRE_WAVE") {
+                            this.fireTiles.delete(vec2ToString);
+                        } 
+                         else if (currentAnimation == "GRASS_FLOWER"){
+                            this.grassTiles.delete(vec2ToString);
+                        }
+                        animatedSprite.animation.playIfNotAlready("ROCK", true);
+                        this.rockTiles.add(vec2ToString);
+                        break;    
                 }
             }
-		}
+        }
         
     }
 }
