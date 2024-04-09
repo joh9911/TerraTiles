@@ -34,7 +34,7 @@ export default class Controls extends Scene{
           new Vec2(size.x, sizeY)
       );
       this.createLabel(
-          "Esc: Pause the game",
+          "P: Pause the game",
           new Vec2(size.x, sizeY + yOffset * i++)
       );
       this.createLabel(

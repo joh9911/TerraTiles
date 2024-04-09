@@ -1,5 +1,6 @@
 export enum Layers_enum {
     MENU = "menu",
     BACK = "background",
-    LEVEL1 = "level1"
+    TILES = "tiles",
+    PAUSE = "pause"
 }

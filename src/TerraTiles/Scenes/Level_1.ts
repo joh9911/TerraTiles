@@ -22,10 +22,11 @@ export default class Level1 extends GameScene {
         super.startScene();
         console.log(this.Tiles);
 
-        this.addLayer("tiles", 10);
+        this.addLayer(Layers_enum.TILES, 10);
         let tilemapLayers = this.add.tilemap("level1");
-        let tilelayer = this.getLayer("tiles");
+        let tilelayer = this.getLayer(Layers_enum.TILES);
         let tile_arr = tilelayer.getItems();
+        console.log(tilelayer)
 
         this.roundTimer = 0;
         this.roundDelay = 3;
