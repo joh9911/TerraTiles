@@ -1,12 +1,6 @@
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import Debug from "../../Wolfie2D/Debug/Debug";
-import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import Input from "../../Wolfie2D/Input/Input";
-import OrthogonalTilemap from "../../Wolfie2D/Nodes/Tilemaps/OrthogonalTilemap";
 import Scene from "../../Wolfie2D/Scene/Scene";
-import Timer from "../../Wolfie2D/Timing/Timer";
-import { Tile, DesertTile, FireTile, WaterTile } from "../Tiles/Tile";
-import Tilemap from "../../Wolfie2D/Nodes/Tilemap";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { Tiles_string, Tiles_index, TileMatrix } from "../Utils/Tiles_enum";
 import Button from "../../Wolfie2D/Nodes/UIElements/Button";
@@ -58,17 +52,20 @@ export default class GameScene extends Scene {
             let nodes = this.sceneGraph.getNodesAt(pos);
             
             for (let node of nodes) {
-                if (node instanceof AnimatedSprite){
+                if (node instanceof AnimatedSprite) {
                     let animatedSprite = node as AnimatedSprite;
-                    animatedSprite.animation.playIfNotAlready(Tiles_string.GRASS, true);
-                    this.Tiles[Tiles_index[Tiles_string.GRASS]].add(vec2ToString);
+                    if (animatedSprite.animation.getcurrentAnimation().valueOf() == Tiles_string.DESERT) {
+                        animatedSprite.animation.playIfNotAlready(Tiles_string.GRASS, true);
+                        this.Tiles[Tiles_index[Tiles_string.GRASS]].add(vec2ToString);    
+                        this.Tiles[Tiles_index[Tiles_string.DESERT]].delete(vec2ToString);                        
+                        break;
+                    }
                     this.Tiles[Tiles_index[Tiles_string.DESERT]].delete(vec2ToString);
-                    break;
                 }
             }
+
         }
         
-
     }
 
     spreadWater(){
@@ -177,8 +174,6 @@ export default class GameScene extends Scene {
             this.spreadWater();
             this.spreadFire();
             this.growGrassFromDesert();
-
-            
         }
         
         // temporarily set the tile mode
@@ -201,18 +196,20 @@ export default class GameScene extends Scene {
                 const nodes = this.sceneGraph.getNodesAt(tilePos);
             
                 for (let node of nodes) {
-                    const animatedSprite = node as AnimatedSprite;
-                    const currentAnimation = animatedSprite.animation.getcurrentAnimation();
-
-                    if (TileMatrix[this.currentMode][currentAnimation]){
-                        if (currentAnimation != Tiles_string.COMET && currentAnimation != Tiles_string.SPACE){
-                            console.log(this.Tiles[Tiles_index[currentAnimation]]);
-                            this.Tiles[Tiles_index[currentAnimation]].delete(vec2ToString);
-                            console.log(this.Tiles[Tiles_index[currentAnimation]]);
-                            console.log(currentAnimation, vec2ToString);
-                        }
-                        animatedSprite.animation.playIfNotAlready(this.currentMode, true);
-                        this.Tiles[Tiles_index[this.currentMode]].add(vec2ToString);
+                    if (node instanceof AnimatedSprite) {
+                        const animatedSprite = node as AnimatedSprite;
+                        const currentAnimation = animatedSprite.animation.getcurrentAnimation();
+    
+                        if (TileMatrix[this.currentMode][currentAnimation]){
+                            if (currentAnimation != Tiles_string.COMET && currentAnimation != Tiles_string.SPACE){
+                                console.log(this.Tiles[Tiles_index[currentAnimation]]);
+                                this.Tiles[Tiles_index[currentAnimation]].delete(vec2ToString);
+                                console.log(this.Tiles[Tiles_index[currentAnimation]]);
+                                console.log(currentAnimation, vec2ToString);
+                            }
+                            animatedSprite.animation.playIfNotAlready(this.currentMode, true);
+                            this.Tiles[Tiles_index[this.currentMode]].add(vec2ToString);
+                        }    
                     }
                 }
             }

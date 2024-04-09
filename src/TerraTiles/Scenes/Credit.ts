@@ -27,7 +27,7 @@ export default class Credit extends Scene {
       // Create title
       const title = <Label>this.add.uiElement(UIElementType.LABEL, Layers_enum.MENU, {
           position: new Vec2(size.x, sizeY - 100),
-          text: "Terra Tiles",
+          text: "TerraTiles",
       });
 
       // Create info text
@@ -42,7 +42,7 @@ export default class Credit extends Scene {
       );
       sizeY += 130;
       this.createLabel(
-          `BackStory`,
+          `Backstory`,
           new Vec2(size.x, sizeY + yOffset * i++)
       );
       this.createLabel(
