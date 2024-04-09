@@ -9,6 +9,7 @@ import { Layers_enum } from "../Utils/Layers_enum";
 import { Tile, DesertTile, FireTile, WaterTile, SpaceTile } from "../Tiles/Tile";
 import GameScene from "./GameScene";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
+import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 
 export default class Level1 extends GameScene {
     loadScene(): void {
@@ -18,6 +19,8 @@ export default class Level1 extends GameScene {
     unloadScene() {}
 
     startScene(): void {
+        super.startScene();
+        console.log(this.Tiles);
 
         this.addLayer("tiles", 10);
         let tilemapLayers = this.add.tilemap("level1");
@@ -40,12 +43,12 @@ export default class Level1 extends GameScene {
                 // this.beforeTilemap[i] = new DesertTile(tile_arr[i].position);
                 // this.afterTilemap[i] = new DesertTile(tile_arr[i].position);
 
-                this.desertTiles.add(this.vec2ToString(tile_arr[i].position));
+                this.Tiles[Tiles_index[Tiles_string.DESERT]].add(this.vec2ToString(tile_arr[i].position));
             }
             else if (tile_sprite.animation.getcurrentAnimation() == "FIRE_WAVE") {
                 // this.beforeTilemap[i] = new FireTile(tile_arr[i].position);
                 // this.afterTilemap[i] = new FireTile(tile_arr[i].position);
-                this.fireTiles.add(this.vec2ToString(tile_arr[i].position));
+                this.Tiles[Tiles_index[Tiles_string.FIRE]].add(this.vec2ToString(tile_arr[i].position));
             }
         }
 
