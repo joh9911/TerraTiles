@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TerraTiles Design Document</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f0f0f0;
+            text-align: center; 
+        }
+    
+
+        .intro-section h1 {
+            margin-bottom: 5px; 
+        }
+        .intro-section p {
+            margin: 0 auto; 
+            width: fit-content; 
+        }
+        .section {
+            background-color: #fff;
+            padding: 15px;
+            margin: 20px auto; 
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 800px; 
+            text-align: left; 
+        }
+        h1, h2 {
+            color: #333;
+        }
+        p, ul, li {
+            color: #666;
+        }
+        .section {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .list-item {
+            margin-bottom: 10px;
+        }
+        .list-item ul li:first-child {
+    margin-top: 10px; 
+}
+        .images-section {
+            text-align: center; 
+        }
+        .image-title {
+            font-weight: bold; 
+            text-align: center; 
+            display: block; 
+            font-size: 18px;
+            margin-top: 10px; 
+        }
+
+        .image-container {
+            display: inline-block; 
+            width: 70%; 
+            margin: 1%; 
+            vertical-align: top; 
+        }
+
+        img {
+            width: 100%; 
+            height: auto; 
+        }
+        .game-logo img {
+            display: block;
+            margin: 20px auto;
+            max-width: 300px;
+            height: auto;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="intro-section">
+        <h1>TerraTiles</h1>
+        <p>Design Document</p>
+    </div>
+
+    <div class="game-logo">
+        <img src="Logo.png" alt="TerraTiles Logo">
+        
+    </div>
+
+    <div class="section">
+        <h2>Intro</h2>
+        
+        <p>This is the design document for the game “TerraTiles.” It is a 2d, top down, fixed camera game.</p>
+    </div>
+
+    <div class="section">
+        <h2>Technology</h2>
+        <ul>
+            <li class="list-item">Developed with Wolfie 2d game engine</li>
+            <li class="list-item">Hosted on a Firebase website</li>
+            <li class="list-item">Music made with BeepBox</li>
+            <li class="list-item">Sound effects made with Audacity</li>
+            <li class="list-item">Artwork made with Piskel</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Backstory</h2>
+        <p>You have been given a planet. The previous person messed it up and it is up to you to fix it. <br>Their assistant, who is now your assistant, will give you some advice, then you’ll be on your own. Good luck!</p>
+    </div>
+
+    <div class="section">
+        <h2>Objective</h2>
+        <ul>
+            <li class="list-item">Initially, from space, the player tries to create new land.</li>
+            <li class="list-item">Later, the player tries to surround a hazard (fire, disease, etc.) with countertiles (water, walls, etc.), in an effort to eliminate the hazard and preserve their world.</li>
+            <li class="list-item">There will also be houses the player will have to protect. If they fully eliminate the hazards before it destroys the houses, they win the level.</li>
+
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Gameplay</h2>
+        <ul>
+            <li class="list-item">This is a tiled environmental simulation. The world runs by itself and updates its state based on a timer.</li>
+            <li class="list-item">At the center of the screen, there will be a hazard. The hazard grows, based on a timer.</li>
+            <li class="list-item">The player tries to surround the hazard with something that will counter it, before it covers the whole screen.</li>
+            <li class="list-item"> Different tiles interact with each other differently. 
+                <ul>
+                <li class="list-item">Space – Hazard</li>
+                <li class="list-item">Desert – Counter to Space, Hazard to Grass</li>
+                <li class="list-item">Grass – Counter to Desert</li>
+                <li class="list-item">Water – Counter to Fire</li>
+                <li class="list-item">Fire – Counter to Disease+Mud, Hazard on top of Grass</li>
+                <li class="list-item">Disease – Hazard on top of Mud</li>
+                <li class="list-item">Mud – Hazard</li>
+                </ul>
+            </li>
+        </ul>
+
+        
+    </div>
+
+    <div class="section">
+        <h2>Levels</h2>
+        <p>Levels – hazard (the problem), counter (what the player places)</p>
+        <ul>
+            <li class="list-item">fertile soil, space v. desert
+                <ul>
+                <li class="list-item">You start with fertile soil.</li>
+                <li class="list-item">The previous terraformer left a crack in the land! Space is spreading.</li>
+                <li class="list-item">Try surrounding it with desert.</li>
+                </ul>
+            </li>
+            <li class="list-item">fertile soil, desert v. grass
+                <ul>
+                <li class="list-item">You saved your soil! </li>
+                <li class="list-item">However, it’s drying out. Desert is spreading.</li>
+                <li class="list-item">Place grass before it’s too late.</li>
+                </ul>
+            </li>
+            <li class="list-item">grass, fire v. water
+                <ul>
+                    <li class="list-item">You grew grass everywhere. </li>
+                    <li class="list-item">It’s on fire!</li>
+                    <li class="list-item">Put it out with water.</li>
+                    </ul>
+            </li>
+            <li class="list-item">grass, mud v. desert
+                <ul>
+                    <li class="list-item">Flooding the grasslands has created a mud problem. </li>
+                    <li class="list-item">Surround it with desert?</li>
+                    </ul>
+            </li>
+            <li class="list-item">mud, disease v. fire
+                <ul>
+                    <li class="list-item">It didn’t work. Your land is filled with mud.</li>
+                    <li class="list-item">All of that mud has led to disease. </li>
+                    <li class="list-item">Burn it out.</li>
+                    </ul>
+            </li>
+            <li class="list-item">fertile soil, desert v. grass
+                <ul>
+                    <li class="list-item">All that fire turned your mud back into fertile soil.</li>
+                    <li class="list-item">Your fertile soil is drying out. Desert is spreading.</li>
+                    <li class="list-item">Place grass before it’s too late.</li>
+                    </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Controls</h2>
+        <p>Mouse Click – Replace tile, interact with the menu options</p>
+        <p>ESC – pauses the game</p>
+    </div>
+
+    <div class="section">
+        <h2>Graphical User Interface</h2>
+        <ul>
+            <li class="list-item">Splash Screen – depicts a world before terraforming, after terraforming, and in crisis</li>
+            <li class="list-item">Main Menu
+                <ul>
+                    <li class="list-item">PLAY – start the game at Level 1</li>
+                    <li class="list-item">LEVELS – level select</li>
+                    <li class="list-item">CONTROLS – displays controls</li>
+                    <li class="list-item">HELP – displays the backstory, developers, cheat codes</li>
+                </ul> 
+            <li class="list-item">In-Game Menu
+                <ul>
+                    <li class="list-item">RESUME – the current level will resume</li>
+                    <li class="list-item">LEVELS – back to the level select screen</li>
+                    <li class="list-item">CONTROLS – displays controls</li>
+                    <li class="list-item">HELP – displays the backstory, developers, cheat codes</li>
+                    <li class="list-item">QUIT – back to the splash screen</li>
+                </ul>
+            <li class="list-item">In-Game GUI
+                <ul>
+                    <li class="list-item">Hazard Timer – Top left corner</li>
+                    <li class="list-item">Player Timer – Top left corner</li>
+                </ul>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Artwork</h2>
+        <p>The artwork will be original. We will be focused most on creating tiles.</p>
+        <ul>
+            <li class="list-item">Tiles
+                <ul>
+                    <li class="list-item">Space</li>
+                    <li class="list-item">Fertile Soil</li>
+                    <li class="list-item">Desert</li>
+                    <li class="list-item">Grass</li>
+                    <li class="list-item">Water</li>
+                    <li class="list-item">Fire</li>
+                    <li class="list-item">Disease</li>
+                    <li class="list-item">Mud</li>
+                </ul>
+            <li class="list-item">Other elements
+                <ul>
+                    <li class="list-item">Fertile Soil: background tile, not a hazard or counter</li>
+                    <li class="list-item">House – the world will be populated on top of some Grass tiles in Levels 2-6</li>
+                </ul> 
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Sound Effects</h2>
+        <p>All sound effects will be original. Sounds will be made to coincide with the following:</p>
+        <ul>
+            <li class="list-item">Winning the level</li>
+            <li class="list-item">Losing the level</li>
+            <li class="list-item">Each tile (for hazards spreading or for placement)</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Music</h2>
+        <p>Different original music for roughly every two levels.</p>
+    </div>
+
+    <div class="section">
+        <h2>GUI Images</h2>
+        <div class="image-container">
+            <img src="Splash (frames).png" alt="Splash (frames)">
+            <div class="image-title">Splash (frames)</div>
+        </div>
+        <div class="image-container">
+            <img src="Main Menu.png" alt="Main Menu">
+            <div class="image-title">Main Menu</div>
+        </div>
+        <div class="image-container">
+            <img src="Level Select.png" alt="Level Select">
+            <div class="image-title">Level Select</div>
+        </div>
+        <div class="image-container">
+            <img src="Pause Screen.png" alt="PauseScreen">
+            <div class="image-title">Pause Screen</div>
+        </div>
+        <div class="image-container">
+            <img src="In-Game.png" alt="In-Game">
+            <div class="image-title">In-Game</div>
+        </div>
+        <div class="image-container">
+            <img src="Help.png" alt="Help">
+            <div class="image-title">Help</div>
+        </div>
+        <div class="image-container">
+            <img src="Controls.png" alt="Controls">
+            <div class="image-title">Controls</div>
+        </div>
+        
+    </div>
+
+</body>
+</html>
+
+
