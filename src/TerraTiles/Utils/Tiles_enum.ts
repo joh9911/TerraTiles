@@ -8,7 +8,12 @@ export enum Tiles_string {
     W_UP = "WATER_UP",
     W_DOWN = "WATER_DOWN",
     W_LEFT = "WATER_LEFT",
-    W_RIGHT = "WATER_RIGHT"
+    W_RIGHT = "WATER_RIGHT",
+
+    DIRT = "DIRT_SPROUT",
+    HOUSE = "GRASS_HOUSE",
+    MUD = "MUD_WAVE",
+    DISEASE = "DISEASE",
 }
 
 export const Tiles_index = {
@@ -22,6 +27,11 @@ export const Tiles_index = {
     [Tiles_string.W_DOWN]: 7,
     [Tiles_string.W_LEFT]: 8,
     [Tiles_string.W_RIGHT]: 9,
+
+    [Tiles_string.DIRT]: 10,
+    [Tiles_string.HOUSE]: 11,
+    [Tiles_string.MUD]: 12,
+    [Tiles_string.DISEASE]: 13,
 };
 
 // [Tiles_string.DESERT]: 0,
@@ -35,7 +45,7 @@ export const Tiles_index = {
 // [Tiles_string.W_LEFT]: 0,
 // [Tiles_string.W_RIGHT]: 0,
 
-export const TileMatrix = {//1 indicates we can put the tile on it, 0 indicates we can't
+export const TileMatrix = { // 1 indicates we can put the tile on it, 0 indicates we can't
     [Tiles_string.DESERT]: {
         [Tiles_string.DESERT]: 0,
         [Tiles_string.GRASS]: 0,
@@ -47,6 +57,12 @@ export const TileMatrix = {//1 indicates we can put the tile on it, 0 indicates 
         [Tiles_string.W_DOWN]: 0,
         [Tiles_string.W_LEFT]: 0,
         [Tiles_string.W_RIGHT]: 0,
+
+        // change later?
+        [Tiles_string.DIRT]: 0,
+        [Tiles_string.HOUSE]: 0,
+        [Tiles_string.MUD]: 0,
+        [Tiles_string.DISEASE]: 0,
     },
     [Tiles_string.W_UP]: {
         [Tiles_string.DESERT]: 1,
@@ -59,6 +75,13 @@ export const TileMatrix = {//1 indicates we can put the tile on it, 0 indicates 
         [Tiles_string.W_DOWN]: 0,
         [Tiles_string.W_LEFT]: 0,
         [Tiles_string.W_RIGHT]: 0,
+
+        // change later?
+        [Tiles_string.DIRT]: 0,
+        [Tiles_string.HOUSE]: 0,
+        [Tiles_string.MUD]: 0,
+        [Tiles_string.DISEASE]: 0,
+
     },
     [Tiles_string.FIRE]: {
         [Tiles_string.DESERT]: 1,
@@ -71,6 +94,12 @@ export const TileMatrix = {//1 indicates we can put the tile on it, 0 indicates 
         [Tiles_string.W_DOWN]: 0,
         [Tiles_string.W_LEFT]: 0,
         [Tiles_string.W_RIGHT]: 0,
+
+        // change later?
+        [Tiles_string.DIRT]: 1,
+        [Tiles_string.HOUSE]: 1,
+        [Tiles_string.MUD]: 1,
+        [Tiles_string.DISEASE]: 1,        
     },
     [Tiles_string.ROCK]: {
         [Tiles_string.DESERT]: 1,
@@ -83,5 +112,14 @@ export const TileMatrix = {//1 indicates we can put the tile on it, 0 indicates 
         [Tiles_string.W_DOWN]: 1,
         [Tiles_string.W_LEFT]: 1,
         [Tiles_string.W_RIGHT]: 1,
+
+        // change later?
+        [Tiles_string.DIRT]: 1,
+        [Tiles_string.HOUSE]: 1,
+        [Tiles_string.MUD]: 1,
+        [Tiles_string.DISEASE]: 1,
     },
+
+    // add more interactions later
+    
 };

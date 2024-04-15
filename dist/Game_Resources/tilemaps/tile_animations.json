@@ -475,6 +475,17 @@
                     "duration": 100
                 }
             ]
+        },
+        {    
+            "name": "DISEASE",
+            "repeat": true,
+            "frames": [
+                {
+                    "index": 98,
+                    "duration": 100
+                }
+            ]
         }    
+
     ]
 }

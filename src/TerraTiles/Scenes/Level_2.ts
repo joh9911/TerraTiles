@@ -3,9 +3,9 @@ import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import { Layers_enum } from "../Utils/Layers_enum";
 
-export default class Level_1 extends GameScene {
+export default class Level_2 extends GameScene {
     loadScene(): void {
-        this.load.tilemap("level_1", "Game_Resources/tilemaps/lv_1.json");
+        this.load.tilemap("level_2", "Game_Resources/tilemaps/lv_2.json");
     }
 
     unloadScene() {}
@@ -15,7 +15,7 @@ export default class Level_1 extends GameScene {
         console.log(this.Tiles);
 
         this.addLayer(Layers_enum.TILES, 10);
-        this.add.tilemap("level_1");
+        this.add.tilemap("level_2");
         let tilelayer = this.getLayer(Layers_enum.TILES);
         let tile_arr = tilelayer.getItems();
         console.log(tilelayer);
@@ -29,9 +29,12 @@ export default class Level_1 extends GameScene {
             if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DESERT) {
                 this.Tiles[Tiles_index[Tiles_string.DESERT]].add(this.vec2ToString(tile_arr[i].position));
             }
-            // else if (tile_sprite.animation.getcurrentAnimation() == "FIRE_WAVE") {
-            //     this.Tiles[Tiles_index[Tiles_string.FIRE]].add(this.vec2ToString(tile_arr[i].position));
-            // }
+            else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.FIRE) {
+                this.Tiles[Tiles_index[Tiles_string.FIRE]].add(this.vec2ToString(tile_arr[i].position));
+            }
+            else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.GRASS) {
+                this.Tiles[Tiles_index[Tiles_string.GRASS]].add(this.vec2ToString(tile_arr[i].position));
+            }
         }
     }
 
