@@ -125,140 +125,78 @@ export default class TilemapFactory {
                 this.tilemaps.push(tilemap);
     
                 sceneLayer.addNode(tilemap);
-    
-                // // Register tilemap with physics if it's collidable
-                // if(tilemap.isCollidable){
-                //     tilemap.addPhysics();
 
-                //     if(layer.properties){
-                //         for(let item of layer.properties){
-                //             if(item.name === "Group"){
-                //                 tilemap.setGroup(item.value);
-                //             }
-                //         }
-                //     }
-                // }
-                
             } else {
-
 
                 // Layer is an object layer, so add each object as a sprite to a new layer
                 for(let obj of layer.objects) {
-
-                    // // Check if obj is collidable
-                    // let hasPhysics = false;
-                    // let isCollidable = false;
-                    // let isTrigger = false;
-                    // let onEnter = null;
-                    // let onExit = null;
-                    // let triggerGroup = null;
-                    // let group = "";
-
-                    // if(obj.properties){
-                    //     for(let prop of obj.properties){
-                    //         if(prop.name === "HasPhysics"){
-                    //             hasPhysics = prop.value;
-                    //         } else if(prop.name === "Collidable"){
-                    //             isCollidable = prop.value;
-                    //         } else if(prop.name === "Group"){
-                    //             group = prop.value;
-                    //         } else if(prop.name === "IsTrigger"){
-                    //             isTrigger = prop.value;
-                    //         } else if(prop.name === "TriggerGroup"){
-                    //             triggerGroup = prop.value;
-                    //         } else if(prop.name === "TriggerOnEnter"){
-                    //             onEnter = prop.value;
-                    //         } else if(prop.name === "TriggerOnExit"){
-                    //             onExit = prop.value;
-                    //         }
-                    //     }
-                    // }
-                    
-                    // let sprite: Sprite;
 
                     // Check if obj is a tile from a tileset
                     for(let tileset of tilesets) {
                         if(tileset.hasTile(obj.gid)) {
 
+                            // everything added has an animation! even if it's just one frame repeated
+                            let tile = this.scene.add.animatedSprite(AnimatedSprite, "tile_animations", "tiles");
+
+                            // position, sizing, scale
+                            let size = tileset.getTileSize().clone();
+                            tile.position.set((obj.x + size.x/2)*scale.x, (obj.y - size.y/2)*scale.y +32*4);
+                                // 40x40 tiles, 40x32 tilemap, so 4 tiles above and below for UI
+                            tile.size.copy(size);
+                            tile.scale.set(scale.x, scale.y);
+
                             // assuming that all animations are 8 frames long
-                            // placement of frame 2/8 = animated tile
-                            // placement of any other tile will result in a static, NON-animated sprite
-
-                            let animated_q = obj.gid % 8;
-                            if (animated_q == 2) {
-                                let tile = this.scene.add.animatedSprite(AnimatedSprite, "tile_animations", "tiles");
-
-                                let size = tileset.getTileSize().clone();
-                                tile.position.set((obj.x + size.x/2)*scale.x, (obj.y - size.y/2)*scale.y);
-                                tile.size.copy(size);
-                                tile.scale.set(scale.x, scale.y);
-        
-                                let animation_num = Math.floor(obj.gid / 8);
-                                // hard coded order at the moment
-                                if (animation_num == 0) {
+                            let animation_num = Math.floor(obj.gid / 8);
+                            switch(animation_num) {
+                                case(0):
                                     tile.animation.play("SPACE", true);
-                                }
-                                else if (animation_num == 1) {
+                                    break;
+                                case(1):
                                     tile.animation.play("SPACE_COMET", true);
-                                }
-                                else if (animation_num == 2) {
+                                    break;
+                                case(2):
                                     tile.animation.play("DESERT_TUMBLE", true);
-                                }
-                                else if (animation_num == 3) {
+                                    break;
+                                case(3):
                                     tile.animation.play("DIRT_SPROUT", true);
-                                }
-                                else if (animation_num == 4) {
+                                    break;
+                                case(4):
                                     tile.animation.play("GRASS_FLOWER", true);                        
-                                }
-                                else if (animation_num == 5) {
+                                    break;
+                                case(5):
                                     tile.animation.play("GRASS_HOUSE", true);
-                                }
-                                else if (animation_num == 6) {
+                                    break;
+                                case(6):
                                     tile.animation.play("WATER_UP", true);                        
-                                }
-                                else if (animation_num == 7) {
+                                    break;
+                                case(7):
                                     tile.animation.play("WATER_LEFT", true);
-                                }
-                                else if (animation_num == 8) {
+                                    break;
+                                case(8):
                                     tile.animation.play("WATER_DOWN", true);
-                                }
-                                else if (animation_num == 9) {
+                                    break;
+                                case(9):
                                     tile.animation.play("WATER_RIGHT", true);     
-                                }
-                                else if (animation_num == 10) {
+                                break;
+                                case(10):
                                     tile.animation.play("MUD_WAVE", true);
-                                }
-                                else if (animation_num == 11) {
+                                break;
+                                case(11):
                                     tile.animation.play("FIRE_WAVE", true);
-                                }
-                                else {
+                                    break;
+                                case(12):
+                                    if (obj.gid == 96) {
+                                        tile.animation.play("ROCK", true);
+                                    }
+                                    else {
+                                        tile.animation.play("DISEASE", true);
+                                    }
+                                    break;
+                                default:
                                     tile.animation.play("SPACE", true);
-                                }
                             }
-                            else {
-                                let imageKey = tileset.getImageKey();
-                                let offset = tileset.getImageOffsetForTile(obj.gid);
-                                let tile = this.scene.add.sprite(imageKey, "tiles");
-                                let size = tileset.getTileSize().clone();
-                                tile.position.set((obj.x + size.x/2)*scale.x, (obj.y - size.y/2)*scale.y);
-                                tile.setImageOffset(offset);
-                                tile.size.copy(size);
-                                tile.scale.set(scale.x, scale.y);
-                            }                            
                         }
                     }
-
-                    // // Not in a tileset, must correspond to a collection
-                    // if(!sprite){
-                    //     for(let tile of collectionTiles) {
-                    //         if(obj.gid === tile.id) {
-                    //             let imageKey = tile.image;
-                    //             sprite = this.scene.add.sprite(imageKey, layer.name);
-                    //             sprite.position.set((obj.x + tile.imagewidth/2)*scale.x, (obj.y - tile.imageheight/2)*scale.y);
-                    //             sprite.scale.set(scale.x, scale.y);
-                    //         }
-                    //     }
-                    // }
 
                 }
             }

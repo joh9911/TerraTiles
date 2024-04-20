@@ -43,6 +43,9 @@ export default class GameScene extends Scene {
         return btn;
     }
 
+
+
+    // change to grow grass from dirt?
     growGrassFromDesert() {
 
         for (let desertTile of this.Tiles[Tiles_index[Tiles_string.DESERT]]) {
@@ -144,13 +147,13 @@ export default class GameScene extends Scene {
         this.addLayer(Layers_enum.MENU, 10);
         this.addLayer(Layers_enum.BACK, 9);
         this.addLayer(Layers_enum.PAUSE, 100);
-        let obj_box = this.add.graphic(GraphicType.RECT, Layers_enum.BACK, {
-            position: new Vec2(1100, 200),
-            size: new Vec2(500, 512),
-        });
-        obj_box.color = new Color(139, 69, 19, 1);
-        this.createButton("Objective", new Vec2(1000, 200));
-        this.createButton("Create 10 new lands", new Vec2(1000, 230));
+        // let obj_box = this.add.graphic(GraphicType.RECT, Layers_enum.BACK, {
+        //     position: new Vec2(1100, 200),
+        //     size: new Vec2(500, 512),
+        // });
+        // obj_box.color = new Color(139, 69, 19, 1);
+        // this.createButton("Objective", new Vec2(1000, 200));
+        // this.createButton("Create 10 new lands", new Vec2(1000, 230));
         this.pause_box = this.add.graphic(GraphicType.RECT, Layers_enum.PAUSE, {
             position: new Vec2(640, 640),
             size: new Vec2(1280, 1280),
