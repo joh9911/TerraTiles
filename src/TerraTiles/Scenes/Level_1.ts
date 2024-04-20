@@ -9,7 +9,7 @@ import TileManager from "../TileManager/TileManager";
 export default class Level_1 extends GameScene {
     loadScene(): void {
         this.load.audio(Tiles_string.FIRE, "Game_Resources/sounds/Fire.mp3");
-        this.load.tilemap("level_1", "Game_Resources/tilemaps/lv_1.json");
+        this.load.tilemap("level_1", "Game_Resources/tilemaps/lvl_1.json");
     }
 
     unloadScene() {}
