@@ -30,7 +30,7 @@ export default class Level_3 extends GameScene {
                 this.Tiles[Tiles_index[Tiles_string.DESERT]].add(this.vec2ToString(tile_arr[i].position));
             }
             else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.MUD) {
-                this.Tiles[Tiles_index[Tiles_string.FIRE]].add(this.vec2ToString(tile_arr[i].position));
+                this.Tiles[Tiles_index[Tiles_string.MUD]].add(this.vec2ToString(tile_arr[i].position));
             }
             else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.GRASS) {
                 this.Tiles[Tiles_index[Tiles_string.GRASS]].add(this.vec2ToString(tile_arr[i].position));
