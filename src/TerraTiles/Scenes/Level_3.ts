@@ -5,7 +5,7 @@ import { Layers_enum } from "../Utils/Layers_enum";
 
 export default class Level_3 extends GameScene {
     loadScene(): void {
-        this.load.tilemap("level_3", "Game_Resources/tilemaps/lv_3.json");
+        this.load.tilemap("level_3", "Game_Resources/tilemaps/lvl_3.json");
     }
 
     unloadScene() {}

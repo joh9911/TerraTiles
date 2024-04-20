@@ -3,9 +3,9 @@ import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import { Layers_enum } from "../Utils/Layers_enum";
 
-export default class Level_4 extends GameScene {
+export default class Level_5 extends GameScene {
     loadScene(): void {
-        this.load.tilemap("level_4", "Game_Resources/tilemaps/lvl_4.json");
+        this.load.tilemap("level_5", "Game_Resources/tilemaps/lvl_5.json");
     }
 
     unloadScene() {}
@@ -15,7 +15,7 @@ export default class Level_4 extends GameScene {
         console.log(this.Tiles);
 
         this.addLayer(Layers_enum.TILES, 10);
-        this.add.tilemap("level_4");
+        this.add.tilemap("level_5");
         let tilelayer = this.getLayer(Layers_enum.TILES);
         let tile_arr = tilelayer.getItems();
         console.log(tilelayer);

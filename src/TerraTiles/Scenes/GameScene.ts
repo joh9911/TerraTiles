@@ -11,6 +11,7 @@ import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import { SoundEvent } from "../Utils/SoundEvent";
+import TileManager from "../TileManager/TileManager";
 
 
 export default class GameScene extends Scene {
@@ -23,6 +24,7 @@ export default class GameScene extends Scene {
     protected currentMode: string = Tiles_string.DESERT; // temporarily set the tile mode, default mode is DESERT
     protected pause: boolean;
     protected pause_box: Graphic
+    protected tile_manager: TileManager
 
     // method for comparing tiles' positions
     vec2ToString(vec: Vec2): string {
@@ -206,6 +208,8 @@ export default class GameScene extends Scene {
         this.pause = false;
         this.addLayer(Layers_enum.MENU, 10);
         this.addLayer(Layers_enum.BACK, 9);
+        this.addLayer(Layers_enum.TILEMANAGER, 10);
+        this.addLayer(Layers_enum.TILEONMANAGER, 11);
         this.addLayer(Layers_enum.PAUSE, 100);
         let obj_box = this.add.graphic(GraphicType.RECT, Layers_enum.BACK, {
             position: new Vec2(1100, 200),
