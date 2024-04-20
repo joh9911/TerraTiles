@@ -2,9 +2,12 @@ import GameScene from "./GameScene";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import { Layers_enum } from "../Utils/Layers_enum";
+import { SoundEvent } from "../Utils/SoundEvent";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 export default class Level1 extends GameScene {
     loadScene(): void {
+        this.load.audio(Tiles_string.FIRE, "Game_Resources/sounds/Fire.mp3");
         this.load.tilemap("level1", "Game_Resources/tilemaps/lvl_1.json");
     }
 
