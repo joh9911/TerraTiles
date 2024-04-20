@@ -4,6 +4,7 @@ import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import { Layers_enum } from "../Utils/Layers_enum";
 import { SoundEvent } from "../Utils/SoundEvent";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import TileManager from "../TileManager/TileManager";
 
 export default class Level_1 extends GameScene {
     loadScene(): void {
@@ -36,6 +37,8 @@ export default class Level_1 extends GameScene {
             //     this.Tiles[Tiles_index[Tiles_string.FIRE]].add(this.vec2ToString(tile_arr[i].position));
             // }
         }
+
+        this.tile_manager = new TileManager(this, this.currentMode)
     }
 
 }
