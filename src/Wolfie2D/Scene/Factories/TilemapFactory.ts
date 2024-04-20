@@ -140,7 +140,7 @@ export default class TilemapFactory {
 
                             // position, sizing, scale
                             let size = tileset.getTileSize().clone();
-                            tile.position.set((obj.x + size.x/2)*scale.x, (obj.y - size.y/2)*scale.y +32*4);
+                            tile.position.set((obj.x + size.x/2)*scale.x, (obj.y - size.y/2)*scale.y +32*6);
                                 // 40x40 tiles, 40x32 tilemap, so 4 tiles above and below for UI
                             tile.size.copy(size);
                             tile.scale.set(scale.x, scale.y);
