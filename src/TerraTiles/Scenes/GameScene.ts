@@ -9,6 +9,8 @@ import { Layers_enum } from "../Utils/Layers_enum";
 import Color from "../../Wolfie2D/Utils/Color";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import { SoundEvent } from "../Utils/SoundEvent";
 
 
 export default class GameScene extends Scene {
@@ -262,6 +264,7 @@ export default class GameScene extends Scene {
                         animatedSprite.animation.playIfNotAlready(this.currentMode, true);
                         this.Tiles[Tiles_index[this.currentMode]].add(vec2ToString);
                     }    
+
                 }
                 
             }
