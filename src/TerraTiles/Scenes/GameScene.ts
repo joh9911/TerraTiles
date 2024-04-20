@@ -48,6 +48,8 @@ export default class GameScene extends Scene {
 
         for (let desertTile of this.Tiles[Tiles_index[Tiles_string.DESERT]]) {
 
+            
+
             // Convert newPos to a string representation. Due to issues with equality comparison of Vec2 objects
             let pos = this.stringToVec2(desertTile);
             let vec2ToString = this.vec2ToString(pos);
@@ -67,8 +69,10 @@ export default class GameScene extends Scene {
                 }
             }
 
+            
+            
         }
-        
+
     }
 
     spreadWater(deltaT: number) {
@@ -129,12 +133,10 @@ export default class GameScene extends Scene {
         const newFireTiles: Set<String> = new Set<String>();
     
         for (let fireTile of this.Tiles[Tiles_index[Tiles_string.FIRE]]) {
-
             let tileTimer = this.getTileTimer(Tiles_index[Tiles_string.FIRE], this.stringToVec2(fireTile));
+            tileTimer -= deltaT;
     
-            if (tileTimer <= 0) {
-                this.initializeTileTimer(Tiles_index[Tiles_string.FIRE], this.stringToVec2(fireTile), 3); 
-    
+            if (tileTimer <= 2 && tileTimer + deltaT > 2) {
                 const directions = [
                     { dx: 0, dy: -1 },
                     { dx: 1, dy: 0 },
@@ -146,7 +148,7 @@ export default class GameScene extends Scene {
                     let originPos = this.stringToVec2(fireTile);
                     let newPos = new Vec2(originPos.x + dx * 32, originPos.y + dy * 32);
                     let vec2ToString = this.vec2ToString(newPos);
-    
+        
                     let nodes = this.sceneGraph.getNodesAt(newPos);
                     for (let node of nodes) {
                         if (node instanceof AnimatedSprite){
@@ -155,18 +157,28 @@ export default class GameScene extends Scene {
                             if (TileMatrix[Tiles_string.FIRE][animation_string] == 1){
                                 animated_sprite.animation.playIfNotAlready(Tiles_string.FIRE, true);
                                 newFireTiles.add(vec2ToString);
-                                this.Tiles[Tiles_index[animation_string]].delete(vec2ToString);
                             }
                         }
                     }
                 }
+            }
+    
+            if (tileTimer <= 0) {
+                let nodes = this.sceneGraph.getNodesAt(this.stringToVec2(fireTile));
+                for (let node of nodes) {
+                    if (node instanceof AnimatedSprite) {
+                        let animated_sprite = node as AnimatedSprite;
+                        animated_sprite.animation.playIfNotAlready(Tiles_string.DESERT, true);
+                    }
+                }
+                this.Tiles[Tiles_index[Tiles_string.DESERT]].add(fireTile);
+                this.Tiles[Tiles_index[Tiles_string.FIRE]].delete(fireTile);
+                this.TilesTimer[Tiles_index[Tiles_string.FIRE]].delete(fireTile);
             } else {
-                tileTimer -= deltaT;
                 this.initializeTileTimer(Tiles_index[Tiles_string.FIRE], this.stringToVec2(fireTile), tileTimer);
             }
         }
     
-        // Update the main fire tiles set with any new fire tiles
         this.Tiles[Tiles_index[Tiles_string.FIRE]] = new Set<String>([...this.Tiles[Tiles_index[Tiles_string.FIRE]], ...newFireTiles]);
     }
     
@@ -181,7 +193,7 @@ export default class GameScene extends Scene {
 
     getTileTimer(tileType: number, tilePos: Vec2): number {
         const tileKey = this.vec2ToString(tilePos);
-        return this.TilesTimer[tileType]?.get(tileKey) || 3;  
+        return this.TilesTimer[tileType]?.get(tileKey) || 5;  
     }
 
     
@@ -223,8 +235,10 @@ export default class GameScene extends Scene {
         super.updateScene(deltaT);
         this.spreadFire(deltaT);
         this.spreadWater(deltaT);
-        
-        this.growGrassFromDesert();
+        if (this.roundDelay == 3){
+            this.growGrassFromDesert();
+            this.roundDelay ++;
+        }
         
         
         // temporarily set the tile mode
