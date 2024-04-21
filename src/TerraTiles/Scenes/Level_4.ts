@@ -36,7 +36,7 @@ export default class Level_4 extends GameScene {
                 this.Tiles[Tiles_index[Tiles_string.GRASS]].add(this.vec2ToString(tile_arr[i].position));
             }
             else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DIRT) {
-                this.Tiles[Tiles_index[Tiles_string.GRASS]].add(this.vec2ToString(tile_arr[i].position));
+                this.Tiles[Tiles_index[Tiles_string.DIRT]].add(this.vec2ToString(tile_arr[i].position));
             }
         }
     }
