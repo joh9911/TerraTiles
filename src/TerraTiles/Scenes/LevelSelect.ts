@@ -13,6 +13,8 @@ import Level_1 from "./Level_1";
 import Level_2 from "./Level_2";
 import Level_3 from "./Level_3";
 import Level_4 from "./Level_4";
+import Level_5 from "./Level_5";
+import Level_6 from "./Level_6";
 
 export default class LevelSelect extends Scene {
     private mainMenu: Layer;
@@ -62,10 +64,10 @@ export default class LevelSelect extends Scene {
             this.sceneManager.changeToScene(Level_4);
         };
         level_5.onClick = () => {
-            this.sceneManager.changeToScene(MainMenu);
+            this.sceneManager.changeToScene(Level_5);
         };
         level_6.onClick = () => {
-            this.sceneManager.changeToScene(MainMenu);
+            this.sceneManager.changeToScene(Level_6);
         };
 
         const back = this.createButton("Back", new Vec2(center.x, center.y + 350));
