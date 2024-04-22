@@ -37,8 +37,6 @@ export default class Level_1 extends GameScene {
             //     this.Tiles[Tiles_index[Tiles_string.FIRE]].add(this.vec2ToString(tile_arr[i].position));
             // }
         }
-
-        this.tile_manager = new TileManager(this, this.currentMode)
     }
 
 }

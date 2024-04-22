@@ -2,7 +2,7 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import Input from "../../Wolfie2D/Input/Input";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import { Tiles_string, Tiles_index, TileMatrix } from "../Utils/Tiles_enum";
+import { Tiles_string, Tiles_index, TileMatrix, Tile_manage } from "../Utils/Tiles_enum";
 import Button from "../../Wolfie2D/Nodes/UIElements/Button";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import { Layers_enum } from "../Utils/Layers_enum";
@@ -186,19 +186,35 @@ export default class GameScene extends Scene {
         return this.TilesTimer[tileType]?.get(tileKey) || 3;  
     }
 
+    protected subscribeToEvents(){
+        this.receiver.subscribe([
+            Tiles_string.DESERT,
+            Tiles_string.DIRT,
+            Tiles_string.FIRE,
+            Tiles_string.W_UP,
+            Tiles_string.ROCK
+        ]);
+    }
+
     
     startScene(): void {
+        this.subscribeToEvents();
+        
+        this.addLayer(Layers_enum.MENU, 10);
+        this.addLayer(Layers_enum.BACK, 9);
+        this.addLayer(Layers_enum.TILEMANAGER, 10);
+        this.addLayer(Layers_enum.BOXONMANAGER, 11);
+        this.addLayer(Layers_enum.TILEONMANAGER, 12);
+        this.addLayer(Layers_enum.PAUSE, 100);
+
+        this.tile_manager = new TileManager(this, this.currentMode)
+
         Object.keys(Tiles_index).forEach(key => {
             const index = Tiles_index[key];
             this.Tiles[index] = new Set();
             this.TilesTimer[index] = new Map<String, number>();
         });
         this.pause = false;
-        this.addLayer(Layers_enum.MENU, 10);
-        this.addLayer(Layers_enum.BACK, 9);
-        this.addLayer(Layers_enum.TILEMANAGER, 10);
-        this.addLayer(Layers_enum.TILEONMANAGER, 11);
-        this.addLayer(Layers_enum.PAUSE, 100);
         let obj_box = this.add.graphic(GraphicType.RECT, Layers_enum.BACK, {
             position: new Vec2(1100, 200),
             size: new Vec2(500, 512),
@@ -217,6 +233,10 @@ export default class GameScene extends Scene {
     
     
     updateScene(deltaT: number): void {
+        while(this.receiver.hasNextEvent()){
+            let event = this.receiver.getNextEvent();
+            this.currentMode = event.type;
+        }
         if (Input.isKeyJustPressed('p') === true){
             this.pause = !this.pause;
             this.pause_box.visible = !this.pause_box.visible;
@@ -233,18 +253,24 @@ export default class GameScene extends Scene {
         
         // temporarily set the tile mode
         if (Input.isKeyPressed('q')) {
-            this.currentMode = Tiles_string.DESERT;
+            this.emitter.fireEvent(Tiles_string.DESERT);
         } else if (Input.isKeyPressed('w')) {
-            this.currentMode = Tiles_string.W_UP;
+            this.emitter.fireEvent(Tiles_string.DIRT);
         } else if (Input.isKeyPressed('e')) {
-            this.currentMode = Tiles_string.FIRE;
+            this.emitter.fireEvent(Tiles_string.FIRE);
         } else if (Input.isKeyPressed('r')) {
-            this.currentMode = Tiles_string.ROCK;
+            this.emitter.fireEvent(Tiles_string.W_UP);
+        } else if (Input.isKeyPressed('t')) {
+            this.emitter.fireEvent(Tiles_string.ROCK);
         }
 
+        this.tile_manager.update(this.currentMode)
 
         if (Input.isMouseJustPressed()) {
             const position = Input.getGlobalMousePosition();
+            if (position.y > 1088){//in the tile select, so don't do this
+                return;
+            }
             console.log("click ",`${position.y} ${position.x}`);
             
             const tileX = Math.floor(position.x / 32) * 32 + 16;  

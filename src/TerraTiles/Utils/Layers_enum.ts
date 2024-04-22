@@ -4,5 +4,6 @@ export enum Layers_enum {
     TILES = "tiles",
     PAUSE = "pause",
     TILEMANAGER = "tilemanager",
+    BOXONMANAGER = "boxonmanager",
     TILEONMANAGER = "tileonmanager"
 }
