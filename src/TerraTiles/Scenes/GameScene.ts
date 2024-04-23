@@ -284,6 +284,7 @@ export default class GameScene extends Scene {
 
     
     startScene(): void {
+        this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "level_music", loop: true, holdReference: true});
         this.subscribeToEvents();
         
         this.addLayer(Layers_enum.MENU, 10);
