@@ -12,6 +12,7 @@ export default class Level_1 extends GameScene {
     loadScene(): void {
         super.loadScene();
         this.load.tilemap("level_1", "Game_Resources/tilemaps/lvl_1.json");
+        this.load.audio("level_music", "Game_Resources/musics/level1.mp3");
     }
 
     update(deltaT: number): void {
