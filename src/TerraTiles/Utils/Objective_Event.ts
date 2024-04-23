@@ -13,4 +13,5 @@ export enum Objective_Event {
     HOUSESIZE = "house_size",
     MUDSIZE = "mud_size",
     DISEASESIZE = "disease_size",
+    NEXTLEVEL = "next_level"
 }

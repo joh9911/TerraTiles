@@ -30,6 +30,7 @@ export default class GameScene extends Scene {
     protected pause_button: Button
     protected tile_manager: TileManager
     protected objectives_bar: ObjectivesManager
+    protected nextlevel: Boolean
 
     // method for comparing tiles' positions
     vec2ToString(vec: Vec2): string {
@@ -276,7 +277,8 @@ export default class GameScene extends Scene {
             Tiles_string.DIRT,
             Tiles_string.FIRE,
             Tiles_string.W_UP,
-            Tiles_string.ROCK
+            Tiles_string.ROCK,
+            Objective_Event.NEXTLEVEL,
         ]);
     }
 
@@ -319,6 +321,7 @@ export default class GameScene extends Scene {
             this.sceneManager.changeToScene(MainMenu);
         }
         this.pause_button.visible = false;
+        this.nextlevel = false;
     }
     
     
@@ -326,6 +329,10 @@ export default class GameScene extends Scene {
     updateScene(deltaT: number): void {
         while(this.receiver.hasNextEvent()){
             let event = this.receiver.getNextEvent();
+            if (event.type == Objective_Event.NEXTLEVEL){
+                this.nextlevel = true
+                continue;
+            }
             this.currentMode = event.type;
         }
         if (Input.isKeyJustPressed('p') === true){
@@ -389,6 +396,7 @@ export default class GameScene extends Scene {
                         this.Tiles[Tiles_index[this.currentMode]].add(vec2ToString);
                         console.log(Object.values(Objective_Event)[3])
                         this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});
+                        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.currentMode , loop: false});
                     }    
 
                 }
@@ -396,5 +404,17 @@ export default class GameScene extends Scene {
             }
         }
         
+    }
+
+    loadScene(): void {
+        this.load.audio(Tiles_string.DESERT, "Game_Resources/sounds/Desert.mp3");
+        this.load.audio(Tiles_string.DIRT, "Game_Resources/sounds/Dirt.mp3");
+        this.load.audio(Tiles_string.FIRE, "Game_Resources/sounds/Fire.mp3");
+        this.load.audio(Tiles_string.W_UP, "Game_Resources/sounds/Water.mp3");
+        this.load.audio(Tiles_string.ROCK, "Game_Resources/sounds/Rock.mp3");
+    }
+
+    unloadScene(): void {
+        this.load.keepAudio(Tiles_string.FIRE);
     }
 }

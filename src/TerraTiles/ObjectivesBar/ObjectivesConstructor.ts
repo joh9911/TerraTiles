@@ -40,6 +40,10 @@ export default class ObjectivesConstructor{
         this.checkbox.color = Color.GREEN;
     }
 
+    public get checkBox(): Graphic{
+        return this.checkbox
+    }
+
     protected createLabel(text: String, pos: Vec2): Button {
         let btn = <Button>this.game_scene.add.uiElement(UIElementType.LABEL, Layers_enum.BOXONMANAGER, {position: pos, text: text});
         btn.size.set(200, 50);

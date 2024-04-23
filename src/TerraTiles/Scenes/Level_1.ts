@@ -5,18 +5,24 @@ import { Layers_enum } from "../Utils/Layers_enum";
 import { SoundEvent } from "../Utils/SoundEvent";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import TileManager from "../TileManager/TileManager";
+import { Objective_Event } from "../Utils/Objective_Event";
+import Level_2 from "./Level_2";
 
 export default class Level_1 extends GameScene {
     loadScene(): void {
-        this.load.audio(Tiles_string.FIRE, "Game_Resources/sounds/Fire.mp3");
+        super.loadScene();
         this.load.tilemap("level_1", "Game_Resources/tilemaps/lvl_1.json");
     }
 
-    unloadScene() {}
+    update(deltaT: number): void {
+        if (this.nextlevel == true){
+            this.sceneManager.changeToScene(Level_2)
+        }
+        super.update(deltaT);
+    }
 
     startScene(): void {
         super.startScene();
-        console.log(this.Tiles);
 
         this.addLayer(Layers_enum.TILES, 10);
         this.add.tilemap("level_1");

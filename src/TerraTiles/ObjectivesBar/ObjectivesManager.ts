@@ -8,6 +8,8 @@ import GameScene from "../Scenes/GameScene";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import CreateLand from "./CreateLand";
 import ObjectivesConstructor from "./ObjectivesConstructor";
+import Emitter from "../../Wolfie2D/Events/Emitter";
+import { Objective_Event } from "../Utils/Objective_Event";
 
 export default class ObjectivesManager{
     
@@ -15,9 +17,11 @@ export default class ObjectivesManager{
     private position: Vec2
     private up_left: Vec2
     private list_objectives: ObjectivesConstructor[]
+    private emitter: Emitter
     
     constructor(gameScene: GameScene){
         this.game_scene = gameScene
+        this.emitter = new Emitter()
         this.position = new Vec2(640, 96)
         let obj_box = this.game_scene.add.graphic(GraphicType.RECT, Layers_enum.TILEMANAGER, {
             position: this.position,
@@ -41,7 +45,21 @@ export default class ObjectivesManager{
         return btn;
     }
 
+    private allComplete(){
+        for (let obj of this.list_objectives){
+            if (obj.checkBox.color.toString() === Color.RED.toString()){
+                return false
+            }
+        }
+        return true
+    }
+
     update(){
-        this.list_objectives[0].update()
+        for (let obj of this.list_objectives){
+            obj.update()
+        }
+        if (this.allComplete()){
+            this.emitter.fireEvent(Objective_Event.NEXTLEVEL)
+        }
     }
 }

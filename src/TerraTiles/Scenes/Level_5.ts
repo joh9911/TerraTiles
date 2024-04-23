@@ -2,10 +2,18 @@ import GameScene from "./GameScene";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import { Layers_enum } from "../Utils/Layers_enum";
+import Level_6 from "./Level_6";
 
 export default class Level_5 extends GameScene {
     loadScene(): void {
         this.load.tilemap("level_5", "Game_Resources/tilemaps/lvl_5.json");
+    }
+
+    update(deltaT: number): void {
+        if (this.nextlevel == true){
+            this.sceneManager.changeToScene(Level_6)
+        }
+        super.update(deltaT);
     }
 
     unloadScene() {}
