@@ -2,7 +2,17 @@ import GameScene from "./GameScene";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import { Layers_enum } from "../Utils/Layers_enum";
+import { SoundEvent } from "../Utils/SoundEvent";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import TileManager from "../TileManager/TileManager";
+import { Objective_Event } from "../Utils/Objective_Event";
+import Input from "../../Wolfie2D/Input/Input";
+import Level_1 from "./Level_1";
+import Level_2 from "./Level_2";
 import Level_4 from "./Level_4";
+import Level_5 from "./Level_5";
+import Level_6 from "./Level_6";
+
 
 export default class Level_3 extends GameScene {
 
@@ -19,9 +29,25 @@ export default class Level_3 extends GameScene {
 
 
     update(deltaT: number): void {
+        // cheats
+        if (Input.isKeyPressed('1')) {
+            this.sceneManager.changeToScene(Level_1);
+        } else if (Input.isKeyPressed('2')) {
+            this.sceneManager.changeToScene(Level_2);
+        } else if (Input.isKeyPressed('4')) {
+            this.sceneManager.changeToScene(Level_4);
+        } else if (Input.isKeyPressed('5')) {
+            this.sceneManager.changeToScene(Level_5);
+        } else if (Input.isKeyPressed('6')) {
+            this.sceneManager.changeToScene(Level_6);
+        }
+
+        // fulfilled objectives
         if (this.nextlevel == true){
             this.sceneManager.changeToScene(Level_4)
         }
+
+        // proceed
         super.update(deltaT);
     }
 

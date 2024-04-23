@@ -63,7 +63,7 @@ export default class Credit extends Scene {
       this.createLabel("Cheat Codes", new Vec2(size.x, sizeY + yOffset * i++), 26);
       sizeY += 15;
       this.createLabel(
-          "- TBD",
+          "1-6: Change to level",
           new Vec2(size.x, sizeY + yOffset * i++)
       );
 
