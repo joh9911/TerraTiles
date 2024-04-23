@@ -38,7 +38,11 @@ export default class Controls extends Scene{
           new Vec2(size.x, sizeY + yOffset * i++)
       );
       this.createLabel(
-        "1-9: Another way to select tiles",
+        "q-t: Another way to select tiles",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );
+      this.createLabel(
+        "1-6: Another way to select levels",
         new Vec2(size.x, sizeY + yOffset * i++)
     );
 

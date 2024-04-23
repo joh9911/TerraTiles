@@ -5,9 +5,18 @@ import { Layers_enum } from "../Utils/Layers_enum";
 import Level_5 from "./Level_5";
 
 export default class Level_4 extends GameScene {
+
     loadScene(): void {
+        // load sfx (desert, dirt, fire, water, rock)
+        super.loadScene();
+
+        // load tilemap
         this.load.tilemap("level_4", "Game_Resources/tilemaps/lvl_4.json");
+
+        // load music, make sure the key is "level_music"
+        // this.load.audio("level_music", "Game_Resources/music/???.mp3");
     }
+
 
     update(deltaT: number): void {
         if (this.nextlevel == true){
@@ -16,26 +25,29 @@ export default class Level_4 extends GameScene {
         super.update(deltaT);
     }
 
-    unloadScene() {}
 
     startScene(): void {
+
+        // music, events, ui
         super.startScene();
+
         console.log(this.Tiles);
 
+        // level_4 tilemap
         this.addLayer(Layers_enum.TILES, 10);
         this.add.tilemap("level_4");
         let tilelayer = this.getLayer(Layers_enum.TILES);
         let tile_arr = tilelayer.getItems();
         console.log(tilelayer);
 
-        this.roundTimer = 0;
-        this.roundDelay = 3;
-
+        // initialize sets for different types of tiles
         console.log("레벨 초기화")
         for (let i = 0; i < tile_arr.length; i++) {
             let tile_sprite = <AnimatedSprite>tile_arr[i];
-            if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DESERT) {
-                this.Tiles[Tiles_index[Tiles_string.DESERT]].add(this.vec2ToString(tile_arr[i].position));
+
+            // level_3 starts with houses, grass, dirt, disease
+            if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.HOUSE) {
+                this.Tiles[Tiles_index[Tiles_string.HOUSE]].add(this.vec2ToString(tile_arr[i].position));
             }
             else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.GRASS) {
                 this.Tiles[Tiles_index[Tiles_string.GRASS]].add(this.vec2ToString(tile_arr[i].position));
@@ -45,7 +57,6 @@ export default class Level_4 extends GameScene {
             }
             else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DISEASE) {
                 this.Tiles[Tiles_index[Tiles_string.DISEASE]].add(this.vec2ToString(tile_arr[i].position));
-
             }
         }
     }
