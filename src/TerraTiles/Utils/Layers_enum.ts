@@ -3,6 +3,7 @@ export enum Layers_enum {
     BACK = "background",
     TILES = "tiles",
     PAUSE = "pause",
+    PAUSEBUTTON = "pause_button",
     TILEMANAGER = "tilemanager",
     BOXONMANAGER = "boxonmanager",
     TILEONMANAGER = "tileonmanager"

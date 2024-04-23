@@ -12,6 +12,9 @@ import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import { SoundEvent } from "../Utils/SoundEvent";
 import TileManager from "../TileManager/TileManager";
+import ObjectivesManager from "../ObjectivesBar/ObjectivesManager";
+import { Objective_Event } from "../Utils/Objective_Event";
+import MainMenu from "./MainMenu";
 
 
 export default class GameScene extends Scene {
@@ -24,7 +27,9 @@ export default class GameScene extends Scene {
     protected currentMode: string = Tiles_string.DESERT; // temporarily set the tile mode, default mode is DESERT
     protected pause: boolean;
     protected pause_box: Graphic
+    protected pause_button: Button
     protected tile_manager: TileManager
+    protected objectives_bar: ObjectivesManager
 
     // method for comparing tiles' positions
     vec2ToString(vec: Vec2): string {
@@ -35,16 +40,6 @@ export default class GameScene extends Scene {
         return new Vec2(x, y);
     }
 
-    private createButton(text: String, pos: Vec2): Button {
-        let btn = <Button>this.add.uiElement(UIElementType.BUTTON, Layers_enum.MENU, {position: pos, text: text});
-        btn.size.set(200, 50);
-        btn.borderColor = Color.TRANSPARENT;
-        btn.backgroundColor = Color.TRANSPARENT;
-        btn.setHAlign("left");
-        btn.onClick = () => {
-        };
-        return btn;
-    }
 
     growGrassFromDirt(deltaT: number) {
 
@@ -249,6 +244,11 @@ export default class GameScene extends Scene {
         }
     
         this.Tiles[Tiles_index[Tiles_string.FIRE]] = new Set<String>([...this.Tiles[Tiles_index[Tiles_string.FIRE]], ...newFireTiles]);
+        console.log(newFireTiles.size);
+        
+        if (newFireTiles.size > 0){
+            this.emitter.fireEvent(Objective_Event.FIRESIZE, {size: this.Tiles[Tiles_index[Tiles_string.FIRE]].size});
+        }
     }
     
 
@@ -290,8 +290,10 @@ export default class GameScene extends Scene {
         this.addLayer(Layers_enum.BOXONMANAGER, 11);
         this.addLayer(Layers_enum.TILEONMANAGER, 12);
         this.addLayer(Layers_enum.PAUSE, 100);
+        this.addLayer(Layers_enum.PAUSEBUTTON, 101);
 
         this.tile_manager = new TileManager(this, this.currentMode)
+        this.objectives_bar = new ObjectivesManager(this)
 
         Object.keys(Tiles_index).forEach(key => {
             const index = Tiles_index[key];
@@ -299,19 +301,24 @@ export default class GameScene extends Scene {
             this.TilesTimer[index] = new Map<String, number>();
         });
         this.pause = false;
-        let obj_box = this.add.graphic(GraphicType.RECT, Layers_enum.BACK, {
-            position: new Vec2(1100, 200),
-            size: new Vec2(500, 512),
-        });
-        obj_box.color = new Color(139, 69, 19, 1);
-        this.createButton("Objective", new Vec2(1000, 200));
-        this.createButton("Create 10 new lands", new Vec2(1000, 230));
         this.pause_box = this.add.graphic(GraphicType.RECT, Layers_enum.PAUSE, {
             position: new Vec2(640, 640),
             size: new Vec2(1280, 1280),
         });
         this.pause_box.color = Color.BLACK;
         this.pause_box.visible = false;
+        this.pause_button = <Button>this.add.uiElement(UIElementType.BUTTON, Layers_enum.PAUSEBUTTON, {
+            position: new Vec2(640, 640),
+            text: "Abandon World?"
+        })
+        this.pause_button.size.set(300, 50);
+        this.pause_button.borderWidth = 2;
+        this.pause_button.borderColor = Color.WHITE;
+        this.pause_button.backgroundColor = Color.BLACK;
+        this.pause_button.onClick = () =>{
+            this.sceneManager.changeToScene(MainMenu);
+        }
+        this.pause_button.visible = false;
     }
     
     
@@ -324,6 +331,7 @@ export default class GameScene extends Scene {
         if (Input.isKeyJustPressed('p') === true){
             this.pause = !this.pause;
             this.pause_box.visible = !this.pause_box.visible;
+            this.pause_button.visible = !this.pause_button.visible;
         }
         if (this.pause){
             return;
@@ -350,6 +358,7 @@ export default class GameScene extends Scene {
         }
 
         this.tile_manager.update(this.currentMode)
+        this.objectives_bar.update()
 
         if (Input.isMouseJustPressed()) {
             const position = Input.getGlobalMousePosition();
@@ -378,6 +387,8 @@ export default class GameScene extends Scene {
                         }
                         animatedSprite.animation.playIfNotAlready(this.currentMode, true);
                         this.Tiles[Tiles_index[this.currentMode]].add(vec2ToString);
+                        console.log(Object.values(Objective_Event)[3])
+                        this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});
                     }    
 
                 }
