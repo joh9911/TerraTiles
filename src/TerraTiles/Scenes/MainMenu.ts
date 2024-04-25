@@ -11,15 +11,20 @@ import Controls from "./Controls";
 import { Layers_enum } from "../Utils/Layers_enum";
 import LevelSelect from "./LevelSelect";
 import Button from "../../Wolfie2D/Nodes/UIElements/Button";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 export default class MainMenu extends Scene {
     // Layers, for multiple main menu screens
     private mainMenu: Layer;
 
     public loadScene(){
+        // load background
 		this.load.image("Menu", "Game_Resources/sprites/Main_Menu.png");
 
-        // Load tile animations
+        // Load cancel/no sound        
+        this.load.audio("cancel", "Game_Resources/sounds/Cancel.wav");
+
+        // Load tile animations early
         this.load.spritesheet("tile_animations", "Game_Resources/tilemaps/tile_animations.json");
 
     }
@@ -69,7 +74,13 @@ export default class MainMenu extends Scene {
     }
 
     public unloadScene(): void {
+        // easy traversal of menus
         this.load.keepImage("Menu");
+
+        // used throughout the menus and levels
+        this.load.keepAudio("cancel");
+
+        // pre-load for levels
         this.load.keepSpritesheet("tile_animations");
     }
 }

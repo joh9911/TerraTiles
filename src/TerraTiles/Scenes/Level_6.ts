@@ -13,6 +13,7 @@ import Level_3 from "./Level_3";
 import Level_4 from "./Level_4";
 import Level_5 from "./Level_5";
 import MainMenu from "./MainMenu";
+import End from "./End";
 
 
 export default class Level_6 extends GameScene {
@@ -25,7 +26,7 @@ export default class Level_6 extends GameScene {
         this.load.tilemap("level_6", "Game_Resources/tilemaps/lvl_6.json");
 
         // load music, make sure the key is "level_music"
-        // this.load.audio("level_music", "Game_Resources/music/???.mp3");
+        this.load.audio("level_music", "Game_Resources/music/level1.mp3"); // temp
     }
 
 
@@ -44,8 +45,9 @@ export default class Level_6 extends GameScene {
         }
 
         // fulfilled objectives        
-        if (this.nextlevel == true){
-            this.sceneManager.changeToScene(MainMenu)
+        if (this.nextlevel == true) {
+            // this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: ??? , loop: false});
+            this.sceneManager.changeToScene(End)
         }
 
         // proceed as normal

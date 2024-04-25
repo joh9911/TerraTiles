@@ -7,6 +7,7 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import MainMenu from "./MainMenu";
 import { Layers_enum } from "../Utils/Layers_enum";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 export default class Credit extends Scene {
 
@@ -76,6 +77,7 @@ export default class Credit extends Scene {
 
       // When the back button is clicked, go to the next scene
       back.onClick = () => {
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "cancel" , loop: false});
           this.sceneManager.changeToScene(MainMenu);
       };
   }
