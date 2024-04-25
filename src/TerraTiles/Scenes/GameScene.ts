@@ -18,13 +18,15 @@ import MainMenu from "./MainMenu";
 
 
 export default class GameScene extends Scene {
-    // protected tilemap: OrthogonalTilemap;
-    // changed Vec2 to String, because It can't campare between Vec2 objects when deleting tiles.
-    protected Tiles: Set<String>[] = [];//uses Tiles_index for array, so desert is 0, grass is 1, ...
+
+    // tile interactions
+    protected Tiles: Set<String>[] = []; 
+        // uses Tiles_index for array, so desert is 0, grass is 1, ...
+        // changed Vec2 to String, because it can't compare between Vec2 objects when deleting tiles.
     protected TilesTimer: Map<String, number>[] = [];
-    protected roundDelay: number;
-    protected roundTimer: number;
     protected currentMode: string = Tiles_string.DESERT; // temporarily set the tile mode, default mode is DESERT
+
+    // ui
     protected pause: boolean;
     protected pause_box: Graphic
     protected pause_button: Button
@@ -32,6 +34,7 @@ export default class GameScene extends Scene {
     protected objectives_bar: ObjectivesManager
     protected nextlevel: Boolean
     protected clicktilepos: Vec2
+    protected mousedrag: Boolean
 
     // method for comparing tiles' positions
     vec2ToString(vec: Vec2): string {
@@ -43,38 +46,48 @@ export default class GameScene extends Scene {
     }
 
 
+
     growGrassFromDirt(deltaT: number) {
 
         for (let dirtTile of this.Tiles[Tiles_index[Tiles_string.DIRT]]) {
             let tileTimer = this.getTileTimer(Tiles_index[Tiles_string.DIRT], this.stringToVec2(dirtTile));
     
+            // time to grow
             if (tileTimer <= 0) {
                 this.initializeTileTimer(Tiles_index[Tiles_string.DIRT], this.stringToVec2(dirtTile), 3); 
 
+                // get position
                 let pos = this.stringToVec2(dirtTile);
                 let vec2ToString = this.vec2ToString(pos);
 
+                // get tile at this position
                 let nodes = this.sceneGraph.getNodesAt(pos);
-                
                 for (let node of nodes) {
                     if (node instanceof AnimatedSprite) {
                         let animatedSprite = node as AnimatedSprite;
+
+                        // double check -- is the tile at this position a dirt tile?
                         if (animatedSprite.animation.getcurrentAnimation().valueOf() == Tiles_string.DIRT) {
                             animatedSprite.animation.playIfNotAlready(Tiles_string.GRASS, true);
                             this.Tiles[Tiles_index[Tiles_string.GRASS]].add(vec2ToString);    
                             this.Tiles[Tiles_index[Tiles_string.DIRT]].delete(vec2ToString);                        
                             break;
                         }
+                        // not a dirt tile, remove it from the set
                         this.Tiles[Tiles_index[Tiles_string.DIRT]].delete(vec2ToString);
                     }
                 }
-            }else {
+            }
+            // adjust time
+            else {
                 tileTimer -= deltaT;
                 this.initializeTileTimer(Tiles_index[Tiles_string.DIRT], this.stringToVec2(dirtTile), tileTimer);
             }
         }
 
     }
+
+
 
     spreadWater(deltaT: number) {
         [Tiles_string.W_UP, Tiles_string.W_DOWN, Tiles_string.W_LEFT, Tiles_string.W_RIGHT].forEach(waterType => {
@@ -83,33 +96,43 @@ export default class GameScene extends Scene {
     
             for (let waterTile of this.Tiles[Tiles_index[waterType]]) {
                 let tileTimer = this.getTileTimer(Tiles_index[waterType], this.stringToVec2(waterTile));
-    
+
+                // time to spread water
                 if (tileTimer <= 0) {
                     this.initializeTileTimer(Tiles_index[waterType], this.stringToVec2(waterTile), 3); 
-    
+
+                    // get positions
                     let originPos = this.stringToVec2(waterTile);
                     let newPos = new Vec2(originPos.x + direction.dx * 32, originPos.y + direction.dy * 32);
                     let vec2ToString = this.vec2ToString(newPos);
-    
+
+                    // get the tile at this new position
                     let nodes = this.sceneGraph.getNodesAt(newPos);
                     for (let node of nodes) {
                         if (node instanceof AnimatedSprite) {
                             let animated_sprite = node as AnimatedSprite;
                             let animation_string = animated_sprite.animation.getcurrentAnimation().valueOf();
-    
+
+                            // can water spread to this new position?
                             if (TileMatrix[waterType][animation_string] === 1) {
+                                // add water
                                 animated_sprite.animation.playIfNotAlready(waterType, true);
                                 newWaterTiles.add(vec2ToString);
+                                // remove from old set 
                                 this.Tiles[Tiles_index[animation_string]].delete(vec2ToString);
                                 this.TilesTimer[Tiles_index[animation_string]].delete(vec2ToString);
                             }
                         }
                     }
-                } else {
+                } 
+                // adjust time
+                else {
                     tileTimer -= deltaT;
                     this.initializeTileTimer(Tiles_index[waterType], this.stringToVec2(waterTile), tileTimer);
                 }
             }
+
+            // update water set
             this.Tiles[Tiles_index[waterType]] = new Set<String>([...this.Tiles[Tiles_index[waterType]], ...newWaterTiles]);
         });
     }
@@ -129,14 +152,19 @@ export default class GameScene extends Scene {
         }
     }
 
+
+
     spreadDisease(deltaT: number) {
         const newDiseaseTiles: Set<String> = new Set<String>();
 
         for (let diseaseTile of this.Tiles[Tiles_index[Tiles_string.DISEASE]]) {
-            
             let tileTimer = this.getTileTimer(Tiles_index[Tiles_string.DISEASE], this.stringToVec2(diseaseTile));
+
+            // time to spread disease
             if (tileTimer <= 0) {
                 this.initializeTileTimer(Tiles_index[Tiles_string.DISEASE], this.stringToVec2(diseaseTile), 3); 
+
+                // disease spreads to diagonal positions
                 const directions = [
                     { dx: 1, dy: 1 },
                     { dx: 1, dy: -1 },
@@ -145,89 +173,106 @@ export default class GameScene extends Scene {
                 ];
 
                 for (let {dx, dy} of directions) {
+
+                    // get positions
                     let originPos = this.stringToVec2(diseaseTile);
                     let newPos = new Vec2(originPos.x + dx * 32, originPos.y + dy * 32);
                     let vec2ToString = this.vec2ToString(newPos);
 
+                    // get the tile at this new position
                     let nodes = this.sceneGraph.getNodesAt(newPos);
                     for (let node of nodes) {
                         if (node instanceof AnimatedSprite) {
                             let animated_sprite = node as AnimatedSprite;
                             let animation_string = animated_sprite.animation.getcurrentAnimation().valueOf();
 
+                            // can disease spread to this new position?
                             if (TileMatrix[Tiles_string.DISEASE][animation_string] === 1) {
+                                // add disease
                                 animated_sprite.animation.playIfNotAlready(Tiles_string.DISEASE, true);
                                 newDiseaseTiles.add(vec2ToString);
+                                // remove old tile
                                 this.Tiles[Tiles_index[animation_string]].delete(vec2ToString);
                                 this.TilesTimer[Tiles_index[animation_string]].delete(vec2ToString);
                             }
                         }
                     }
                 }
-            } else {
+            } 
+            // adjust time
+            else {
                 tileTimer -= deltaT;
                 this.initializeTileTimer(Tiles_index[Tiles_string.DISEASE], this.stringToVec2(diseaseTile), tileTimer);
             }
         }
+
+        // update disease set
         this.Tiles[Tiles_index[Tiles_string.DISEASE]] = new Set<String>([...this.Tiles[Tiles_index[Tiles_string.DISEASE]], ...newDiseaseTiles]);
     }
     
     
-    
-    
-    
+
     spreadFire(deltaT: number) {
         const newFireTiles: Set<String> = new Set<String>();
         let deletedFireTiles = false;
         for (let fireTile of this.Tiles[Tiles_index[Tiles_string.FIRE]]) {
             let tileTimer = this.getTileTimer(Tiles_index[Tiles_string.FIRE], this.stringToVec2(fireTile));
+
+            // adjust time
             tileTimer -= deltaT;
-    
+
+            // fire spreads
             if (tileTimer <= 2 && tileTimer + deltaT > 2) {
+
+                // fire moves to adjacent tiles
                 const directions = [
                     { dx: 0, dy: -1 },
                     { dx: 1, dy: 0 },
                     { dx: 0, dy: 1 },
                     { dx: -1, dy: 0 }
                 ];
-    
+
                 for (let {dx, dy} of directions) {
+
+                    // get positions
                     let originPos = this.stringToVec2(fireTile);
                     let newPos = new Vec2(originPos.x + dx * 32, originPos.y + dy * 32);
                     let vec2ToString = this.vec2ToString(newPos);
-        
+
+                    // get the tile at this new position
                     let nodes = this.sceneGraph.getNodesAt(newPos);
                     for (let node of nodes) {
                         if (node instanceof AnimatedSprite){
                             let animated_sprite = node as AnimatedSprite;
                             let animation_string = animated_sprite.animation.getcurrentAnimation().valueOf();
+
+                            // fire + water = dirt
                             if (animation_string == Tiles_string.W_UP || animation_string == Tiles_string.W_DOWN || animation_string == Tiles_string.W_LEFT || animation_string == Tiles_string.W_RIGHT){
                                 animated_sprite.animation.playIfNotAlready(Tiles_string.DIRT, true);
                                 this.Tiles[Tiles_index[Tiles_string.DIRT]].add(vec2ToString);
                                 this.Tiles[Tiles_index[animation_string]].delete(vec2ToString);
-
-                            } else if (animation_string == Tiles_string.DIRT) {
-                                animated_sprite.animation.playIfNotAlready(Tiles_string.FIRE, true);
-                                newFireTiles.add(vec2ToString);
-                            } else if (animation_string == Tiles_string.GRASS) {
-                                animated_sprite.animation.playIfNotAlready(Tiles_string.FIRE, true);
-                                newFireTiles.add(vec2ToString);
-                            } else if (animation_string == Tiles_string.MUD) {
+                            } 
+                            // fire + mud = dirt
+                            else if (animation_string == Tiles_string.MUD) {
                                 animated_sprite.animation.playIfNotAlready(Tiles_string.DIRT, true);
                                 this.Tiles[Tiles_index[Tiles_string.DIRT]].add(fireTile);
 
-                            } else if (animation_string == Tiles_string.HOUSE){
+                            } 
+                            // fire + (dirt, grass, house, disease) = fire
+                            else if (animation_string == Tiles_string.DIRT
+                                    || animation_string == Tiles_string.GRASS
+                                    || animation_string == Tiles_string.HOUSE
+                                    || animation_string == Tiles_string.DISEASE
+                            ) {
                                 animated_sprite.animation.playIfNotAlready(Tiles_string.FIRE, true);
                                 newFireTiles.add(vec2ToString);
-                            } else if (animation_string == Tiles_string.DISEASE){
-                                animated_sprite.animation.playIfNotAlready(Tiles_string.FIRE, true);
-                                newFireTiles.add(vec2ToString);
-                            }
+                            } 
                         }
                     }
                 }
             }
     
+            // fire goes out, leaves behind desert
             if (tileTimer <= 0) {
                 let nodes = this.sceneGraph.getNodesAt(this.stringToVec2(fireTile));
                 for (let node of nodes) {
@@ -241,11 +286,14 @@ export default class GameScene extends Scene {
                     }
                 }
                 
-            } else {
+            } 
+            // adjust time
+            else {
                 this.initializeTileTimer(Tiles_index[Tiles_string.FIRE], this.stringToVec2(fireTile), tileTimer);
             }
-        }
-    
+        } // per fireTile
+        
+        // update fire set
         this.Tiles[Tiles_index[Tiles_string.FIRE]] = new Set<String>([...this.Tiles[Tiles_index[Tiles_string.FIRE]], ...newFireTiles]);
         
         if (newFireTiles.size > 0 || deletedFireTiles){
@@ -253,6 +301,7 @@ export default class GameScene extends Scene {
         }
     }
     
+
 
     initializeTileTimer(tileType: number, tilePos: Vec2, countdown: number) {
         const tileKey = this.vec2ToString(tilePos);
@@ -272,6 +321,8 @@ export default class GameScene extends Scene {
             return this.TilesTimer[tileType]?.get(tileKey) || 3; 
     }
 
+
+
     protected subscribeToEvents(){
         this.receiver.subscribe([
             Tiles_string.DESERT,
@@ -283,11 +334,14 @@ export default class GameScene extends Scene {
         ]);
     }
 
-    
     startScene(): void {
+        // music
         this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "level_music", loop: true, holdReference: true});
+
+        // tile placement, next level
         this.subscribeToEvents();
-        
+
+        // ui
         this.addLayer(Layers_enum.MENU, 10);
         this.addLayer(Layers_enum.BACK, 9);
         this.addLayer(Layers_enum.TILEMANAGER, 10);
@@ -304,6 +358,8 @@ export default class GameScene extends Scene {
             this.Tiles[index] = new Set();
             this.TilesTimer[index] = new Map<String, number>();
         });
+
+        // pause screen
         this.pause = false;
         this.pause_box = this.add.graphic(GraphicType.RECT, Layers_enum.PAUSE, {
             position: new Vec2(640, 640),
@@ -325,11 +381,13 @@ export default class GameScene extends Scene {
         this.pause_button.visible = false;
         this.nextlevel = false;
         this.clicktilepos = new Vec2(-1, -1);
+        this.mousedrag = false
     }
     
     
     
     updateScene(deltaT: number): void {
+        // next level?
         while(this.receiver.hasNextEvent()){
             let event = this.receiver.getNextEvent();
             if (event.type == Objective_Event.NEXTLEVEL){
@@ -338,6 +396,8 @@ export default class GameScene extends Scene {
             }
             this.currentMode = event.type;
         }
+
+        // pause
         if (Input.isKeyJustPressed('p') === true){
             this.pause = !this.pause;
             this.pause_box.visible = !this.pause_box.visible;
@@ -346,58 +406,52 @@ export default class GameScene extends Scene {
         if (this.pause){
             return;
         }
+
+        // update timed elements
         super.updateScene(deltaT);
         this.spreadFire(deltaT);
         this.spreadWater(deltaT);
         this.spreadDisease(deltaT);
         this.growGrassFromDirt(deltaT);
 
-        
-        
-        // temporarily set the tile mode
-        if (Input.isKeyPressed('q')) {
+        // keyboard shortcuts for tile additions        
+        if (Input.isKeyJustPressed('q')) {
             this.emitter.fireEvent(Tiles_string.DESERT);
-        } else if (Input.isKeyPressed('w')) {
+        } else if (Input.isKeyJustPressed('w')) {
             this.emitter.fireEvent(Tiles_string.DIRT);
-        } else if (Input.isKeyPressed('e')) {
+        } else if (Input.isKeyJustPressed('e')) {
             this.emitter.fireEvent(Tiles_string.FIRE);
-        } else if (Input.isKeyPressed('r')) {
+        } else if (Input.isKeyJustPressed('r')) {
             this.emitter.fireEvent(Tiles_string.W_UP);
-        } else if (Input.isKeyPressed('t')) {
+        } else if (Input.isKeyJustPressed('t')) {
             this.emitter.fireEvent(Tiles_string.ROCK);
+        } else if (Input.isKeyJustPressed("enter")) {
+            console.log("mouseedrag:" + this.mousedrag);
+            this.mousedrag = !this.mousedrag;
         }
+        
 
         this.tile_manager.update(this.currentMode)
         this.objectives_bar.update()
 
-        if (Input.isMousePressed()){
+        if (this.mousedrag && Input.isMousePressed()) {
             const position = Input.getGlobalMousePosition();
-            if (position.y > 1088){//in the tile select, so don't do this
+            if (position.y > 1088){ // in the tile select, so don't do add a tile
                 return;
             }
-            const tileX = Math.floor(position.x / 32) * 32 + 16;  
-            const tileY = Math.floor(position.y / 32) * 32 + 16;
-            const tilePos = new Vec2(tileX, tileY);
-            if (tilePos == this.clicktilepos){//means not on t
-                return;
-            } 
-        }
-        if (Input.isMousePressed()) {
-            const position = Input.getGlobalMousePosition();
-            if (position.y > 1088){//in the tile select, so don't do this
-                return;
-            }
+
             console.log("click ",`${position.y} ${position.x}`);
-            
+
+            // get the tile at this position
             const tileX = Math.floor(position.x / 32) * 32 + 16;  
             const tileY = Math.floor(position.y / 32) * 32 + 16;  
-
             const tilePos = new Vec2(tileX, tileY);
             if (tilePos == this.clicktilepos){//means not on new tile
                 return;
             } 
             const vec2ToString = this.vec2ToString(tilePos);
             const nodes = this.sceneGraph.getNodesAt(tilePos);
+
             console.log("click1");
 
         
@@ -406,7 +460,10 @@ export default class GameScene extends Scene {
                     const animatedSprite = node as AnimatedSprite;
                     const currentAnimation = animatedSprite.animation.getcurrentAnimation();
 
-                    if (TileMatrix[this.currentMode][currentAnimation]){
+                    // can you actually change this tile?
+                    if (TileMatrix[this.currentMode][currentAnimation]) {
+
+                        // remove old tile
                         if (currentAnimation != Tiles_string.COMET && currentAnimation != Tiles_string.SPACE){
                             this.Tiles[Tiles_index[currentAnimation]].delete(vec2ToString);
                         }
@@ -415,7 +472,11 @@ export default class GameScene extends Scene {
                         }
                         animatedSprite.animation.playIfNotAlready(this.currentMode, true);
                         this.Tiles[Tiles_index[this.currentMode]].add(vec2ToString);
+
                         console.log(Object.values(Objective_Event)[3])
+
+                        // monitor number of tiles, play sfx                        
+                        this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});
                         this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
                         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.currentMode , loop: false});
                     }    
@@ -424,49 +485,58 @@ export default class GameScene extends Scene {
                 
             }
         }
-        // if (Input.isMouseJustPressed()) {
-        //     const position = Input.getGlobalMousePosition();
-        //     if (position.y > 1088){//in the tile select, so don't do this
-        //         return;
-        //     }
-        //     console.log("click ",`${position.y} ${position.x}`);
-            
-        //     const tileX = Math.floor(position.x / 32) * 32 + 16;  
-        //     const tileY = Math.floor(position.y / 32) * 32 + 16;  
+        else if (Input.isMouseJustPressed()){
+            const position = Input.getGlobalMousePosition();
+            if (position.y > 1088){ // in the tile select, so don't do add a tile
+                return;
+            }
 
-        //     const tilePos = new Vec2(tileX, tileY);
-        //     const vec2ToString = this.vec2ToString(tilePos);
-        //     const nodes = this.sceneGraph.getNodesAt(tilePos);
-        //     console.log("click1");
+            console.log("click ",`${position.y} ${position.x}`);
+
+            // get the tile at this position
+            const tileX = Math.floor(position.x / 32) * 32 + 16;  
+            const tileY = Math.floor(position.y / 32) * 32 + 16;  
+            const tilePos = new Vec2(tileX, tileY);
+            const vec2ToString = this.vec2ToString(tilePos);
+            const nodes = this.sceneGraph.getNodesAt(tilePos);
+
+            console.log("click1");
 
         
-        //     for (let node of nodes) {
-        //         if (node instanceof AnimatedSprite) {
-        //             const animatedSprite = node as AnimatedSprite;
-        //             const currentAnimation = animatedSprite.animation.getcurrentAnimation();
+            for (let node of nodes) {
+                if (node instanceof AnimatedSprite) {
+                    const animatedSprite = node as AnimatedSprite;
+                    const currentAnimation = animatedSprite.animation.getcurrentAnimation();
 
-        //             if (TileMatrix[this.currentMode][currentAnimation]){
-        //                 if (currentAnimation != Tiles_string.COMET && currentAnimation != Tiles_string.SPACE){
-        //                     this.Tiles[Tiles_index[currentAnimation]].delete(vec2ToString);
-        //                 }
-        //                 else{//this means land was made from comet/space
-        //                     this.emitter.fireEvent(Objective_Event.LANDMADE);
-        //                 }
-        //                 animatedSprite.animation.playIfNotAlready(this.currentMode, true);
-        //                 this.Tiles[Tiles_index[this.currentMode]].add(vec2ToString);
-        //                 console.log(Object.values(Objective_Event)[3])
-        //                 this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
-        //                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.currentMode , loop: false});
-        //             }    
+                    // can you actually change this tile?
+                    if (TileMatrix[this.currentMode][currentAnimation]) {
 
-        //         }
+                        // remove old tile
+                        if (currentAnimation != Tiles_string.COMET && currentAnimation != Tiles_string.SPACE){
+                            this.Tiles[Tiles_index[currentAnimation]].delete(vec2ToString);
+                        }
+                        else{//this means land was made from comet/space
+                            this.emitter.fireEvent(Objective_Event.LANDMADE);
+                        }
+                        animatedSprite.animation.playIfNotAlready(this.currentMode, true);
+                        this.Tiles[Tiles_index[this.currentMode]].add(vec2ToString);
+
+                        console.log(Object.values(Objective_Event)[3])
+
+                        // monitor number of tiles, play sfx                        
+                        this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});
+                        this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
+                        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.currentMode , loop: false});
+                    }    
+
+                }
                 
-        //     }
-        // }
-        
+            }
+        }
     }
 
     loadScene(): void {
+        // load all sfx
         this.load.audio(Tiles_string.DESERT, "Game_Resources/sounds/Desert.mp3");
         this.load.audio(Tiles_string.DIRT, "Game_Resources/sounds/Dirt.mp3");
         this.load.audio(Tiles_string.FIRE, "Game_Resources/sounds/Fire.mp3");
@@ -475,6 +545,12 @@ export default class GameScene extends Scene {
     }
 
     unloadScene(): void {
+        // keep sfx
         this.load.keepAudio(Tiles_string.FIRE);
+
+        // stop music
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music" });
     }
+
+
 }

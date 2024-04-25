@@ -7,8 +7,6 @@ import Tileset from "../../DataTypes/Tilesets/Tileset";
 import Vec2 from "../../DataTypes/Vec2";
 import { TiledCollectionTile } from "../../DataTypes/Tilesets/TiledData";
 import AnimatedSprite from "../../Nodes/Sprites/AnimatedSprite";
-// import PositionGraph from "../../DataTypes/Graphs/PositionGraph";
-// import Navmesh from "../../Pathfinding/Navmesh";
 import IsometricTilemap from "../../Nodes/Tilemaps/IsometricTilemap";
 import StaggeredIsometricTilemap from "../../Nodes/Tilemaps/StaggeredIsometricTilemap";
 
@@ -141,7 +139,7 @@ export default class TilemapFactory {
                             // position, sizing, scale
                             let size = tileset.getTileSize().clone();
                             tile.position.set((obj.x + size.x/2)*scale.x, (obj.y - size.y/2)*scale.y +32*6);
-                                // 40x40 tiles, 40x32 tilemap, so 4 tiles above and below for UI
+                                // 40x40 tiles, 40x28 tilemap, so 6 tiles above and below for UI
                             tile.size.copy(size);
                             tile.scale.set(scale.x, scale.y);
 

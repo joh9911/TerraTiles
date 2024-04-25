@@ -5,6 +5,7 @@ import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
 import MainMenu from "./MainMenu";
 import { Layers_enum } from "../Utils/Layers_enum";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 export default class Controls extends Scene{
 
@@ -38,7 +39,7 @@ export default class Controls extends Scene{
           new Vec2(size.x, sizeY + yOffset * i++)
       );
       this.createLabel(
-        "1-9: Another way to select tiles",
+        "q, w, e, r, t: Another way to select tiles",
         new Vec2(size.x, sizeY + yOffset * i++)
     );
 
@@ -51,6 +52,7 @@ export default class Controls extends Scene{
 
       // When the back button is clicked, go to the next scene
       back.onClick = () => {
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "cancel" , loop: false});
           this.sceneManager.changeToScene(MainMenu);
       };
   }

@@ -74,6 +74,7 @@ export default class LevelSelect extends Scene {
 
         // When the back button is clicked, go to the next scene
         back.onClick = () => {
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "cancel" , loop: false});
             this.sceneManager.changeToScene(MainMenu);
         };
     }

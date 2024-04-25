@@ -22,13 +22,13 @@ export default class Splash extends Scene {
 
         this.addUILayer(Layers_enum.BACK);
 
-        let size = this.viewport.getHalfSize();
         let planet = this.add.animatedSprite(AnimatedSprite, "planet", Layers_enum.BACK)
         planet.position.set(center.x, center.y);
         planet.scale = new Vec2(6, 6);
         planet.animation.play("START");
         planet.animation.queue("LOOP", true);
 
+        let size = this.viewport.getHalfSize();
         let fullScreen = <Button>this.add.uiElement(UIElementType.BUTTON, Layers_enum.BACK, {position: new Vec2(size.x, size.y * 3/2), text: "Click on screen to start"});
         fullScreen.backgroundColor = Color.TRANSPARENT;
         fullScreen.borderColor = Color.WHITE;
