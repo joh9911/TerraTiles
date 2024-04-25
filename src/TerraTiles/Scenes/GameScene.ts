@@ -31,6 +31,7 @@ export default class GameScene extends Scene {
     protected tile_manager: TileManager
     protected objectives_bar: ObjectivesManager
     protected nextlevel: Boolean
+    protected clicktilepos: Vec2
 
     // method for comparing tiles' positions
     vec2ToString(vec: Vec2): string {
@@ -177,7 +178,7 @@ export default class GameScene extends Scene {
     
     spreadFire(deltaT: number) {
         const newFireTiles: Set<String> = new Set<String>();
-    
+        let deletedFireTiles = false;
         for (let fireTile of this.Tiles[Tiles_index[Tiles_string.FIRE]]) {
             let tileTimer = this.getTileTimer(Tiles_index[Tiles_string.FIRE], this.stringToVec2(fireTile));
             tileTimer -= deltaT;
@@ -236,6 +237,7 @@ export default class GameScene extends Scene {
                         this.Tiles[Tiles_index[Tiles_string.DESERT]].add(fireTile);
                         this.Tiles[Tiles_index[Tiles_string.FIRE]].delete(fireTile);
                         this.TilesTimer[Tiles_index[Tiles_string.FIRE]].delete(fireTile);
+                        deletedFireTiles = true
                     }
                 }
                 
@@ -245,9 +247,8 @@ export default class GameScene extends Scene {
         }
     
         this.Tiles[Tiles_index[Tiles_string.FIRE]] = new Set<String>([...this.Tiles[Tiles_index[Tiles_string.FIRE]], ...newFireTiles]);
-        console.log(newFireTiles.size);
         
-        if (newFireTiles.size > 0){
+        if (newFireTiles.size > 0 || deletedFireTiles){
             this.emitter.fireEvent(Objective_Event.FIRESIZE, {size: this.Tiles[Tiles_index[Tiles_string.FIRE]].size});
         }
     }
@@ -323,6 +324,7 @@ export default class GameScene extends Scene {
         }
         this.pause_button.visible = false;
         this.nextlevel = false;
+        this.clicktilepos = new Vec2(-1, -1);
     }
     
     
@@ -368,7 +370,19 @@ export default class GameScene extends Scene {
         this.tile_manager.update(this.currentMode)
         this.objectives_bar.update()
 
-        if (Input.isMouseJustPressed()) {
+        if (Input.isMousePressed()){
+            const position = Input.getGlobalMousePosition();
+            if (position.y > 1088){//in the tile select, so don't do this
+                return;
+            }
+            const tileX = Math.floor(position.x / 32) * 32 + 16;  
+            const tileY = Math.floor(position.y / 32) * 32 + 16;
+            const tilePos = new Vec2(tileX, tileY);
+            if (tilePos == this.clicktilepos){//means not on t
+                return;
+            } 
+        }
+        if (Input.isMousePressed()) {
             const position = Input.getGlobalMousePosition();
             if (position.y > 1088){//in the tile select, so don't do this
                 return;
@@ -379,6 +393,9 @@ export default class GameScene extends Scene {
             const tileY = Math.floor(position.y / 32) * 32 + 16;  
 
             const tilePos = new Vec2(tileX, tileY);
+            if (tilePos == this.clicktilepos){//means not on new tile
+                return;
+            } 
             const vec2ToString = this.vec2ToString(tilePos);
             const nodes = this.sceneGraph.getNodesAt(tilePos);
             console.log("click1");
@@ -393,10 +410,13 @@ export default class GameScene extends Scene {
                         if (currentAnimation != Tiles_string.COMET && currentAnimation != Tiles_string.SPACE){
                             this.Tiles[Tiles_index[currentAnimation]].delete(vec2ToString);
                         }
+                        else{//this means land was made from comet/space
+                            this.emitter.fireEvent(Objective_Event.LANDMADE);
+                        }
                         animatedSprite.animation.playIfNotAlready(this.currentMode, true);
                         this.Tiles[Tiles_index[this.currentMode]].add(vec2ToString);
                         console.log(Object.values(Objective_Event)[3])
-                        this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});
+                        this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
                         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.currentMode , loop: false});
                     }    
 
@@ -404,6 +424,45 @@ export default class GameScene extends Scene {
                 
             }
         }
+        // if (Input.isMouseJustPressed()) {
+        //     const position = Input.getGlobalMousePosition();
+        //     if (position.y > 1088){//in the tile select, so don't do this
+        //         return;
+        //     }
+        //     console.log("click ",`${position.y} ${position.x}`);
+            
+        //     const tileX = Math.floor(position.x / 32) * 32 + 16;  
+        //     const tileY = Math.floor(position.y / 32) * 32 + 16;  
+
+        //     const tilePos = new Vec2(tileX, tileY);
+        //     const vec2ToString = this.vec2ToString(tilePos);
+        //     const nodes = this.sceneGraph.getNodesAt(tilePos);
+        //     console.log("click1");
+
+        
+        //     for (let node of nodes) {
+        //         if (node instanceof AnimatedSprite) {
+        //             const animatedSprite = node as AnimatedSprite;
+        //             const currentAnimation = animatedSprite.animation.getcurrentAnimation();
+
+        //             if (TileMatrix[this.currentMode][currentAnimation]){
+        //                 if (currentAnimation != Tiles_string.COMET && currentAnimation != Tiles_string.SPACE){
+        //                     this.Tiles[Tiles_index[currentAnimation]].delete(vec2ToString);
+        //                 }
+        //                 else{//this means land was made from comet/space
+        //                     this.emitter.fireEvent(Objective_Event.LANDMADE);
+        //                 }
+        //                 animatedSprite.animation.playIfNotAlready(this.currentMode, true);
+        //                 this.Tiles[Tiles_index[this.currentMode]].add(vec2ToString);
+        //                 console.log(Object.values(Objective_Event)[3])
+        //                 this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
+        //                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.currentMode , loop: false});
+        //             }    
+
+        //         }
+                
+        //     }
+        // }
         
     }
 

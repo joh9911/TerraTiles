@@ -10,6 +10,7 @@ import CreateLand from "./CreateLand";
 import ObjectivesConstructor from "./ObjectivesConstructor";
 import Emitter from "../../Wolfie2D/Events/Emitter";
 import { Objective_Event } from "../Utils/Objective_Event";
+import HaveFire from "./HaveFire";
 
 export default class ObjectivesManager{
     
@@ -32,6 +33,7 @@ export default class ObjectivesManager{
         this.createLabel("Objectives", new Vec2(this.up_left.x + 120, this.up_left.y + 25));
         this.list_objectives = []
         this.list_objectives[0] = new CreateLand(this.game_scene, new Vec2(this.up_left.x + 45, this.up_left.y + 75), 10);
+        this.list_objectives[1] = new HaveFire(this.game_scene, new Vec2(this.up_left.x + 45, this.up_left.y + 125), 10);
     }
 
     protected createLabel(text: String, pos: Vec2): Button {

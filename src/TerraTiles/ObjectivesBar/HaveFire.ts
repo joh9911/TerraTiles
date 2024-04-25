@@ -7,7 +7,7 @@ import { Layers_enum } from "../Utils/Layers_enum";
 import { Objective_Event } from "../Utils/Objective_Event";
 import ObjectivesConstructor from "./ObjectivesConstructor";
 
-export default class CreateLand extends ObjectivesConstructor{
+export default class HaveFire extends ObjectivesConstructor{
     private maxnum: number
     private currentnum: number
     
@@ -15,18 +15,19 @@ export default class CreateLand extends ObjectivesConstructor{
         super(game_scene, pos);
         this.maxnum = num
         this.currentnum = 0;
-        this.text = this.createLabel("Create " + this.currentnum + "/" + this.maxnum + " Lands", new Vec2(pos.x + 140, pos.y))
-        this.receiver.subscribe(Objective_Event.LANDMADE)
+        this.text = this.createLabel("Have " + this.currentnum + "/" + this.maxnum + " Fires", new Vec2(pos.x + 140, pos.y))
+        this.receiver.subscribe(Objective_Event.FIRESIZE)
     }
 
     update(){
         while(this.receiver.hasNextEvent()){
             let event = this.receiver.getNextEvent();
-            this.currentnum += 1;
+            this.currentnum = event.data.get("size");
+            console.log(event)
             if (this.currentnum >= this.maxnum){
                 this.setCheck();
             }
-            this.text.text = ("Create " + this.currentnum + "/" + this.maxnum + " Lands");
+            this.text.text = ("Have " + this.currentnum + "/" + this.maxnum + " Fires");
         }
     }
 }
