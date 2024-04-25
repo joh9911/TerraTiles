@@ -67,6 +67,10 @@ export default class Credit extends Scene {
           "1-6: Change to level",
           new Vec2(size.x, sizeY + yOffset * i++)
       );
+      this.createLabel(
+          "Enter: enable mouse drag",
+          new Vec2(size.x, sizeY + yOffset * i++)
+      );
 
       // Create a back button
       const back = this.add.uiElement(UIElementType.BUTTON, Layers_enum.MENU, {position: new Vec2(size.x, 2 * size.y - 60), text: "Back"});

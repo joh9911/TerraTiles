@@ -7,6 +7,7 @@ import Button from "../../Wolfie2D/Nodes/UIElements/Button";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import GameScene from "../Scenes/GameScene";
+import { Keyboard_enum } from "../Utils/Keyboard_enum";
 import { Layers_enum } from "../Utils/Layers_enum";
 
 export default class TileConstructor{
@@ -28,6 +29,7 @@ export default class TileConstructor{
             this.position = new Vec2(100 + this.index * 200, position.y)
         }
         this.box = <Button>this.game_scene.add.uiElement(UIElementType.BUTTON, Layers_enum.BOXONMANAGER, {position: this.position, text: ""});
+        this.game_scene.add.uiElement(UIElementType.LABEL, Layers_enum.TILEONMANAGER, {position: new Vec2(this.position.x, this.position.y + 40), text: Keyboard_enum[index]});
         this.box.backgroundColor = Color.GRAY;
         if (selected){
             this.box.backgroundColor = this.box.backgroundColor.lighten()
@@ -38,7 +40,7 @@ export default class TileConstructor{
         }
         this.type = this.game_scene.add.animatedSprite(AnimatedSprite, "tile_animations", Layers_enum.TILEONMANAGER)
         this.type.animation.play(type, true);
-        this.type.position = this.position;
+        this.type.position = new Vec2(this.position.x, this.position.y - 20);
         this.type.size.copy(new Vec2(32, 32));
         this.type.scale.set(2, 2);
     }
