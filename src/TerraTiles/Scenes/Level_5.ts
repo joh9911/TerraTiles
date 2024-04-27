@@ -55,7 +55,7 @@ export default class Level_5 extends GameScene {
         // music, events, ui
         super.startScene();
 
-        console.log(this.Tiles);
+        this.objectives_bar.createLand(10);
 
         // level_5 tilemap
         this.addLayer(Layers_enum.TILES, 10);

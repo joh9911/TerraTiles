@@ -15,7 +15,7 @@ export default class TileManager{
     private Tiles: TileConstructor[];
     private position: Vec2;
 
-    constructor(gameScene: GameScene, currentMode: string) {
+    constructor(gameScene: GameScene, currentMode: string, locked_tiles: Boolean[]) {
         this.game_scene = gameScene;
         this.currentMode = currentMode
         this.position = new Vec2(640, 1184)
@@ -25,8 +25,12 @@ export default class TileManager{
         });
         this.tile_bar.color = Color.BROWN;
         this.Tiles = []
+        let i = 0;
         for (const [key, value] of Object.entries(Tile_manage)){
-            this.Tiles[value] = new TileConstructor(gameScene, key, this.position, value, false);
+            if (locked_tiles[i]){
+                this.Tiles[value] = new TileConstructor(gameScene, key, this.position, value, false);
+            }
+            i++;
         }
         this.Tiles[Tile_manage[Tiles_string.DESERT]].update(true)
     }

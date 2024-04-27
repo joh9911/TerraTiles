@@ -7,10 +7,11 @@ import { Layers_enum } from "../Utils/Layers_enum";
 import GameScene from "../Scenes/GameScene";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import CreateLand from "./CreateLand";
+import HaveFire from "./HaveFire";
+import NoMud from "./NoMud";
 import ObjectivesConstructor from "./ObjectivesConstructor";
 import Emitter from "../../Wolfie2D/Events/Emitter";
 import { Objective_Event } from "../Utils/Objective_Event";
-import HaveFire from "./HaveFire";
 
 export default class ObjectivesManager{
     
@@ -18,6 +19,7 @@ export default class ObjectivesManager{
     private position: Vec2
     private up_left: Vec2
     private list_objectives: ObjectivesConstructor[]
+    private num_objectives: number
     private emitter: Emitter
     
     constructor(gameScene: GameScene){
@@ -32,8 +34,26 @@ export default class ObjectivesManager{
         obj_box.color = new Color(139, 69, 19, 1);
         this.createLabel("Objectives", new Vec2(this.up_left.x + 120, this.up_left.y + 25));
         this.list_objectives = []
-        this.list_objectives[0] = new CreateLand(this.game_scene, new Vec2(this.up_left.x + 45, this.up_left.y + 75), 10);
-        this.list_objectives[1] = new HaveFire(this.game_scene, new Vec2(this.up_left.x + 45, this.up_left.y + 125), 10);
+        this.num_objectives = 0
+    }
+
+    public createLand(num: number){
+        this.list_objectives[this.num_objectives] = new CreateLand(this.game_scene, this.setObjectivePos(), num);
+        this.num_objectives++;
+    }
+
+    public haveFire(num: number){
+        this.list_objectives[this.num_objectives] = new HaveFire(this.game_scene, this.setObjectivePos(), 10);
+        this.num_objectives++;
+    }
+
+    public NoMud(){
+        this.list_objectives[this.num_objectives] = new NoMud(this.game_scene, this.setObjectivePos());
+        this.num_objectives++;
+    }
+
+    private setObjectivePos(){
+        return new Vec2(this.up_left.x + 45 * (Math.floor(this.num_objectives/2)+1), this.up_left.y + 75 + 50 * (this.num_objectives%2))
     }
 
     protected createLabel(text: String, pos: Vec2): Button {

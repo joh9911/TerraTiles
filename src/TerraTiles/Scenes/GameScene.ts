@@ -15,6 +15,7 @@ import TileManager from "../TileManager/TileManager";
 import ObjectivesManager from "../ObjectivesBar/ObjectivesManager";
 import { Objective_Event } from "../Utils/Objective_Event";
 import MainMenu from "./MainMenu";
+import { Keyboard_enum } from "../Utils/Keyboard_enum";
 
 
 export default class GameScene extends Scene {
@@ -35,6 +36,7 @@ export default class GameScene extends Scene {
     protected nextlevel: Boolean
     protected clicktilepos: Vec2
     protected mousedrag: Boolean
+    protected locked_tiles: Boolean[] = null
 
     // method for comparing tiles' positions
     vec2ToString(vec: Vec2): string {
@@ -350,7 +352,10 @@ export default class GameScene extends Scene {
         this.addLayer(Layers_enum.PAUSE, 100);
         this.addLayer(Layers_enum.PAUSEBUTTON, 101);
 
-        this.tile_manager = new TileManager(this, this.currentMode)
+        if (this.locked_tiles == null){
+            this.locked_tiles = [true, true, true, true, true]
+        }
+        this.tile_manager = new TileManager(this, this.currentMode, this.locked_tiles)
         this.objectives_bar = new ObjectivesManager(this)
 
         Object.keys(Tiles_index).forEach(key => {
@@ -414,18 +419,13 @@ export default class GameScene extends Scene {
         this.spreadDisease(deltaT);
         this.growGrassFromDirt(deltaT);
 
-        // keyboard shortcuts for tile additions        
-        if (Input.isKeyJustPressed('q')) {
-            this.emitter.fireEvent(Tiles_string.DESERT);
-        } else if (Input.isKeyJustPressed('w')) {
-            this.emitter.fireEvent(Tiles_string.DIRT);
-        } else if (Input.isKeyJustPressed('e')) {
-            this.emitter.fireEvent(Tiles_string.FIRE);
-        } else if (Input.isKeyJustPressed('r')) {
-            this.emitter.fireEvent(Tiles_string.W_UP);
-        } else if (Input.isKeyJustPressed('t')) {
-            this.emitter.fireEvent(Tiles_string.ROCK);
-        } else if (Input.isKeyJustPressed("enter")) {
+        // keyboard shortcuts for tile additions     
+        for (const [key, value] of Object.entries(Tile_manage)){
+            if (this.locked_tiles[value] && Input.isKeyJustPressed(Keyboard_enum[value])){
+                this.emitter.fireEvent(key);
+            }
+        }
+        if (Input.isKeyJustPressed("enter")) {
             console.log("mouseedrag:" + this.mousedrag);
             this.mousedrag = !this.mousedrag;
         }
