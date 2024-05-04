@@ -60,6 +60,8 @@ export default class Level_2 extends GameScene {
         // this.locked_tiles = [true, true, true, true, false]
 
         this.objectives_bar.createLand(10);
+        this.objectives_bar.haveWater(10);
+        this.objectives_bar.haveFire(10);
 
         // level_2 tilemap
         this.addLayer(Layers_enum.TILES, 10);

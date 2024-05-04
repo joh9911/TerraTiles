@@ -12,6 +12,7 @@ import NoMud from "./NoMud";
 import ObjectivesConstructor from "./ObjectivesConstructor";
 import Emitter from "../../Wolfie2D/Events/Emitter";
 import { Objective_Event } from "../Utils/Objective_Event";
+import HaveWater from "./HaveWater";
 
 export default class ObjectivesManager{
     
@@ -47,13 +48,18 @@ export default class ObjectivesManager{
         this.num_objectives++;
     }
 
+    public haveWater(num: number){
+        this.list_objectives[this.num_objectives] = new HaveWater(this.game_scene, this.setObjectivePos(), 10);
+        this.num_objectives++;
+    }
+
     public NoMud(num: number){
         this.list_objectives[this.num_objectives] = new NoMud(this.game_scene, this.setObjectivePos(), num);
         this.num_objectives++;
     }
 
     private setObjectivePos(){
-        return new Vec2(this.up_left.x + 45 * (Math.floor(this.num_objectives/2)+1), this.up_left.y + 75 + 50 * (this.num_objectives%2))
+        return new Vec2(this.up_left.x + 45 + 500 * (Math.floor(this.num_objectives/2)), this.up_left.y + 75 + 50 * (this.num_objectives%2))
     }
 
     protected createLabel(text: String, pos: Vec2): Button {
