@@ -55,8 +55,9 @@ export default class Level_2 extends GameScene {
     startScene(): void {
 
         // music, events, ui
-        this.locked_tiles = [true, true, true, true, false]
         super.startScene();
+        // water currently only goes up, so it will destroy houses in 30s, and there's no clear way to block it
+        // this.locked_tiles = [true, true, true, true, false]
 
         this.objectives_bar.createLand(10);
 

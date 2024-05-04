@@ -43,5 +43,10 @@ export default class TileManager{
             this.Tiles[Tile_manage[this.currentMode]].update(true)
         }
     }
-    
+
+    pause() {
+        for (const type of this.Tiles) {
+            type.pause();
+        }
+    }
 }

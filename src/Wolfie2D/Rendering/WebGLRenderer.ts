@@ -106,27 +106,27 @@ export default class WebGLRenderer extends RenderingManager {
 	}
 
 	protected renderSprite(sprite: Sprite): void {
-		let shader = RegistryManager.shaders.get(ShaderRegistry.SPRITE_SHADER);
-		let options = this.addOptions(shader.getOptions(sprite), sprite);
-		shader.render(this.gl, options);
+		// let shader = RegistryManager.shaders.get(ShaderRegistry.SPRITE_SHADER);
+		// let options = this.addOptions(shader.getOptions(sprite), sprite);
+		// shader.render(this.gl, options);
 	}
 
 	protected renderAnimatedSprite(sprite: AnimatedSprite): void {
-		let shader = RegistryManager.shaders.get(ShaderRegistry.SPRITE_SHADER);
-		let options = this.addOptions(shader.getOptions(sprite), sprite);
-		shader.render(this.gl, options);
+		// let shader = RegistryManager.shaders.get(ShaderRegistry.SPRITE_SHADER);
+		// let options = this.addOptions(shader.getOptions(sprite), sprite);
+		// shader.render(this.gl, options);
 	}
 
 	protected renderGraphic(graphic: Graphic): void {
 
 		if(graphic instanceof Point){
-			let shader = RegistryManager.shaders.get(ShaderRegistry.POINT_SHADER);
-			let options = this.addOptions(shader.getOptions(graphic), graphic);
-			shader.render(this.gl, options);
+			// let shader = RegistryManager.shaders.get(ShaderRegistry.POINT_SHADER);
+			// let options = this.addOptions(shader.getOptions(graphic), graphic);
+			// shader.render(this.gl, options);
 		} else if(graphic instanceof Rect) {
-			let shader = RegistryManager.shaders.get(ShaderRegistry.RECT_SHADER);
-			let options = this.addOptions(shader.getOptions(graphic), graphic);
-			shader.render(this.gl, options);
+			// let shader = RegistryManager.shaders.get(ShaderRegistry.RECT_SHADER);
+			// let options = this.addOptions(shader.getOptions(graphic), graphic);
+			// shader.render(this.gl, options);
 		} 
 	}
 
@@ -136,24 +136,24 @@ export default class WebGLRenderer extends RenderingManager {
 
 	protected renderUIElement(uiElement: UIElement): void {
 		if(uiElement instanceof Label){
-			let shader = RegistryManager.shaders.get(ShaderRegistry.LABEL_SHADER);
-			let options = this.addOptions(shader.getOptions(uiElement), uiElement);
-			shader.render(this.gl, options);
+			// let shader = RegistryManager.shaders.get(ShaderRegistry.LABEL_SHADER);
+			// let options = this.addOptions(shader.getOptions(uiElement), uiElement);
+			// shader.render(this.gl, options);
 
-			this.textCtx.setTransform(1, 0, 0, 1, (uiElement.position.x - this.origin.x)*this.zoom, (uiElement.position.y - this.origin.y)*this.zoom);
-			this.textCtx.rotate(-uiElement.rotation);
-			let globalAlpha = this.textCtx.globalAlpha;
-			this.textCtx.globalAlpha = uiElement.alpha;
+			// this.textCtx.setTransform(1, 0, 0, 1, (uiElement.position.x - this.origin.x)*this.zoom, (uiElement.position.y - this.origin.y)*this.zoom);
+			// this.textCtx.rotate(-uiElement.rotation);
+			// let globalAlpha = this.textCtx.globalAlpha;
+			// this.textCtx.globalAlpha = uiElement.alpha;
 
-			// Render text
-			this.textCtx.font = uiElement.getFontString();
-			let offset = uiElement.calculateTextOffset(this.textCtx);
-			this.textCtx.fillStyle = uiElement.calculateTextColor();
-			this.textCtx.globalAlpha = uiElement.textColor.a;
-			this.textCtx.fillText(uiElement.text, offset.x - uiElement.size.x/2, offset.y - uiElement.size.y/2);
+			// // Render text
+			// this.textCtx.font = uiElement.getFontString();
+			// let offset = uiElement.calculateTextOffset(this.textCtx);
+			// this.textCtx.fillStyle = uiElement.calculateTextColor();
+			// this.textCtx.globalAlpha = uiElement.textColor.a;
+			// this.textCtx.fillText(uiElement.text, offset.x - uiElement.size.x/2, offset.y - uiElement.size.y/2);
 
-			this.textCtx.globalAlpha = globalAlpha;
-        	this.textCtx.setTransform(1, 0, 0, 1, 0, 0);
+			// this.textCtx.globalAlpha = globalAlpha;
+        	// this.textCtx.setTransform(1, 0, 0, 1, 0, 0);
 		}
 	}
 

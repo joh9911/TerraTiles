@@ -5,6 +5,7 @@ import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import Button from "../../Wolfie2D/Nodes/UIElements/Button";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
+import ShaderRegistry from "../../Wolfie2D/Registry/Registries/ShaderRegistry";
 import Color from "../../Wolfie2D/Utils/Color";
 import GameScene from "../Scenes/GameScene";
 import { Keyboard_enum } from "../Utils/Keyboard_enum";
@@ -14,6 +15,8 @@ export default class TileConstructor{
     private type:AnimatedSprite;
     private game_scene: GameScene
     private box: Button
+    private outline: Graphic
+    private prevColor: Color
     private position: Vec2
     private index:number
     private emitter: Emitter;
@@ -43,14 +46,33 @@ export default class TileConstructor{
         this.type.position = new Vec2(this.position.x, this.position.y - 20);
         this.type.size.copy(new Vec2(32, 32));
         this.type.scale.set(2, 2);
+
+        this.outline = this.game_scene.add.graphic(GraphicType.RECT, Layers_enum.TILEONMANAGER, {
+            position: new Vec2(24 + this.index * 47, this.position.y+83),
+            size: new Vec2(17, 9),
+        });
+        this.outline.color = Color.BLACK;
+        this.outline.useCustomShader(ShaderRegistry.TILEOUTLINE_SHADER);
+    }
+
+    pause() {
+        if (this.outline.color.toString() !== Color.BROWN.toString()) {
+            this.prevColor = this.outline.color;
+            this.outline.color = Color.BROWN;
+        }
+        else {
+            this.outline.color = this.prevColor;
+        }
     }
 
     update(selected:Boolean){
         if (selected){
-            this.box.backgroundColor = this.box.backgroundColor.lighten()
+            this.box.backgroundColor = this.box.backgroundColor.lighten();
+            this.outline.color = Color.WHITE;
         }
         else{
             this.box.backgroundColor = this.box.backgroundColor.darken()
+            this.outline.color = Color.BLACK;
         }
     }
 }

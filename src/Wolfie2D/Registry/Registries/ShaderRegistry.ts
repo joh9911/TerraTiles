@@ -4,6 +4,7 @@ import LabelShaderType from "../../Rendering/WebGLRendering/ShaderTypes/LabelSha
 import PointShaderType from "../../Rendering/WebGLRendering/ShaderTypes/PointShaderType";
 import RectShaderType from "../../Rendering/WebGLRendering/ShaderTypes/RectShaderType";
 import SpriteShaderType from "../../Rendering/WebGLRendering/ShaderTypes/SpriteShaderType";
+import TileShaderType from "../../Rendering/WebGLRendering/ShaderTypes/TileShaderType";
 import ResourceManager from "../../ResourceManager/ResourceManager";
 import Registry from "./Registry";
 
@@ -13,10 +14,15 @@ import Registry from "./Registry";
 export default class ShaderRegistry extends Registry<ShaderType> {
 
 	// Shader names
-	public static POINT_SHADER = "point";
-	public static RECT_SHADER = "rect";
-	public static SPRITE_SHADER = "sprite";
-	public static LABEL_SHADER = "label";
+	// public static POINT_SHADER = "point";
+	// public static RECT_SHADER = "rect";
+	// public static SPRITE_SHADER = "sprite";
+	// public static LABEL_SHADER = "label";
+
+
+	// added
+	public static TILEOUTLINE_SHADER = "tile_outline";
+
 
 	private registryItems: Array<ShaderRegistryItem> = new Array();
 
@@ -28,16 +34,21 @@ export default class ShaderRegistry extends Registry<ShaderType> {
 		const rm = ResourceManager.getInstance();
 
 		// Queue a load for the point shader
-		this.registerAndPreloadItem(ShaderRegistry.POINT_SHADER, PointShaderType, "builtin/shaders/point.vshader", "builtin/shaders/point.fshader");
+		// this.registerAndPreloadItem(ShaderRegistry.POINT_SHADER, PointShaderType, "builtin/shaders/point.vshader", "builtin/shaders/point.fshader");
 
 		// Queue a load for the rect shader
-		this.registerAndPreloadItem(ShaderRegistry.RECT_SHADER, RectShaderType, "builtin/shaders/rect.vshader", "builtin/shaders/rect.fshader");
+		// this.registerAndPreloadItem(ShaderRegistry.RECT_SHADER, RectShaderType, "builtin/shaders/rect.vshader", "builtin/shaders/rect.fshader");
 
 		// Queue a load for the sprite shader
-		this.registerAndPreloadItem(ShaderRegistry.SPRITE_SHADER, SpriteShaderType, "builtin/shaders/sprite.vshader", "builtin/shaders/sprite.fshader");
+		// this.registerAndPreloadItem(ShaderRegistry.SPRITE_SHADER, SpriteShaderType, "builtin/shaders/sprite.vshader", "builtin/shaders/sprite.fshader");
 	
 		// Queue a load for the label shader
-		this.registerAndPreloadItem(ShaderRegistry.LABEL_SHADER, LabelShaderType, "builtin/shaders/label.vshader", "builtin/shaders/label.fshader");
+		// this.registerAndPreloadItem(ShaderRegistry.LABEL_SHADER, LabelShaderType, "builtin/shaders/label.vshader", "builtin/shaders/label.fshader");
+
+
+		// added
+		this.registerAndPreloadItem(ShaderRegistry.TILEOUTLINE_SHADER, TileShaderType, "builtin/shaders/tile.vshader", "builtin/shaders/tile.fshader");
+
 
 		// Queue a load for any preloaded items
 		for(let item of this.registryItems){
