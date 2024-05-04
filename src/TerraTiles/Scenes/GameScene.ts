@@ -27,6 +27,7 @@ export default class GameScene extends Scene {
         // changed Vec2 to String, because it can't compare between Vec2 objects when deleting tiles.
     protected TilesTimer: Map<String, number>[] = [];
     protected currentMode: string = Tiles_string.DESERT; // temporarily set the tile mode, default mode is DESERT
+    protected waterdir: string = Tiles_string.W_UP; // temporarily set the tile mode, default mode is DESERT
 
     // ui
     protected pause: boolean;
@@ -346,6 +347,9 @@ export default class GameScene extends Scene {
             Tiles_string.DIRT,
             Tiles_string.FIRE,
             Tiles_string.W_UP,
+            Tiles_string.W_LEFT,
+            Tiles_string.W_RIGHT,
+            Tiles_string.W_DOWN,
             Tiles_string.ROCK,
             Objective_Event.NEXTLEVEL,
         ]);
@@ -456,11 +460,35 @@ export default class GameScene extends Scene {
             this.cheat = !this.cheat;
             this.cheat_enabled.visible = <boolean>this.cheat;
         }
-        
+        let waterdir_changed = false;
+        if (Input.isKeyJustPressed("arrowup")) {
+            this.waterdir = Tiles_string.W_UP
+            waterdir_changed = true
+        }
+        if (Input.isKeyJustPressed("arrowdown")) {
+            this.waterdir = Tiles_string.W_DOWN
+            waterdir_changed = true
+        }
+        if (Input.isKeyJustPressed("arrowleft")) {
+            this.waterdir = Tiles_string.W_LEFT
+            waterdir_changed = true
+        }
+        if (Input.isKeyJustPressed("arrowright")) {
+            this.waterdir = Tiles_string.W_RIGHT
+            waterdir_changed = true
+        }
+        if (waterdir_changed){
+            this.tile_manager.changeanimation(this.waterdir)
+        }
 
         this.tile_manager.update(this.currentMode)
         this.objectives_bar.update()
 
+        waterdir_changed = false
+        if (this.currentMode == Tiles_string.W_UP){
+            waterdir_changed = true;
+            this.currentMode = this.waterdir;
+        }
         if (this.cheat && Input.isMousePressed()) {
             const position = Input.getGlobalMousePosition();
             if (position.y > 1088){ // in the tile select, so don't do add a tile
@@ -550,7 +578,6 @@ export default class GameScene extends Scene {
                         console.log(Object.values(Objective_Event)[3])
 
                         // monitor number of tiles, play sfx                        
-                        this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});
                         this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
                         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.currentMode , loop: false});
                     }    
@@ -558,6 +585,9 @@ export default class GameScene extends Scene {
                 }
                 
             }
+        }
+        if (waterdir_changed){
+            this.currentMode = Tiles_string.W_UP
         }
     }
 

@@ -75,4 +75,8 @@ export default class TileConstructor{
             this.outline.color = Color.BLACK;
         }
     }
+
+    changeanimation(mode: string){
+        this.type.animation.playIfNotAlready(mode, true);
+    }
 }

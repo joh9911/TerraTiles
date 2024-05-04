@@ -5,7 +5,7 @@ import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
 import GameScene from "../Scenes/GameScene";
 import { Layers_enum } from "../Utils/Layers_enum";
-import { Tile_manage, Tiles_string } from "../Utils/Tiles_enum";
+import { Tile_manage, Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import TileConstructor from "./TileConstructor";
 
 export default class TileManager{
@@ -48,5 +48,9 @@ export default class TileManager{
         for (const type of this.Tiles) {
             type.pause();
         }
+    }
+
+    changeanimation(mode: string){
+        this.Tiles[Tile_manage[Tiles_string.W_UP]].changeanimation(mode);
     }
 }
