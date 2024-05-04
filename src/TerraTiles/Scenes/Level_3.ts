@@ -57,8 +57,6 @@ export default class Level_3 extends GameScene {
         // music, events, ui
         super.startScene();
 
-        this.objectives_bar.createLand(10);
-
         // level_3 tilemap
         this.addLayer(Layers_enum.TILES, 10);
         this.add.tilemap("level_3");
@@ -85,6 +83,8 @@ export default class Level_3 extends GameScene {
                 this.Tiles[Tiles_index[Tiles_string.DESERT]].add(this.vec2ToString(tile_arr[i].position));
             }
         }
+        this.objectives_bar.createLand(10);
+        this.objectives_bar.NoMud(this.Tiles[Tiles_index[Tiles_string.MUD]].size);
     }
 
 }

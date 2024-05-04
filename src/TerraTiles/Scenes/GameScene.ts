@@ -13,7 +13,7 @@ import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import { SoundEvent } from "../Utils/SoundEvent";
 import TileManager from "../TileManager/TileManager";
 import ObjectivesManager from "../ObjectivesBar/ObjectivesManager";
-import { Objective_Event } from "../Utils/Objective_Event";
+import { Objective_Event, Objective_mapping } from "../Utils/Objective_Event";
 import MainMenu from "./MainMenu";
 import { Keyboard_enum } from "../Utils/Keyboard_enum";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
@@ -260,7 +260,8 @@ export default class GameScene extends Scene {
                             // fire + mud = dirt
                             else if (animation_string == Tiles_string.MUD) {
                                 animated_sprite.animation.playIfNotAlready(Tiles_string.DIRT, true);
-                                this.Tiles[Tiles_index[Tiles_string.DIRT]].add(fireTile);
+                                this.Tiles[Tiles_index[Tiles_string.DIRT]].add(vec2ToString);
+                                this.Tiles[Tiles_index[Tiles_string.MUD]].delete(vec2ToString);
 
                             } 
                             // fire + (dirt, grass, house, disease) = fire
@@ -301,9 +302,9 @@ export default class GameScene extends Scene {
         // update fire set
         this.Tiles[Tiles_index[Tiles_string.FIRE]] = new Set<String>([...this.Tiles[Tiles_index[Tiles_string.FIRE]], ...newFireTiles]);
         
-        if (newFireTiles.size > 0 || deletedFireTiles){
-            this.emitter.fireEvent(Objective_Event.FIRESIZE, {size: this.Tiles[Tiles_index[Tiles_string.FIRE]].size});
-        }
+        // if (newFireTiles.size > 0 || deletedFireTiles){
+        //     this.emitter.fireEvent(Objective_Event.FIRESIZE, {size: this.Tiles[Tiles_index[Tiles_string.FIRE]].size});
+        // }
     }
     
 
@@ -330,9 +331,11 @@ export default class GameScene extends Scene {
         for (const value in Object.values(Tiles_index)){
             if (this.Tiles[value].size != this.tile_lengths[value]){
                 this.tile_lengths[value] = this.Tiles[value].size
+                this.emitter.fireEvent(Objective_mapping[value], {size: this.tile_lengths[value]});//If size changed, fire event
                 //and then send the event to say size has changed
             }
         }
+        console.log(this.Tiles[12].size);
     }
 
 
@@ -404,6 +407,10 @@ export default class GameScene extends Scene {
             text: "Cheats Enabled"
         });
         this.cheat_enabled.visible = false;
+        this.tile_lengths = []
+        for (const value in Object.values(Tiles_index)){
+                this.tile_lengths[value] = this.Tiles[value].size
+        }
     }
     
     
@@ -436,6 +443,7 @@ export default class GameScene extends Scene {
         this.spreadWater(deltaT);
         this.spreadDisease(deltaT);
         this.growGrassFromDirt(deltaT);
+        this.update_tile_lengths();
         
         // keyboard shortcuts for tile additions     
         for (const [key, value] of Object.entries(Tile_manage)){
@@ -495,7 +503,6 @@ export default class GameScene extends Scene {
                         console.log(Object.values(Objective_Event)[3])
 
                         // monitor number of tiles, play sfx                        
-                        this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});
                         this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
                         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.currentMode , loop: false});
                     }    

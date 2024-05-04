@@ -47,8 +47,8 @@ export default class ObjectivesManager{
         this.num_objectives++;
     }
 
-    public NoMud(){
-        this.list_objectives[this.num_objectives] = new NoMud(this.game_scene, this.setObjectivePos());
+    public NoMud(num: number){
+        this.list_objectives[this.num_objectives] = new NoMud(this.game_scene, this.setObjectivePos(), num);
         this.num_objectives++;
     }
 
