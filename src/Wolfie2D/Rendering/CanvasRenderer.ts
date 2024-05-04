@@ -24,6 +24,9 @@ import Line from "../Nodes/Graphics/Line";
 import Debug from "../Debug/Debug";
 import IsometricTilemap from "../Nodes/Tilemaps/IsometricTilemap";
 import StaggeredIsometricTilemap from "../Nodes/Tilemaps/StaggeredIsometricTilemap";
+import RegistryManager from "../Registry/RegistryManager";
+import ParallaxLayer from "../Scene/Layers/ParallaxLayer";
+import ResourceManager from "../ResourceManager/ResourceManager";
 
 /**
  * An implementation of the RenderingManager class using CanvasRenderingContext2D.
@@ -38,6 +41,9 @@ export default class CanvasRenderer extends RenderingManager {
     protected zoom: number;
 
     protected worldSize: Vec2;
+
+    // added
+	protected gl: WebGLRenderingContext;
 
     constructor(){
         super();
@@ -59,6 +65,24 @@ export default class CanvasRenderer extends RenderingManager {
         this.worldSize = new Vec2(width, height);
 
         this.ctx = canvas.getContext("2d");
+
+
+
+        // added
+		let text_canvas = <HTMLCanvasElement>document.getElementById("text-canvas");
+		text_canvas.hidden = false;
+        this.gl = text_canvas.getContext("webgl", {preserveDrawingBuffer: true});
+
+        this.gl.viewport(0, 0, canvas.width, canvas.height);
+		this.gl.disable(this.gl.DEPTH_TEST);
+        this.gl.enable(this.gl.BLEND);
+        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+        this.gl.enable(this.gl.CULL_FACE);
+
+        // so shaders load
+        ResourceManager.getInstance().useWebGL(true, this.gl);
+
+
 
         this.graphicRenderer = new GraphicRenderer(this.ctx);
         this.tilemapRenderer = new TilemapRenderer(this.ctx);
@@ -142,7 +166,18 @@ export default class CanvasRenderer extends RenderingManager {
 
         // Get the zoom level of the scene
         this.zoom = this.scene.getViewScale();
+
         
+        
+        // added custom shader part from WebGLRenderer.ts
+		if(node.hasCustomShader) {
+			// If the node has a custom shader, render using that
+			this.renderCustom(node);
+            return;
+		}
+
+
+
         // Move the canvas to the position of the node and rotate
         let xScale = 1;
         let yScale = 1;
@@ -218,6 +253,34 @@ export default class CanvasRenderer extends RenderingManager {
             sprite.size.x * sprite.scale.x*this.zoom, sprite.size.y * sprite.scale.y*this.zoom);
     }
 
+
+
+    // taken from WebGLRenderer.ts
+	protected renderCustom(node: CanvasNode): void {
+		let shader = RegistryManager.shaders.get(node.customShaderKey);
+		let options = this.addOptions(shader.getOptions(node), node);
+		shader.render(this.gl, options);
+	}
+
+    // taken from WebGLRenderer.ts
+	protected addOptions(options: Record<string, any>, node: CanvasNode): Record<string, any> {
+		// Give the shader access to the world size
+		options.worldSize = this.worldSize;
+
+		// Adjust the origin position to the parallax
+		let layer = node.getLayer();
+		let parallax = new Vec2(1, 1);
+		if(layer instanceof ParallaxLayer){
+			parallax = (<ParallaxLayer>layer).parallax;
+		}
+
+		options.origin = this.origin.clone().mult(parallax);
+
+		return options;
+	}
+
+
+
     // @override
     protected renderGraphic(graphic: Graphic): void {
         if(graphic instanceof Point){
@@ -249,8 +312,15 @@ export default class CanvasRenderer extends RenderingManager {
     }
 
     clear(clearColor: Color): void {
+        this.clearWebGL(0.0, 0.0, 0.0, 0.0);
+
         this.ctx.clearRect(0, 0, this.worldSize.x, this.worldSize.y);
         this.ctx.fillStyle = clearColor.toString();
         this.ctx.fillRect(0, 0, this.worldSize.x, this.worldSize.y);
+    }
+
+    clearWebGL(r: number, g: number, b: number, a: number): void {
+		this.gl.clearColor(r, g, b, a);
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     }
 }

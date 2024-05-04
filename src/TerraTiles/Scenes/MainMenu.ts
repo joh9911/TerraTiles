@@ -12,6 +12,7 @@ import { Layers_enum } from "../Utils/Layers_enum";
 import LevelSelect from "./LevelSelect";
 import Button from "../../Wolfie2D/Nodes/UIElements/Button";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import Help from "./Help";
 
 export default class MainMenu extends Scene {
     // Layers, for multiple main menu screens
@@ -22,7 +23,7 @@ export default class MainMenu extends Scene {
 		this.load.image("Menu", "Game_Resources/sprites/Main_Menu.png");
 
         // Load cancel/no sound        
-        this.load.audio("cancel", "Game_Resources/sounds/Cancel.wav");
+        this.load.audio("cancel", "Game_Resources/sounds/Cancel.mp3");
 
         // Load tile animations early
         this.load.spritesheet("tile_animations", "Game_Resources/tilemaps/tile_animations.json");
@@ -61,6 +62,12 @@ export default class MainMenu extends Scene {
 
         credit.onClick = () => {
             this.sceneManager.changeToScene(Credit);
+        };
+
+        const help = this.createButton("Help", new Vec2(center.x, center.y + 200));
+
+        help.onClick = () => {
+            this.sceneManager.changeToScene(Help);
         };
     }
 

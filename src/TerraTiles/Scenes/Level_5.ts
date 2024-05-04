@@ -20,7 +20,7 @@ export default class Level_5 extends GameScene {
         super.loadScene();
 
         // load tilemap
-        this.load.tilemap("level_5", "Game_Resources/tilemaps/lvl_5.json");
+        this.load.tilemap("level_5", "Game_Resources/tilemaps/lvl_4.json");
 
         // load music, make sure the key is "level_music"
         this.load.audio("level_music", "Game_Resources/music/level1.mp3"); // temp
@@ -79,15 +79,15 @@ export default class Level_5 extends GameScene {
             else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DIRT) {
                 this.Tiles[Tiles_index[Tiles_string.DIRT]].add(this.vec2ToString(tile_arr[i].position));
             }
-            else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DESERT) {
-                this.Tiles[Tiles_index[Tiles_string.DESERT]].add(this.vec2ToString(tile_arr[i].position));
-            }
+            // else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DESERT) {
+            //     this.Tiles[Tiles_index[Tiles_string.DESERT]].add(this.vec2ToString(tile_arr[i].position));
+            // }
             else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DISEASE) {
                 this.Tiles[Tiles_index[Tiles_string.DISEASE]].add(this.vec2ToString(tile_arr[i].position));
             }
-            else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.MUD) {
-                this.Tiles[Tiles_index[Tiles_string.MUD]].add(this.vec2ToString(tile_arr[i].position));
-            }
+            // else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.MUD) {
+            //     this.Tiles[Tiles_index[Tiles_string.MUD]].add(this.vec2ToString(tile_arr[i].position));
+            // }
         }
     }
 

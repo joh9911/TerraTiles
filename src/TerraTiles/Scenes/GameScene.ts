@@ -16,7 +16,12 @@ import ObjectivesManager from "../ObjectivesBar/ObjectivesManager";
 import { Objective_Event } from "../Utils/Objective_Event";
 import MainMenu from "./MainMenu";
 import { Keyboard_enum } from "../Utils/Keyboard_enum";
+<<<<<<< HEAD
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
+=======
+import ShaderRegistry from "../../Wolfie2D/Registry/Registries/ShaderRegistry";
+import CanvasRenderer from "../../Wolfie2D/Rendering/CanvasRenderer";
+>>>>>>> 57de0d53878f5e4b3726fde77c27146b7d5c67e9
 
 
 export default class GameScene extends Scene {
@@ -421,6 +426,7 @@ export default class GameScene extends Scene {
 
         // pause
         if (Input.isKeyJustPressed('p') === true){
+            this.tile_manager.pause();
             this.pause = !this.pause;
             this.pause_box.visible = !this.pause_box.visible;
             this.pause_button.visible = !this.pause_button.visible;

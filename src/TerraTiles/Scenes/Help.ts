@@ -7,7 +7,7 @@ import MainMenu from "./MainMenu";
 import { Layers_enum } from "../Utils/Layers_enum";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
-export default class Controls extends Scene{
+export default class Help extends Scene{
 
     public loadScene() {
     }
@@ -22,26 +22,47 @@ export default class Controls extends Scene{
       this.viewport.setFocus(size);
       this.viewport.setZoomLevel(1);
 
-      // Create title
-      const title = <Label>this.add.uiElement(UIElementType.LABEL, Layers_enum.MENU, {
-          position: new Vec2(size.x, sizeY - 100),
-          text: "Controls",
-      });
+    // Create title
+    const title = <Label>this.add.uiElement(UIElementType.LABEL, Layers_enum.MENU, {
+        position: new Vec2(size.x, sizeY - 100),
+        text: "Help",
+    });
 
-      // Create info text
-      let i = 1;
-      this.createLabel(
-          "Click: Place down tiles and select tiles",
-          new Vec2(size.x, sizeY)
-      );
-      this.createLabel(
-          "p: Pause the game",
-          new Vec2(size.x, sizeY + yOffset * i++)
-      );
-      this.createLabel(
-        "q, w, e, r, t: Another way to select tiles",
+    // Create info text
+    let i = 1;
+    this.createLabel(
+        "Explore how different tiles interact",
+        new Vec2(size.x, sizeY)
+    );
+    
+    sizeY += 130;
+    this.createLabel(
+        "Here are some hints:",
         new Vec2(size.x, sizeY + yOffset * i++)
     );
+    
+    sizeY += 15;
+    this.createLabel(
+        "Desert creates new land",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );
+    this.createLabel(
+        "Dirt holds great potential",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );
+    this.createLabel(
+        "Fire spreads quickly",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );
+    this.createLabel(
+        "Water spreads in a current",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );
+    this.createLabel(
+        "Rock holds strong",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );
+
 
       // Create a back button
       const back = this.add.uiElement(UIElementType.BUTTON, Layers_enum.MENU, {position: new Vec2(size.x, 2 * size.y - 60), text: "Back"});
