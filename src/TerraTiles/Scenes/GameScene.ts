@@ -16,6 +16,7 @@ import ObjectivesManager from "../ObjectivesBar/ObjectivesManager";
 import { Objective_Event } from "../Utils/Objective_Event";
 import MainMenu from "./MainMenu";
 import { Keyboard_enum } from "../Utils/Keyboard_enum";
+import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 
 
 export default class GameScene extends Scene {
@@ -32,10 +33,12 @@ export default class GameScene extends Scene {
     protected pause_box: Graphic
     protected pause_button: Button
     protected tile_manager: TileManager
+    protected tile_lengths: number[]
     protected objectives_bar: ObjectivesManager
     protected nextlevel: Boolean
     protected clicktilepos: Vec2
-    protected mousedrag: Boolean
+    protected cheat: Boolean
+    protected cheat_enabled: Label
     protected locked_tiles: Boolean[] = null
 
     // method for comparing tiles' positions
@@ -323,6 +326,15 @@ export default class GameScene extends Scene {
             return this.TilesTimer[tileType]?.get(tileKey) || 3; 
     }
 
+    update_tile_lengths(){
+        for (const value in Object.values(Tiles_index)){
+            if (this.Tiles[value].size != this.tile_lengths[value]){
+                this.tile_lengths[value] = this.Tiles[value].size
+                //and then send the event to say size has changed
+            }
+        }
+    }
+
 
 
     protected subscribeToEvents(){
@@ -386,7 +398,12 @@ export default class GameScene extends Scene {
         this.pause_button.visible = false;
         this.nextlevel = false;
         this.clicktilepos = new Vec2(-1, -1);
-        this.mousedrag = false
+        this.cheat = false
+        this.cheat_enabled = <Label>this.add.uiElement(UIElementType.LABEL, Layers_enum.BOXONMANAGER, {
+            position: new Vec2(1100, 100),
+            text: "Cheats Enabled"
+        });
+        this.cheat_enabled.visible = false;
     }
     
     
@@ -418,7 +435,7 @@ export default class GameScene extends Scene {
         this.spreadWater(deltaT);
         this.spreadDisease(deltaT);
         this.growGrassFromDirt(deltaT);
-
+        
         // keyboard shortcuts for tile additions     
         for (const [key, value] of Object.entries(Tile_manage)){
             if (this.locked_tiles[value] && Input.isKeyJustPressed(Keyboard_enum[value])){
@@ -426,15 +443,16 @@ export default class GameScene extends Scene {
             }
         }
         if (Input.isKeyJustPressed("enter")) {
-            console.log("mouseedrag:" + this.mousedrag);
-            this.mousedrag = !this.mousedrag;
+            console.log("cheat:" + this.cheat);
+            this.cheat = !this.cheat;
+            this.cheat_enabled.visible = <boolean>this.cheat;
         }
         
 
         this.tile_manager.update(this.currentMode)
         this.objectives_bar.update()
 
-        if (this.mousedrag && Input.isMousePressed()) {
+        if (this.cheat && Input.isMousePressed()) {
             const position = Input.getGlobalMousePosition();
             if (position.y > 1088){ // in the tile select, so don't do add a tile
                 return;
@@ -541,12 +559,13 @@ export default class GameScene extends Scene {
         this.load.audio(Tiles_string.DIRT, "Game_Resources/sounds/Dirt.mp3");
         this.load.audio(Tiles_string.FIRE, "Game_Resources/sounds/Fire.mp3");
         this.load.audio(Tiles_string.W_UP, "Game_Resources/sounds/Water.mp3");
+        this.load.audio(Tiles_string.W_DOWN, "Game_Resources/sounds/Water.mp3");
+        this.load.audio(Tiles_string.W_RIGHT, "Game_Resources/sounds/Water.mp3");
+        this.load.audio(Tiles_string.W_LEFT, "Game_Resources/sounds/Water.mp3");
         this.load.audio(Tiles_string.ROCK, "Game_Resources/sounds/Rock.mp3");
     }
 
     unloadScene(): void {
-        // keep sfx
-        this.load.keepAudio(Tiles_string.FIRE);
 
         // stop music
         this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music" });
