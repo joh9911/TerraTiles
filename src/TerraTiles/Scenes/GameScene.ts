@@ -91,66 +91,84 @@ export default class GameScene extends Scene {
 
 
     spreadWater(deltaT: number) {
+        [Tiles_string.W_UP, Tiles_string.W_DOWN, Tiles_string.W_LEFT, Tiles_string.W_RIGHT].forEach(waterType => {
+            const newWaterTiles: Set<String> = new Set<String>();
         
-        const newWaterTiles: Set<String> = new Set<String>();
-        
-        for (let waterTile of this.Tiles[Tiles_index[Tiles_string.W_UP]]) {
-            let tileTimer = this.getTileTimer(Tiles_index[Tiles_string.W_UP], this.stringToVec2(waterTile));
-
-            const directions = [
-                { dx: 0, dy: -1 },
-                { dx: 1, dy: 0 },
-                { dx: 0, dy: 1 },
-                { dx: -1, dy: 0 }
-            ];
-
-            // time to spread water
-            if (tileTimer <= 0) {
-                this.initializeTileTimer(Tiles_index[Tiles_string.W_UP], this.stringToVec2(waterTile), 2); 
-
-                for (let {dx, dy} of directions) {
-                    let originPos = this.stringToVec2(waterTile);
-                    let newPos = new Vec2(originPos.x + dx * 32, originPos.y + dy * 32);
-                    let vec2ToString = this.vec2ToString(newPos);
-
-                    // get the tile at this new position
-                    let nodes = this.sceneGraph.getNodesAt(newPos);
-                    for (let node of nodes) {
-                        if (node instanceof AnimatedSprite) {
-                            let animated_sprite = node as AnimatedSprite;
-                            let animation_string = animated_sprite.animation.getcurrentAnimation().valueOf();
-                    
-                            if (dx == 0 && dy == -1){
-                                if (TileMatrix[Tiles_string.W_UP][animation_string] === 1) {
-                                    // add water
-                                    animated_sprite.animation.playIfNotAlready(Tiles_string.W_UP, true);
-                                    newWaterTiles.add(vec2ToString);
-                                    // remove from old set 
-                                    this.Tiles[Tiles_index[animation_string]].delete(vec2ToString);
-                                    this.TilesTimer[Tiles_index[animation_string]].delete(vec2ToString);
+            for (let waterTile of this.Tiles[Tiles_index[Tiles_string.W_UP]]) {
+                let tileTimer = this.getTileTimer(Tiles_index[Tiles_string.W_UP], this.stringToVec2(waterTile));
+    
+                const directions = [
+                    { dx: 0, dy: -1 },
+                    { dx: 1, dy: 0 },
+                    { dx: 0, dy: 1 },
+                    { dx: -1, dy: 0 }
+                ];
+    
+                // time to spread water
+                if (tileTimer <= 0) {
+                    this.initializeTileTimer(Tiles_index[Tiles_string.W_UP], this.stringToVec2(waterTile), 2); 
+    
+                    for (let {dx, dy} of directions) {
+                        let originPos = this.stringToVec2(waterTile);
+                        let newPos = new Vec2(originPos.x + dx * 32, originPos.y + dy * 32);
+                        let vec2ToString = this.vec2ToString(newPos);
+    
+                        // get the tile at this new position
+                        let nodes = this.sceneGraph.getNodesAt(newPos);
+                        for (let node of nodes) {
+                            if (node instanceof AnimatedSprite) {
+                                let animated_sprite = node as AnimatedSprite;
+                                let animation_string = animated_sprite.animation.getcurrentAnimation().valueOf();
+                                
+                                // spread water
+                                if (dx == 0 && dy == -1){
+                                    if (TileMatrix[Tiles_string.W_UP][animation_string] === 1) {
+                                        // add water
+                                        animated_sprite.animation.playIfNotAlready(Tiles_string.W_UP, true);
+                                        newWaterTiles.add(vec2ToString);
+                                        // remove from old set 
+                                        this.Tiles[Tiles_index[animation_string]].delete(vec2ToString);
+                                        this.TilesTimer[Tiles_index[animation_string]].delete(vec2ToString);
+                                    }
                                 }
-                            }
-                            else{
-                                if (TileMatrix[Tiles_string.DIRT][animation_string] === 1) {
-                                    animated_sprite.animation.playIfNotAlready(Tiles_string.DIRT, true);
-                                    this.Tiles[Tiles_index[Tiles_string.DIRT]].add(vec2ToString);
-                                    this.Tiles[Tiles_index[animation_string]].delete(vec2ToString);
-                                    this.TilesTimer[Tiles_index[animation_string]].delete(vec2ToString);
+                                // spread dirt around water 
+                                else{
+                                    if (TileMatrix[Tiles_string.DIRT][animation_string] === 1) {
+                                        animated_sprite.animation.playIfNotAlready(Tiles_string.DIRT, true);
+                                        this.Tiles[Tiles_index[Tiles_string.DIRT]].add(vec2ToString);
+                                        this.Tiles[Tiles_index[animation_string]].delete(vec2ToString);
+                                        this.TilesTimer[Tiles_index[animation_string]].delete(vec2ToString);
+                                    }
                                 }
+                                
                             }
-                            
                         }
                     }
+                } 
+                else {
+                    tileTimer -= deltaT;
+                    this.initializeTileTimer(Tiles_index[Tiles_string.W_UP], this.stringToVec2(waterTile), tileTimer);
                 }
-            } 
-            else {
-                tileTimer -= deltaT;
-                this.initializeTileTimer(Tiles_index[Tiles_string.W_UP], this.stringToVec2(waterTile), tileTimer);
             }
-        }
+    
+            // update water set
+            this.Tiles[Tiles_index[Tiles_string.W_UP]] = new Set<String>([...this.Tiles[Tiles_index[Tiles_string.W_UP]], ...newWaterTiles]);
+        });
+    }
 
-        // update water set
-        this.Tiles[Tiles_index[Tiles_string.W_UP]] = new Set<String>([...this.Tiles[Tiles_index[Tiles_string.W_UP]], ...newWaterTiles]);
+    getWaterDirection(waterType: string) {
+        switch (waterType) {
+            case Tiles_string.W_UP:
+                return { dx: 0, dy: -1 };
+            case Tiles_string.W_DOWN:
+                return { dx: 0, dy: 1 };
+            case Tiles_string.W_LEFT:
+                return { dx: -1, dy: 0 };
+            case Tiles_string.W_RIGHT:
+                return { dx: 1, dy: 0 };
+            default:
+                return { dx: 0, dy: 0 }; 
+        }
     }
 
 
@@ -215,19 +233,16 @@ export default class GameScene extends Scene {
         for (let rockTile of this.Tiles[Tiles_index[Tiles_string.ROCK]]) {
           const rockTilePos = this.stringToVec2(rockTile);
       
-          // 물 타일 제거 타이머와 현재 위치
           let removeWaterTimer = this.getTileTimer(Tiles_index[Tiles_string.ROCK], rockTilePos);
           let currentPos = this.getRemoveWaterPosition(rockTilePos) || rockTilePos.clone();
       
-          // 타이머 업데이트
           removeWaterTimer -= deltaT;
       
           if (removeWaterTimer <= 0) {
-            currentPos.y -= 32; // 위쪽 방향으로 이동
+            currentPos.y -= 32; 
             const currentTileKey = this.vec2ToString(currentPos);
       
             if (this.Tiles[Tiles_index[Tiles_string.W_UP]].has(currentTileKey)) {
-              // 물 타일 제거
               const nodes = this.sceneGraph.getNodesAt(currentPos);
               for (let node of nodes) {
                 if (node instanceof AnimatedSprite) {
@@ -236,12 +251,10 @@ export default class GameScene extends Scene {
                   animatedSprite.animation.playIfNotAlready(Tiles_string.DESERT, true);
                   this.Tiles[Tiles_index[Tiles_string.DESERT]].add(currentTileKey);
 
-                      // 물 퍼짐 타이머 초기화
-                    this.TilesTimer[Tiles_index[Tiles_string.W_UP]].delete(currentTileKey);
+                this.TilesTimer[Tiles_index[Tiles_string.W_UP]].delete(currentTileKey);
                 }
               }
       
-              // 타이머 초기화 및 현재 위치 저장
               this.initializeTileTimer(Tiles_index[Tiles_string.ROCK], rockTilePos, 1);
               this.saveRemoveWaterPosition(rockTilePos, currentPos);
             } else {
@@ -250,7 +263,6 @@ export default class GameScene extends Scene {
                 this.Tiles[Tiles_index[Tiles_string.ROCK]].delete(this.vec2ToString(rockTilePos));
             }
           } else {
-            // 타이머 갱신
             this.initializeTileTimer(Tiles_index[Tiles_string.ROCK], rockTilePos, removeWaterTimer);
           }
         }
