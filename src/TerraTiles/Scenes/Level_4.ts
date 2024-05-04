@@ -21,7 +21,7 @@ export default class Level_4 extends GameScene {
         super.loadScene();
 
         // load tilemap
-        this.load.tilemap("level_4", "Game_Resources/tilemaps/lvl_4.json");
+        this.load.tilemap("level_4", "Game_Resources/tilemaps/lvl_5.json");
 
         // load music, make sure the key is "level_music"
         this.load.audio("level_music", "Game_Resources/music/level1.mp3"); // temp
@@ -57,7 +57,7 @@ export default class Level_4 extends GameScene {
         // music, events, ui
         super.startScene();
 
-        console.log(this.Tiles);
+        this.objectives_bar.createLand(10);
 
         // level_4 tilemap
         this.addLayer(Layers_enum.TILES, 10);
@@ -81,8 +81,14 @@ export default class Level_4 extends GameScene {
             else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DIRT) {
                 this.Tiles[Tiles_index[Tiles_string.DIRT]].add(this.vec2ToString(tile_arr[i].position));
             }
+            else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DESERT) {
+                this.Tiles[Tiles_index[Tiles_string.DESERT]].add(this.vec2ToString(tile_arr[i].position));
+            }
             else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DISEASE) {
                 this.Tiles[Tiles_index[Tiles_string.DISEASE]].add(this.vec2ToString(tile_arr[i].position));
+            }
+            else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.MUD) {
+                this.Tiles[Tiles_index[Tiles_string.MUD]].add(this.vec2ToString(tile_arr[i].position));
             }
         }
     }

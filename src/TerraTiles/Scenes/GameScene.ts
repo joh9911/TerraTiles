@@ -13,8 +13,10 @@ import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import { SoundEvent } from "../Utils/SoundEvent";
 import TileManager from "../TileManager/TileManager";
 import ObjectivesManager from "../ObjectivesBar/ObjectivesManager";
-import { Objective_Event } from "../Utils/Objective_Event";
+import { Objective_Event, Objective_mapping } from "../Utils/Objective_Event";
 import MainMenu from "./MainMenu";
+import { Keyboard_enum } from "../Utils/Keyboard_enum";
+import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 
 
 export default class GameScene extends Scene {
@@ -26,16 +28,20 @@ export default class GameScene extends Scene {
     protected TilesTimer: Map<String, number>[] = [];
     protected removeWaterPositions: Map<string, Vec2>;
     protected currentMode: string = Tiles_string.DESERT; // temporarily set the tile mode, default mode is DESERT
+    protected waterdir: string = Tiles_string.W_UP; // temporarily set the tile mode, default mode is DESERT
 
     // ui
     protected pause: boolean;
     protected pause_box: Graphic
     protected pause_button: Button
     protected tile_manager: TileManager
+    protected tile_lengths: number[]
     protected objectives_bar: ObjectivesManager
     protected nextlevel: Boolean
     protected clicktilepos: Vec2
-    protected mousedrag: Boolean
+    protected cheat: Boolean
+    protected cheat_enabled: Label
+    protected locked_tiles: Boolean[] = null
 
     // method for comparing tiles' positions
     vec2ToString(vec: Vec2): string {
@@ -328,8 +334,8 @@ export default class GameScene extends Scene {
                             // fire + mud = dirt
                             if (animation_string == Tiles_string.MUD) {
                                 animated_sprite.animation.playIfNotAlready(Tiles_string.DIRT, true);
-                                this.Tiles[Tiles_index[Tiles_string.DIRT]].add(fireTile);
-                                this.Tiles[Tiles_index[animation_string]].delete(vec2ToString);
+                                this.Tiles[Tiles_index[Tiles_string.DIRT]].add(vec2ToString);
+                                this.Tiles[Tiles_index[Tiles_string.MUD]].delete(vec2ToString);
 
                             } 
                             // fire + (dirt, grass, house, disease) = fire
@@ -372,9 +378,9 @@ export default class GameScene extends Scene {
         // update fire set
         this.Tiles[Tiles_index[Tiles_string.FIRE]] = new Set<String>([...this.Tiles[Tiles_index[Tiles_string.FIRE]], ...newFireTiles]);
         
-        if (newFireTiles.size > 0 || deletedFireTiles){
-            this.emitter.fireEvent(Objective_Event.FIRESIZE, {size: this.Tiles[Tiles_index[Tiles_string.FIRE]].size});
-        }
+        // if (newFireTiles.size > 0 || deletedFireTiles){
+        //     this.emitter.fireEvent(Objective_Event.FIRESIZE, {size: this.Tiles[Tiles_index[Tiles_string.FIRE]].size});
+        // }
     }
     
 
@@ -399,6 +405,17 @@ export default class GameScene extends Scene {
             return this.TilesTimer[tileType]?.get(tileKey) || 3; 
     }
 
+    update_tile_lengths(){
+        for (const value in Object.values(Tiles_index)){
+            if (this.Tiles[value].size != this.tile_lengths[value]){
+                this.tile_lengths[value] = this.Tiles[value].size
+                this.emitter.fireEvent(Objective_mapping[value], {size: this.tile_lengths[value]});//If size changed, fire event
+                //and then send the event to say size has changed
+            }
+        }
+        console.log(this.Tiles[12].size);
+    }
+
 
 
     protected subscribeToEvents(){
@@ -407,6 +424,9 @@ export default class GameScene extends Scene {
             Tiles_string.DIRT,
             Tiles_string.FIRE,
             Tiles_string.W_UP,
+            Tiles_string.W_LEFT,
+            Tiles_string.W_RIGHT,
+            Tiles_string.W_DOWN,
             Tiles_string.ROCK,
             Objective_Event.NEXTLEVEL,
         ]);
@@ -428,7 +448,10 @@ export default class GameScene extends Scene {
         this.addLayer(Layers_enum.PAUSE, 100);
         this.addLayer(Layers_enum.PAUSEBUTTON, 101);
 
-        this.tile_manager = new TileManager(this, this.currentMode)
+        if (this.locked_tiles == null){
+            this.locked_tiles = [true, true, true, true, true]
+        }
+        this.tile_manager = new TileManager(this, this.currentMode, this.locked_tiles)
         this.objectives_bar = new ObjectivesManager(this)
 
         Object.keys(Tiles_index).forEach(key => {
@@ -459,7 +482,16 @@ export default class GameScene extends Scene {
         this.pause_button.visible = false;
         this.nextlevel = false;
         this.clicktilepos = new Vec2(-1, -1);
-        this.mousedrag = false
+        this.cheat = false
+        this.cheat_enabled = <Label>this.add.uiElement(UIElementType.LABEL, Layers_enum.BOXONMANAGER, {
+            position: new Vec2(1100, 100),
+            text: "Cheats Enabled"
+        });
+        this.cheat_enabled.visible = false;
+        this.tile_lengths = []
+        for (const value in Object.values(Tiles_index)){
+                this.tile_lengths[value] = this.Tiles[value].size
+        }
     }
     
     
@@ -477,6 +509,7 @@ export default class GameScene extends Scene {
 
         // pause
         if (Input.isKeyJustPressed('p') === true){
+            this.tile_manager.pause();
             this.pause = !this.pause;
             this.pause_box.visible = !this.pause_box.visible;
             this.pause_button.visible = !this.pause_button.visible;
@@ -492,28 +525,49 @@ export default class GameScene extends Scene {
         this.spreadWater(deltaT);
         this.spreadDisease(deltaT);
         this.growGrassFromDirt(deltaT);
-
-        // keyboard shortcuts for tile additions        
-        if (Input.isKeyJustPressed('q')) {
-            this.emitter.fireEvent(Tiles_string.DESERT);
-        } else if (Input.isKeyJustPressed('w')) {
-            this.emitter.fireEvent(Tiles_string.DIRT);
-        } else if (Input.isKeyJustPressed('e')) {
-            this.emitter.fireEvent(Tiles_string.FIRE);
-        } else if (Input.isKeyJustPressed('r')) {
-            this.emitter.fireEvent(Tiles_string.W_UP);
-        } else if (Input.isKeyJustPressed('t')) {
-            this.emitter.fireEvent(Tiles_string.ROCK);
-        } else if (Input.isKeyJustPressed("enter")) {
-            console.log("mouseedrag:" + this.mousedrag);
-            this.mousedrag = !this.mousedrag;
-        }
+        this.update_tile_lengths();
         
+        // keyboard shortcuts for tile additions     
+        for (const [key, value] of Object.entries(Tile_manage)){
+            if (this.locked_tiles[value] && Input.isKeyJustPressed(Keyboard_enum[value])){
+                this.emitter.fireEvent(key);
+            }
+        }
+        if (Input.isKeyJustPressed("enter")) {
+            console.log("cheat:" + this.cheat);
+            this.cheat = !this.cheat;
+            this.cheat_enabled.visible = <boolean>this.cheat;
+        }
+        let waterdir_changed = false;
+        if (Input.isKeyJustPressed("arrowup")) {
+            this.waterdir = Tiles_string.W_UP
+            waterdir_changed = true
+        }
+        if (Input.isKeyJustPressed("arrowdown")) {
+            this.waterdir = Tiles_string.W_DOWN
+            waterdir_changed = true
+        }
+        if (Input.isKeyJustPressed("arrowleft")) {
+            this.waterdir = Tiles_string.W_LEFT
+            waterdir_changed = true
+        }
+        if (Input.isKeyJustPressed("arrowright")) {
+            this.waterdir = Tiles_string.W_RIGHT
+            waterdir_changed = true
+        }
+        if (waterdir_changed){
+            this.tile_manager.changeanimation(this.waterdir)
+        }
 
         this.tile_manager.update(this.currentMode)
         this.objectives_bar.update()
 
-        if (this.mousedrag && Input.isMousePressed()) {
+        waterdir_changed = false
+        if (this.currentMode == Tiles_string.W_UP){
+            waterdir_changed = true;
+            this.currentMode = this.waterdir;
+        }
+        if (this.cheat && Input.isMousePressed()) {
             const position = Input.getGlobalMousePosition();
             if (position.y > 1088){ // in the tile select, so don't do add a tile
                 return;
@@ -555,7 +609,6 @@ export default class GameScene extends Scene {
                         console.log(Object.values(Objective_Event)[3])
 
                         // monitor number of tiles, play sfx                        
-                        this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});
                         this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
                         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.currentMode , loop: false});
                     }    
@@ -609,7 +662,6 @@ export default class GameScene extends Scene {
                         // }
 
                         // monitor number of tiles, play sfx                        
-                        this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});
                         this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
                         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.currentMode , loop: false});
                     }    
@@ -617,6 +669,9 @@ export default class GameScene extends Scene {
                 }
                 
             }
+        }
+        if (waterdir_changed){
+            this.currentMode = Tiles_string.W_UP
         }
     }
 
@@ -626,12 +681,13 @@ export default class GameScene extends Scene {
         this.load.audio(Tiles_string.DIRT, "Game_Resources/sounds/Dirt.mp3");
         this.load.audio(Tiles_string.FIRE, "Game_Resources/sounds/Fire.mp3");
         this.load.audio(Tiles_string.W_UP, "Game_Resources/sounds/Water.mp3");
+        this.load.audio(Tiles_string.W_DOWN, "Game_Resources/sounds/Water.mp3");
+        this.load.audio(Tiles_string.W_RIGHT, "Game_Resources/sounds/Water.mp3");
+        this.load.audio(Tiles_string.W_LEFT, "Game_Resources/sounds/Water.mp3");
         this.load.audio(Tiles_string.ROCK, "Game_Resources/sounds/Rock.mp3");
     }
 
     unloadScene(): void {
-        // keep sfx
-        this.load.keepAudio(Tiles_string.FIRE);
 
         // stop music
         this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music" });

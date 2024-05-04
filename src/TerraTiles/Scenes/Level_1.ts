@@ -55,9 +55,11 @@ export default class Level_1 extends GameScene {
     startScene(): void {
 
         // music, events, ui
+        this.locked_tiles = [true, true, true, false, false]
         super.startScene();
 
-        console.log(this.Tiles);
+        this.objectives_bar.createLand(10);
+        this.objectives_bar.haveFire(10);
 
         // level_1 tilemap
         this.addLayer(Layers_enum.TILES, 10);

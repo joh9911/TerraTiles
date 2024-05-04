@@ -56,8 +56,12 @@ export default class Level_2 extends GameScene {
 
         // music, events, ui
         super.startScene();
+        // water currently only goes up, so it will destroy houses in 30s, and there's no clear way to block it
+        // this.locked_tiles = [true, true, true, true, false]
 
-        console.log(this.Tiles);
+        this.objectives_bar.createLand(10);
+        this.objectives_bar.haveWater(10);
+        this.objectives_bar.haveFire(10);
 
         // level_2 tilemap
         this.addLayer(Layers_enum.TILES, 10);

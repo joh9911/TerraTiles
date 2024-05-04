@@ -29,6 +29,8 @@ export default class Splash extends Scene {
         planet.animation.queue("LOOP", true);
 
         let size = this.viewport.getHalfSize();
+        this.add.uiElement(UIElementType.LABEL, Layers_enum.BACK, {position: new Vec2(size.x, size.y * 1/2), text: "Remember to zoom out to see everything."});
+        this.add.uiElement(UIElementType.LABEL, Layers_enum.BACK, {position: new Vec2(size.x, size.y * 1/2 + 30), text: "Press Control and - on your keyboard."});
         let fullScreen = <Button>this.add.uiElement(UIElementType.BUTTON, Layers_enum.BACK, {position: new Vec2(size.x, size.y * 3/2), text: "Click on screen to start"});
         fullScreen.backgroundColor = Color.TRANSPARENT;
         fullScreen.borderColor = Color.WHITE;

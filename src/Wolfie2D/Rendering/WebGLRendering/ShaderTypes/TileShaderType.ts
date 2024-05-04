@@ -4,8 +4,8 @@ import Rect from "../../../Nodes/Graphics/Rect";
 import ResourceManager from "../../../ResourceManager/ResourceManager";
 import QuadShaderType from "./QuadShaderType";
 
-/** */
-export default class RectShaderType extends QuadShaderType {
+/* all from RectShaderType, the actual WebGL shaders are different */
+export default class TileOutlineShaderType extends QuadShaderType {
 
 	constructor(programKey: string){
 		super(programKey);
@@ -13,7 +13,7 @@ export default class RectShaderType extends QuadShaderType {
 	}
 
 	initBufferObject(): void {
-		this.bufferObjectKey = "rect";
+		this.bufferObjectKey = "tile";
 		this.resourceManager.createBuffer(this.bufferObjectKey);
 	}
 
