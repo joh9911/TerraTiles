@@ -88,7 +88,7 @@ export default class Level_4 extends GameScene {
             }
         }
         
-        this.objectives_bar.haveHouse(this.Tiles[Tiles_index[Tiles_string.MUD]].size);
+        this.objectives_bar.haveHouse(this.Tiles[Tiles_index[Tiles_string.HOUSE]].size);
         this.objectives_bar.NoMud(this.Tiles[Tiles_index[Tiles_string.MUD]].size);
     }
 
