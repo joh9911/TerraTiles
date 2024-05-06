@@ -59,7 +59,10 @@ export default class Help extends Scene{
         new Vec2(size.x, sizeY + yOffset * i++)
     );
     this.createLabel(
-        "Rock holds strong",
+        "Rock holds strong. Are you strong for placing it",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );this.createLabel(
+        "or are you weak for not being able to pick it back up?",
         new Vec2(size.x, sizeY + yOffset * i++)
     );
 
