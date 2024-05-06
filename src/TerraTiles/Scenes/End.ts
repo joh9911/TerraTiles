@@ -13,22 +13,11 @@ export default class End extends Scene {
     public loadScene(): void {
 		this.load.spritesheet("planet", "Game_Resources/sprites/terraform.json");        
 
-        // load music
-        // this.load.audio(???, "Game_Resources/music/???.mp3");
+        this.load.audio("you won!", "Game_Resources/sounds/you won!.mp3");
     }
 
-    unloadScene(): void {
-        // stop music
-        // this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: ??? });
-    }
-
-
+    
     startScene(): void {
-
-        // music
-        // this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: ???, loop: true, holdReference: true});
-
-
         const center = this.viewport.getCenter();
 
         this.addUILayer(Layers_enum.BACK);
@@ -52,6 +41,9 @@ export default class End extends Scene {
         fullScreen.onClick = () => {
             this.sceneManager.changeToScene(Splash);
         }        
+
+        // sfx
+        this.emitter.fireEvent(GameEventType.PLAY_SFX, {key: "you won!", loop: false});
     }
 
 

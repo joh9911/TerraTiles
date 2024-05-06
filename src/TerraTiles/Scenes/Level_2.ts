@@ -2,10 +2,6 @@ import GameScene from "./GameScene";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import { Layers_enum } from "../Utils/Layers_enum";
-import { SoundEvent } from "../Utils/SoundEvent";
-import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
-import TileManager from "../TileManager/TileManager";
-import { Objective_Event } from "../Utils/Objective_Event";
 import Input from "../../Wolfie2D/Input/Input";
 import Level_1 from "./Level_1";
 import Level_3 from "./Level_3";
@@ -56,8 +52,6 @@ export default class Level_2 extends GameScene {
 
         // music, events, ui
         super.startScene();
-        // water currently only goes up, so it will destroy houses in 30s, and there's no clear way to block it
-        // this.locked_tiles = [true, true, true, true, false]
 
         // level_2 tilemap
         this.addLayer(Layers_enum.TILES, 10);
