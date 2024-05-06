@@ -8,6 +8,7 @@ import Level_2 from "./Level_2";
 import Level_3 from "./Level_3";
 import Level_4 from "./Level_4";
 import Level_6 from "./Level_6";
+import { LevelLock } from "../Utils/LevelLock";
 
 export default class Level_5 extends GameScene {
     
@@ -35,10 +36,13 @@ export default class Level_5 extends GameScene {
             this.sceneManager.changeToScene(Level_4);
         } else if (Input.isKeyPressed('6')) {
             this.sceneManager.changeToScene(Level_6);
+        } else if (Input.isKeyPressed('r')) {
+            this.sceneManager.changeToScene(Level_5);
         }
 
         // fulfilled objectives
         if (this.nextlevel == true){
+            LevelLock[5] = 1;
             this.sceneManager.changeToScene(Level_6)
         }
 
@@ -84,7 +88,8 @@ export default class Level_5 extends GameScene {
             // }
         }
 
-        this.objectives_bar.createLand(10);
+        this.objectives_bar.haveHouse(this.Tiles[Tiles_index[Tiles_string.HOUSE]].size);
+        this.objectives_bar.NoDisease(this.Tiles[Tiles_index[Tiles_string.DISEASE]].size);
     }
 
 }

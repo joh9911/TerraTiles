@@ -572,7 +572,7 @@ export default class GameScene extends Scene {
         this.clicktilepos = new Vec2(-1, -1);
         this.cheat = false
         this.cheat_enabled = <Label>this.add.uiElement(UIElementType.LABEL, Layers_enum.BOXONMANAGER, {
-            position: new Vec2(1100, 100),
+            position: new Vec2(1100, 125),
             text: "Cheats Enabled"
         });
         this.cheat_enabled.visible = false;

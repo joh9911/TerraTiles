@@ -12,8 +12,9 @@ export default class ReachTime extends ObjectivesConstructor{
     private timer: Timer
     private end: boolean
     private totaltime: number
+    private secret: boolean
     
-    constructor(game_scene: GameScene, pos: Vec2, num: number){
+    constructor(game_scene: GameScene, pos: Vec2, num: number, secret: boolean){
         super(game_scene, pos);
         this.end = false;
         this.totaltime = num;
@@ -21,13 +22,21 @@ export default class ReachTime extends ObjectivesConstructor{
         this.end = true},
          false);
         this.timer.start();
-        this.text = this.createLabel("Time Left: " + Math.floor(this.timer.timeinSeconds()) + " / " + this.totaltime, new Vec2(pos.x + 140, pos.y));
+        this.secret = secret;
+        if (secret){
+            this.text = this.createLabel("Have Fun!", new Vec2(pos.x + 140, pos.y));
+        }
+        else{
+            this.text = this.createLabel("Reach: " + (this.totaltime - Math.floor(this.timer.timeinSeconds())) + " / " + this.totaltime + " seconds", new Vec2(pos.x + 140, pos.y));
+        }
     }
 
     update(){
         if (this.end){
             this.setCheck();
         }
-        this.text.text = ("Time Left: " + Math.floor(this.timer.timeinSeconds()) + " / " + this.totaltime);
+        if (!this.secret){
+            this.text.text = ("Reach: " + (this.totaltime - Math.floor(this.timer.timeinSeconds())) + " / " + this.totaltime + " seconds");
+        }
     }
 }

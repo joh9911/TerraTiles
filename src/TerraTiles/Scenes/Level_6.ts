@@ -37,6 +37,8 @@ export default class Level_6 extends GameScene {
             this.sceneManager.changeToScene(Level_4);
         } else if (Input.isKeyPressed('5')) {
             this.sceneManager.changeToScene(Level_5);
+        } else if (Input.isKeyPressed('r')) {
+            this.sceneManager.changeToScene(Level_6);
         }
 
         // fulfilled objectives        
@@ -77,7 +79,7 @@ export default class Level_6 extends GameScene {
             }
         }
 
-        this.objectives_bar.createLand(10);
+        this.objectives_bar.reachTime(1, true);
     }
 
 }

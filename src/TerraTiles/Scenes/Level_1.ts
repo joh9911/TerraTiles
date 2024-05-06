@@ -8,6 +8,7 @@ import Level_3 from "./Level_3";
 import Level_4 from "./Level_4";
 import Level_5 from "./Level_5";
 import Level_6 from "./Level_6";
+import { LevelLock } from "../Utils/LevelLock";
 
 
 export default class Level_1 extends GameScene {
@@ -36,10 +37,13 @@ export default class Level_1 extends GameScene {
             this.sceneManager.changeToScene(Level_5);
         } else if (Input.isKeyPressed('6')) {
             this.sceneManager.changeToScene(Level_6);
+        } else if (Input.isKeyPressed('r')) {
+            this.sceneManager.changeToScene(Level_1);
         }
 
         // fulfilled objectives        
         if (this.nextlevel == true){
+            LevelLock[1] = 1;
             this.sceneManager.changeToScene(Level_2)
         }
         
