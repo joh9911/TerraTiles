@@ -13,7 +13,7 @@ export default class NoDisease extends ObjectivesConstructor{
     constructor(game_scene: GameScene, pos: Vec2, currentnum: number){
         super(game_scene, pos);
         this.currentnum = currentnum;
-        this.text = this.createLabel("Get rid of all diseases. Current: " + this.currentnum + " remaining", new Vec2(pos.x + 140, pos.y))
+        this.text = this.createLabel("Wipe out all " + this.currentnum + " diseases", new Vec2(pos.x + 140, pos.y))
         this.receiver.subscribe(Objective_Event.DISEASESIZE)
     }
 
@@ -28,7 +28,7 @@ export default class NoDisease extends ObjectivesConstructor{
             else{
                 this.unsetCheck();
             }
-            this.text.text = ("Get rid of all diseases. Current: " + this.currentnum + " remaining");
+            this.text.text = ("Wipe out all " + this.currentnum + " diseases");
         }
     }
 }

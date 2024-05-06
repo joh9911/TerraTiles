@@ -17,7 +17,7 @@ export default class Level_5 extends GameScene {
         super.loadScene();
 
         // load tilemap
-        this.load.tilemap("level_5", "Game_Resources/tilemaps/lvl_4.json");
+        this.load.tilemap("level_5", "Game_Resources/tilemaps/lvl_5_3.json");
 
         // load music, make sure the key is "level_music"
         this.load.audio("level_music", "Game_Resources/music/level1.mp3"); // temp
@@ -88,8 +88,9 @@ export default class Level_5 extends GameScene {
             // }
         }
 
-        this.objectives_bar.haveHouse(this.Tiles[Tiles_index[Tiles_string.HOUSE]].size);
-        this.objectives_bar.NoDisease(this.Tiles[Tiles_index[Tiles_string.DISEASE]].size);
+        this.objectives_bar.haveHouse(85);
+        // this.objectives_bar.NoDisease(this.Tiles[Tiles_index[Tiles_string.DISEASE]].size);
+        this.objectives_bar.reachTime(30, false);
     }
 
 }

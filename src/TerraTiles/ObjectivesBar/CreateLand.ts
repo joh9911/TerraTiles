@@ -15,7 +15,7 @@ export default class CreateLand extends ObjectivesConstructor{
         super(game_scene, pos);
         this.maxnum = num
         this.currentnum = 0;
-        this.text = this.createLabel("Create " + this.currentnum + "/" + this.maxnum + " Lands", new Vec2(pos.x + 140, pos.y))
+        this.text = this.createLabel("Create " + this.currentnum + "/" + this.maxnum + " New Lands", new Vec2(pos.x + 140, pos.y))
         this.receiver.subscribe(Objective_Event.LANDMADE)
     }
 
@@ -29,7 +29,7 @@ export default class CreateLand extends ObjectivesConstructor{
             else{
                 this.unsetCheck();
             }
-            this.text.text = ("Create " + this.currentnum + "/" + this.maxnum + " Lands");
+            this.text.text = ("Create " + this.currentnum + "/" + this.maxnum + " New Lands");
         }
     }
 }
