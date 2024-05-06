@@ -36,7 +36,7 @@ export default class Level_5 extends GameScene {
             this.sceneManager.changeToScene(Level_4);
         } else if (Input.isKeyPressed('6')) {
             this.sceneManager.changeToScene(Level_6);
-        } else if (Input.isKeyPressed('r')) {
+        } else if (Input.isKeyPressed('m')) {
             this.sceneManager.changeToScene(Level_5);
         }
 

@@ -16,6 +16,7 @@ import Level_4 from "./Level_4";
 import Level_5 from "./Level_5";
 import Level_6 from "./Level_6";
 import { LevelLock } from "../Utils/LevelLock";
+import Input from "../../Wolfie2D/Input/Input";
 
 export default class LevelSelect extends Scene {
     private mainMenu: Layer;
@@ -38,9 +39,18 @@ export default class LevelSelect extends Scene {
         center.x += center.x/2;
 
         let levels = [];
-        let yOffset = center.y - 250;
+        let yOffset = center.y - 350;
         // The main menu
         this.mainMenu = this.addUILayer(Layers_enum.MENU);
+        let unlock = this.createButton("Unlock all levels", new Vec2(center.x, yOffset));
+        unlock.size = new Vec2(300, 50);
+        yOffset += 100;
+        unlock.onClick = () => {
+            for (let i = 0; i < 6; i++){
+                LevelLock[i] = 1;
+            }
+            this.sceneManager.changeToScene(LevelSelect);
+        }
         let i = 0;
         let levels_array = [Level_1, Level_2, Level_3, Level_4, Level_5, Level_6];
         for (let level of LevelLock){
@@ -49,8 +59,6 @@ export default class LevelSelect extends Scene {
                 levels[i] = this.createButton("Level " + (i+1), new Vec2(center.x, yOffset));
                 levels[i].onClick = ((index) => {  // Create a closure with the current value of i
                     return () => {
-                        console.log(index);
-                        console.log(levels_array[index]);
                         this.sceneManager.changeToScene(levels_array[index]);
                     };
                 })(i);
