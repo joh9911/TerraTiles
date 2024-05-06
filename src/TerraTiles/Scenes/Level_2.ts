@@ -2,16 +2,13 @@ import GameScene from "./GameScene";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import { Layers_enum } from "../Utils/Layers_enum";
-import { SoundEvent } from "../Utils/SoundEvent";
-import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
-import TileManager from "../TileManager/TileManager";
-import { Objective_Event } from "../Utils/Objective_Event";
 import Input from "../../Wolfie2D/Input/Input";
 import Level_1 from "./Level_1";
 import Level_3 from "./Level_3";
 import Level_4 from "./Level_4";
 import Level_5 from "./Level_5";
 import Level_6 from "./Level_6";
+import { LevelLock } from "../Utils/LevelLock";
 
 
 export default class Level_2 extends GameScene {
@@ -40,10 +37,13 @@ export default class Level_2 extends GameScene {
             this.sceneManager.changeToScene(Level_5);
         } else if (Input.isKeyPressed('6')) {
             this.sceneManager.changeToScene(Level_6);
+        } else if (Input.isKeyPressed('r')) {
+            this.sceneManager.changeToScene(Level_2);
         }
 
         // fulfilled objectives        
         if (this.nextlevel === true){
+            LevelLock[2] = 1;
             this.sceneManager.changeToScene(Level_3)
         }
 
@@ -56,12 +56,6 @@ export default class Level_2 extends GameScene {
 
         // music, events, ui
         super.startScene();
-        // water currently only goes up, so it will destroy houses in 30s, and there's no clear way to block it
-        // this.locked_tiles = [true, true, true, true, false]
-
-        this.objectives_bar.createLand(10);
-        this.objectives_bar.haveWater(10);
-        this.objectives_bar.haveFire(10);
 
         // level_2 tilemap
         this.addLayer(Layers_enum.TILES, 10);
@@ -84,6 +78,9 @@ export default class Level_2 extends GameScene {
                 this.Tiles[Tiles_index[Tiles_string.FIRE]].add(this.vec2ToString(tile_arr[i].position));
             }
         }
+        this.objectives_bar.haveHouse(this.Tiles[Tiles_index[Tiles_string.HOUSE]].size);
+        this.objectives_bar.NoFire(this.Tiles[Tiles_index[Tiles_string.FIRE]].size);
+        this.objectives_bar.reachTime(30, false);
     }
 
 }

@@ -13,6 +13,11 @@ import ObjectivesConstructor from "./ObjectivesConstructor";
 import Emitter from "../../Wolfie2D/Events/Emitter";
 import { Objective_Event } from "../Utils/Objective_Event";
 import HaveWater from "./HaveWater";
+import HaveHouse from "./HaveHouse";
+import ReachTime from "./ReachTime";
+import NoFire from "./NoFire";
+import NoDisease from "./NoDisease";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 export default class ObjectivesManager{
     
@@ -22,6 +27,8 @@ export default class ObjectivesManager{
     private list_objectives: ObjectivesConstructor[]
     private num_objectives: number
     private emitter: Emitter
+    protected nextLevel: Button
+    protected madeNextLevel: boolean
     
     constructor(gameScene: GameScene){
         this.game_scene = gameScene
@@ -36,6 +43,14 @@ export default class ObjectivesManager{
         this.createLabel("Objectives", new Vec2(this.up_left.x + 120, this.up_left.y + 25));
         this.list_objectives = []
         this.num_objectives = 0
+        this.nextLevel = <Button>this.game_scene.add.uiElement(UIElementType.BUTTON, Layers_enum.BOXONMANAGER, {position: new Vec2(1100, 75), text: "Go to next world?"});
+        this.nextLevel.size.set(300, 50);
+        this.nextLevel.backgroundColor = Color.GRAY;
+        this.nextLevel.visible = false;
+        this.nextLevel.onClick = () => {
+            this.emitter.fireEvent(Objective_Event.NEXTLEVEL);
+        }
+        this.madeNextLevel = false;
     }
 
     public createLand(num: number){
@@ -44,17 +59,37 @@ export default class ObjectivesManager{
     }
 
     public haveFire(num: number){
-        this.list_objectives[this.num_objectives] = new HaveFire(this.game_scene, this.setObjectivePos(), 10);
+        this.list_objectives[this.num_objectives] = new HaveFire(this.game_scene, this.setObjectivePos(), num);
         this.num_objectives++;
     }
 
     public haveWater(num: number){
-        this.list_objectives[this.num_objectives] = new HaveWater(this.game_scene, this.setObjectivePos(), 10);
+        this.list_objectives[this.num_objectives] = new HaveWater(this.game_scene, this.setObjectivePos(), num);
         this.num_objectives++;
     }
 
     public NoMud(num: number){
         this.list_objectives[this.num_objectives] = new NoMud(this.game_scene, this.setObjectivePos(), num);
+        this.num_objectives++;
+    }
+
+    public NoFire(num: number){
+        this.list_objectives[this.num_objectives] = new NoFire(this.game_scene, this.setObjectivePos(), num);
+        this.num_objectives++;
+    }
+
+    public NoDisease(num: number){
+        this.list_objectives[this.num_objectives] = new NoDisease(this.game_scene, this.setObjectivePos(), num);
+        this.num_objectives++;
+    }
+
+    public haveHouse(num: number){
+        this.list_objectives[this.num_objectives] = new HaveHouse(this.game_scene, this.setObjectivePos(), num);
+        this.num_objectives++;
+    }
+
+    public reachTime(num: number, secret: boolean){//num is in seconds, automatically converts to milliseconds for timer
+        this.list_objectives[this.num_objectives] = new ReachTime(this.game_scene, this.setObjectivePos(), num, secret);
         this.num_objectives++;
     }
 
@@ -86,8 +121,10 @@ export default class ObjectivesManager{
         for (let obj of this.list_objectives){
             obj.update()
         }
-        if (this.allComplete()){
-            this.emitter.fireEvent(Objective_Event.NEXTLEVEL)
+        if (this.madeNextLevel == false && this.allComplete()){
+            this.madeNextLevel = true;
+            this.nextLevel.visible = true;
+            this.emitter.fireEvent(GameEventType.PLAY_SFX, {key: "progress", loop: false});
         }
     }
 }

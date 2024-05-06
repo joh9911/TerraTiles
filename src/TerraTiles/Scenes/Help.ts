@@ -1,71 +1,71 @@
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
-import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
+import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import MainMenu from "./MainMenu";
 import { Layers_enum } from "../Utils/Layers_enum";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
-export default class Help extends Scene{
-
-    public loadScene() {
-    }
+export default class Help extends Scene {
 
     public startScene(): void {
       this.addUILayer(Layers_enum.MENU);
 
       // Center the viewport
       const size = this.viewport.getHalfSize();
-      let sizeY = size.y - 250;
+      let sizeY = size.y - 350;
+      let sizeX = size.x - 250;
       const yOffset = 45;
       this.viewport.setFocus(size);
       this.viewport.setZoomLevel(1);
 
-    // Create title
-    const title = <Label>this.add.uiElement(UIElementType.LABEL, Layers_enum.MENU, {
-        position: new Vec2(size.x, sizeY - 100),
-        text: "Help",
-    });
+      // Create title
+      const title = <Label>this.add.uiElement(UIElementType.LABEL, Layers_enum.MENU, {
+          position: new Vec2(size.x, sizeY - 100),
+          text: "TerraTiles",
+      });
 
-    // Create info text
-    let i = 1;
-    this.createLabel(
-        "Explore how different tiles interact",
-        new Vec2(size.x, sizeY)
-    );
-    
-    sizeY += 130;
-    this.createLabel(
-        "Here are some hints:",
-        new Vec2(size.x, sizeY + yOffset * i++)
-    );
-    
-    sizeY += 15;
-    this.createLabel(
-        "Desert creates new land",
-        new Vec2(size.x, sizeY + yOffset * i++)
-    );
-    this.createLabel(
-        "Dirt holds great potential",
-        new Vec2(size.x, sizeY + yOffset * i++)
-    );
-    this.createLabel(
-        "Fire spreads quickly",
-        new Vec2(size.x, sizeY + yOffset * i++)
-    );
-    this.createLabel(
-        "Water spreads in a current",
-        new Vec2(size.x, sizeY + yOffset * i++)
-    );
-    this.createLabel(
-        "Rock holds strong. Are you strong for placing it",
-        new Vec2(size.x, sizeY + yOffset * i++)
-    );this.createLabel(
-        "or are you weak for not being able to pick it back up?",
-        new Vec2(size.x, sizeY + yOffset * i++)
-    );
+      // Create info text
+      let i = 1;
+      this.createLabel(
+          "Developed by Timothy Sit, Tingting Chen-Deng, and Sungmin Joh",
+          new Vec2(size.x, sizeY)
+      );
+      this.createLabel(
+          "Wolfie2D created by Joe Weaver and Richard McKenna",
+          new Vec2(size.x, sizeY + yOffset * i++)
+      );
+      sizeY += 130;
+      this.createLabel(
+          `Backstory`,
+          new Vec2(size.x, sizeY + yOffset * i++)
+      );
+      this.createLabel(
+          `Welcome to your new job. Your predecessor left quite a mess.`,
+          new Vec2(size.x, sizeY + yOffset * i++)
+      );
+      this.createLabel(
+          `You'll be given some time to learn your tools`,
+          new Vec2(size.x, sizeY + yOffset * i++)
+      );
+      this.createLabel(
+          `then you'll be tossed into the deep end of the pool.`,
+          new Vec2(size.x, sizeY + yOffset * i++)
+      );
+      sizeY += 130;
 
+      // Create cheat codes text
+      this.createLabel("Cheat Codes", new Vec2(size.x, sizeY + yOffset * i++), 26);
+      sizeY += 15;
+      this.createLabel(
+          "1-6: Change to level",
+          new Vec2(size.x, sizeY + yOffset * i++)
+      );
+      this.createLabel(
+          "Enter: enable mouse drag",
+          new Vec2(size.x, sizeY + yOffset * i++)
+      );
 
       // Create a back button
       const back = this.add.uiElement(UIElementType.BUTTON, Layers_enum.MENU, {position: new Vec2(size.x, 2 * size.y - 60), text: "Back"});
@@ -86,6 +86,7 @@ export default class Help extends Scene{
           position: pos,
           text: text,
           fontSize: size || 18,
+          halign: "left"
       });
   }
 }

@@ -10,7 +10,6 @@ import Color from "../../Wolfie2D/Utils/Color";
 import { GraphicType } from "../../Wolfie2D/Nodes/Graphics/GraphicTypes";
 import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
-import { SoundEvent } from "../Utils/SoundEvent";
 import TileManager from "../TileManager/TileManager";
 import ObjectivesManager from "../ObjectivesBar/ObjectivesManager";
 import { Objective_Event, Objective_mapping } from "../Utils/Objective_Event";
@@ -571,7 +570,7 @@ export default class GameScene extends Scene {
         this.clicktilepos = new Vec2(-1, -1);
         this.cheat = false
         this.cheat_enabled = <Label>this.add.uiElement(UIElementType.LABEL, Layers_enum.BOXONMANAGER, {
-            position: new Vec2(1100, 100),
+            position: new Vec2(1100, 125),
             text: "Cheats Enabled"
         });
         this.cheat_enabled.visible = false;
@@ -589,6 +588,7 @@ export default class GameScene extends Scene {
             let event = this.receiver.getNextEvent();
             if (event.type == Objective_Event.NEXTLEVEL){
                 this.nextlevel = true
+                this.emitter.fireEvent(GameEventType.PLAY_SFX, {key: "progress", loop: false});
                 continue;
             }
             this.currentMode = event.type;
@@ -767,10 +767,10 @@ export default class GameScene extends Scene {
         this.load.audio(Tiles_string.W_RIGHT, "Game_Resources/sounds/Water.mp3");
         this.load.audio(Tiles_string.W_LEFT, "Game_Resources/sounds/Water.mp3");
         this.load.audio(Tiles_string.ROCK, "Game_Resources/sounds/Rock.mp3");
+        this.load.audio("progress", "Game_Resources/sounds/progress.mp3");
     }
 
     unloadScene(): void {
-
         // stop music
         this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "level_music" });
     }

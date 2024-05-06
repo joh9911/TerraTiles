@@ -100,6 +100,10 @@ export default class Timer implements Updateable {
     toString(): string{
         return "Timer: " + this.state + " - Time Left: " + this.timeLeft + "ms of " + this.totalTime + "ms";
     }
+
+    timeinSeconds(): number{
+        return this.timeLeft/1000;
+    }
 }
 
 export enum TimerState {

@@ -3,16 +3,12 @@ import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Layer from "../../Wolfie2D/Scene/Layer";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
-import Label from "../../Wolfie2D/Nodes/UIElements/Label";
-import GameEvent from "../../Wolfie2D/Events/GameEvent";
-import Timer from "../../Wolfie2D/Timing/Timer";
-import Credit from "./Credit";
 import Controls from "./Controls";
 import { Layers_enum } from "../Utils/Layers_enum";
 import LevelSelect from "./LevelSelect";
 import Button from "../../Wolfie2D/Nodes/UIElements/Button";
-import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import Help from "./Help";
+import Hints from "./Hints";
 
 export default class MainMenu extends Scene {
     // Layers, for multiple main menu screens
@@ -27,14 +23,10 @@ export default class MainMenu extends Scene {
 
         // Load tile animations early
         this.load.spritesheet("tile_animations", "Game_Resources/tilemaps/tile_animations.json");
-
     }
 
     public startScene(){
         const center = this.viewport.getCenter();
-
-
-
         
 		this.addLayer(Layers_enum.BACK, 0);
 
@@ -60,16 +52,16 @@ export default class MainMenu extends Scene {
             this.sceneManager.changeToScene(Controls);
         };
 
-        const credit = this.createButton("Credits", new Vec2(center.x, center.y + 100));
+        const credit = this.createButton("Help", new Vec2(center.x, center.y + 100));
 
         credit.onClick = () => {
-            this.sceneManager.changeToScene(Credit);
+            this.sceneManager.changeToScene(Help);
         };
 
-        const help = this.createButton("Help", new Vec2(center.x, center.y + 200));
+        const help = this.createButton("Hints", new Vec2(center.x, center.y + 200));
 
         help.onClick = () => {
-            this.sceneManager.changeToScene(Help);
+            this.sceneManager.changeToScene(Hints);
         };
     }
 

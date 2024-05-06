@@ -26,6 +26,9 @@ export default class CreateLand extends ObjectivesConstructor{
             if (this.currentnum >= this.maxnum){
                 this.setCheck();
             }
+            else{
+                this.unsetCheck();
+            }
             this.text.text = ("Create " + this.currentnum + "/" + this.maxnum + " Lands");
         }
     }

@@ -15,6 +15,7 @@ import Level_3 from "./Level_3";
 import Level_4 from "./Level_4";
 import Level_5 from "./Level_5";
 import Level_6 from "./Level_6";
+import { LevelLock } from "../Utils/LevelLock";
 
 export default class LevelSelect extends Scene {
     private mainMenu: Layer;
@@ -36,39 +37,30 @@ export default class LevelSelect extends Scene {
 
         center.x += center.x/2;
 
+        let levels = [];
+        let yOffset = center.y - 250;
         // The main menu
         this.mainMenu = this.addUILayer(Layers_enum.MENU);
-
-        const level_1 = this.createButton("Level 1", new Vec2(center.x, center.y - 250));
-
-        const level_2 = this.createButton("Level 2", new Vec2(center.x, center.y - 150));
-
-        const level_3 = this.createButton("Level 3", new Vec2(center.x, center.y - 50));
-
-        const level_4 = this.createButton("Level 4", new Vec2(center.x, center.y + 50));
-
-        const level_5 = this.createButton("Level 5", new Vec2(center.x, center.y + 150));
-
-        const level_6 = this.createButton("Level 6", new Vec2(center.x, center.y + 250));
-
-        level_1.onClick = () => {
-            this.sceneManager.changeToScene(Level_1);
-        };
-        level_2.onClick = () => {
-            this.sceneManager.changeToScene(Level_2);
-        };
-        level_3.onClick = () => {
-            this.sceneManager.changeToScene(Level_3);
-        };
-        level_4.onClick = () => {
-            this.sceneManager.changeToScene(Level_4);
-        };
-        level_5.onClick = () => {
-            this.sceneManager.changeToScene(Level_5);
-        };
-        level_6.onClick = () => {
-            this.sceneManager.changeToScene(Level_6);
-        };
+        let i = 0;
+        let levels_array = [Level_1, Level_2, Level_3, Level_4, Level_5, Level_6];
+        for (let level of LevelLock){
+            if (level){
+                    console.log(i);
+                levels[i] = this.createButton("Level " + (i+1), new Vec2(center.x, yOffset));
+                levels[i].onClick = ((index) => {  // Create a closure with the current value of i
+                    return () => {
+                        console.log(index);
+                        console.log(levels_array[index]);
+                        this.sceneManager.changeToScene(levels_array[index]);
+                    };
+                })(i);
+            }
+            else{
+                levels[i] = this.createButton("Locked", new Vec2(center.x, yOffset));
+            }
+            yOffset += 100;
+            i++;
+        }
 
         const back = this.createButton("Back", new Vec2(center.x, center.y + 350));
 

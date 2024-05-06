@@ -40,6 +40,10 @@ export default class ObjectivesConstructor{
         this.checkbox.color = Color.GREEN;
     }
 
+    protected unsetCheck(){
+        this.checkbox.color = Color.RED;
+    }
+
     public get checkBox(): Graphic{
         return this.checkbox
     }
@@ -48,7 +52,7 @@ export default class ObjectivesConstructor{
         let btn = <Button>this.game_scene.add.uiElement(UIElementType.LABEL, Layers_enum.BOXONMANAGER, {position: pos, text: text});
         btn.size.set(200, 50);
         btn.borderColor = Color.TRANSPARENT;
-        btn.backgroundColor = Color.BLUE;
+        btn.backgroundColor = Color.TRANSPARENT;
         btn.setHAlign("left");
         btn.onClick = () => {
         };
