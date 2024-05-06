@@ -13,8 +13,8 @@ export default class NoMud extends ObjectivesConstructor{
     constructor(game_scene: GameScene, pos: Vec2, currentnum: number){
         super(game_scene, pos);
         this.currentnum = currentnum;
-        this.text = this.createLabel("Get rid of all mud. Current: " + this.currentnum + " remaining", new Vec2(pos.x + 140, pos.y))
-        this.receiver.subscribe(Objective_Event.MUDSIZE)
+        this.text = this.createLabel("Dry out all " + this.currentnum + " mud", new Vec2(pos.x + 140, pos.y))
+        this.receiver.subscribe(Objective_Event.MUDSIZE);
     }
 
     update(){
@@ -28,7 +28,7 @@ export default class NoMud extends ObjectivesConstructor{
             else{
                 this.unsetCheck();
             }
-            this.text.text = ("Get rid of all mud. Current: " + this.currentnum + " remaining");
+            this.text.text = ("Dry out all " + this.currentnum + " mud");
         }
     }
 }

@@ -27,7 +27,7 @@ export default class ReachTime extends ObjectivesConstructor{
             this.text = this.createLabel("Have Fun!", new Vec2(pos.x + 140, pos.y));
         }
         else{
-            this.text = this.createLabel("Reach: " + (this.totaltime - Math.floor(this.timer.timeinSeconds())) + " / " + this.totaltime + " seconds", new Vec2(pos.x + 140, pos.y));
+            this.text = this.createLabel("Reach: " + (this.totaltime - Math.floor(this.timer.timeinSeconds())) + " / " + this.totaltime + " secs", new Vec2(pos.x + 140, pos.y));
         }
     }
 
@@ -36,7 +36,7 @@ export default class ReachTime extends ObjectivesConstructor{
             this.setCheck();
         }
         if (!this.secret){
-            this.text.text = ("Reach: " + (this.totaltime - Math.floor(this.timer.timeinSeconds())) + " / " + this.totaltime + " seconds");
+            this.text.text = ("Reach: " + (this.totaltime - Math.floor(this.timer.timeinSeconds())) + " / " + this.totaltime + " secs");
         }
     }
 }
