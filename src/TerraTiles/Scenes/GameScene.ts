@@ -26,7 +26,7 @@ export default class GameScene extends Scene {
         // uses Tiles_index for array, so desert is 0, grass is 1, ...
         // changed Vec2 to String, because it can't compare between Vec2 objects when deleting tiles.
     protected TilesTimer: Map<String, number>[] = [];
-    protected removeWaterPositions: Map<string, Vec2>;
+    protected removeWaterPositions: Map<String, Map<string, Vec2>>;
     protected currentMode: string = Tiles_string.DESERT; // temporarily set the tile mode, default mode is DESERT
     protected waterdir: string = Tiles_string.W_UP; // temporarily set the tile mode, default mode is DESERT
 
@@ -100,65 +100,75 @@ export default class GameScene extends Scene {
         [Tiles_string.W_UP, Tiles_string.W_DOWN, Tiles_string.W_LEFT, Tiles_string.W_RIGHT].forEach(waterType => {
             const newWaterTiles: Set<String> = new Set<String>();
         
-            for (let waterTile of this.Tiles[Tiles_index[Tiles_string.W_UP]]) {
-                let tileTimer = this.getTileTimer(Tiles_index[Tiles_string.W_UP], this.stringToVec2(waterTile));
-    
-                const directions = [
-                    { dx: 0, dy: -1 },
-                    { dx: 1, dy: 0 },
-                    { dx: 0, dy: 1 },
-                    { dx: -1, dy: 0 }
-                ];
+            for (let waterTile of this.Tiles[Tiles_index[waterType]]) {
+                let tileTimer = this.getTileTimer(Tiles_index[waterType], this.stringToVec2(waterTile));
     
                 // time to spread water
                 if (tileTimer <= 0) {
-                    this.initializeTileTimer(Tiles_index[Tiles_string.W_UP], this.stringToVec2(waterTile), 2); 
-    
-                    for (let {dx, dy} of directions) {
-                        let originPos = this.stringToVec2(waterTile);
-                        let newPos = new Vec2(originPos.x + dx * 32, originPos.y + dy * 32);
-                        let vec2ToString = this.vec2ToString(newPos);
-    
-                        // get the tile at this new position
-                        let nodes = this.sceneGraph.getNodesAt(newPos);
-                        for (let node of nodes) {
-                            if (node instanceof AnimatedSprite) {
-                                let animated_sprite = node as AnimatedSprite;
-                                let animation_string = animated_sprite.animation.getcurrentAnimation().valueOf();
-                                
-                                // spread water
-                                if (dx == 0 && dy == -1){
-                                    if (TileMatrix[Tiles_string.W_UP][animation_string] === 1) {
-                                        // add water
-                                        animated_sprite.animation.playIfNotAlready(Tiles_string.W_UP, true);
-                                        newWaterTiles.add(vec2ToString);
-                                        // remove from old set 
-                                        this.Tiles[Tiles_index[animation_string]].delete(vec2ToString);
-                                        this.TilesTimer[Tiles_index[animation_string]].delete(vec2ToString);
+                    this.initializeTileTimer(Tiles_index[waterType], this.stringToVec2(waterTile), 2); 
+                    let {dx, dy} = this.getWaterDirection(waterType);
+                    let originPos = this.stringToVec2(waterTile);
+                    let newPos = new Vec2(originPos.x + dx * 32, originPos.y + dy * 32);
+                    let vec2ToString = this.vec2ToString(newPos);
+
+                    // get the tile at this new position
+                    let nodes = this.sceneGraph.getNodesAt(newPos);
+                    for (let node of nodes) {
+                        if (node instanceof AnimatedSprite) {
+                            let animated_sprite = node as AnimatedSprite;
+                            let animation_string = animated_sprite.animation.getcurrentAnimation().valueOf();
+
+                            if (TileMatrix[waterType][animation_string] === 1) {
+                                // add water
+                                animated_sprite.animation.playIfNotAlready(waterType, true);
+                                newWaterTiles.add(vec2ToString);
+                                // remove from old set 
+                                this.Tiles[Tiles_index[animation_string]].delete(vec2ToString);
+                                this.TilesTimer[Tiles_index[animation_string]].delete(vec2ToString);
+
+                                const directions = [
+                                    { dirtDx: 0, dirtDy: -1 },
+                                    { dirtDx: 1, dirtDy: 0 },
+                                    { dirtDx: 0, dirtDy: 1 },
+                                    { dirtDx: -1, dirtDy: 0 }
+                                ];
+                
+                                for (let {dirtDx, dirtDy} of directions){
+                                    let originPos = this.stringToVec2(waterTile);
+                                    let newPos = new Vec2(originPos.x + dirtDx * 32, originPos.y + dirtDy * 32);
+                                    let dirtPosToString = this.vec2ToString(newPos);
+
+                                    let nodes = this.sceneGraph.getNodesAt(newPos);
+                                    for (let node of nodes) {
+                                        if (node instanceof AnimatedSprite){
+                                            let animated_sprite = node as AnimatedSprite;
+                                            let animation_string = animated_sprite.animation.getcurrentAnimation().valueOf();
+
+                                            if (dx == dirtDx && dy == dirtDy) continue;
+                                            if (animation_string == Tiles_string.DESERT) {
+                                                animated_sprite.animation.playIfNotAlready(Tiles_string.DIRT, true);
+                                                this.Tiles[Tiles_index[Tiles_string.DIRT]].add(dirtPosToString);
+                                                this.Tiles[Tiles_index[animation_string]].delete(dirtPosToString);
+                                                this.TilesTimer[Tiles_index[animation_string]].delete(dirtPosToString);
+                                            }
+                                        }
+                                        
                                     }
                                 }
-                                // spread dirt around water 
-                                else{
-                                    if (TileMatrix[Tiles_string.DIRT][animation_string] === 1) {
-                                        animated_sprite.animation.playIfNotAlready(Tiles_string.DIRT, true);
-                                        this.Tiles[Tiles_index[Tiles_string.DIRT]].add(vec2ToString);
-                                        this.Tiles[Tiles_index[animation_string]].delete(vec2ToString);
-                                        this.TilesTimer[Tiles_index[animation_string]].delete(vec2ToString);
-                                    }
-                                }
-                                
                             }
+                            
                         }
+                        
                     }
                 } 
                 else {
                     tileTimer -= deltaT;
-                    this.initializeTileTimer(Tiles_index[Tiles_string.W_UP], this.stringToVec2(waterTile), tileTimer);
+                    this.initializeTileTimer(Tiles_index[waterType], this.stringToVec2(waterTile), tileTimer);
                 }
             }
     
             // update water set
-            this.Tiles[Tiles_index[Tiles_string.W_UP]] = new Set<String>([...this.Tiles[Tiles_index[Tiles_string.W_UP]], ...newWaterTiles]);
+            this.Tiles[Tiles_index[waterType]] = new Set<String>([...this.Tiles[Tiles_index[waterType]], ...newWaterTiles]);
         });
     }
 
@@ -238,59 +248,83 @@ export default class GameScene extends Scene {
     removeWaterTilesAboveRock(deltaT: number) {
         for (let rockTile of this.Tiles[Tiles_index[Tiles_string.ROCK]]) {
           const rockTilePos = this.stringToVec2(rockTile);
-      
           let removeWaterTimer = this.getTileTimer(Tiles_index[Tiles_string.ROCK], rockTilePos);
-          let currentPos = this.getRemoveWaterPosition(rockTilePos) || rockTilePos.clone();
-      
           removeWaterTimer -= deltaT;
       
           if (removeWaterTimer <= 0) {
-            currentPos.y -= 32; 
-            const currentTileKey = this.vec2ToString(currentPos);
+            let foundWaterTiles = false;
+            [Tiles_string.W_UP, Tiles_string.W_DOWN, Tiles_string.W_LEFT, Tiles_string.W_RIGHT].forEach(waterType => {
+              const direction = this.getWaterDirection(waterType);
+              let currentPos = this.getRemoveWaterPosition(waterType, rockTilePos) || rockTilePos.clone();
       
-            if (this.Tiles[Tiles_index[Tiles_string.W_UP]].has(currentTileKey)) {
-              const nodes = this.sceneGraph.getNodesAt(currentPos);
-              for (let node of nodes) {
-                if (node instanceof AnimatedSprite) {
-                  const animatedSprite = node as AnimatedSprite;
-                  this.Tiles[Tiles_index[Tiles_string.W_UP]].delete(currentTileKey);
-                  animatedSprite.animation.playIfNotAlready(Tiles_string.DESERT, true);
-                  this.Tiles[Tiles_index[Tiles_string.DESERT]].add(currentTileKey);
-
-                this.TilesTimer[Tiles_index[Tiles_string.W_UP]].delete(currentTileKey);
+              currentPos.x += (direction.dx * 32);
+              currentPos.y += (direction.dy * 32);
+              const currentTileKey = this.vec2ToString(currentPos);
+              
+      
+              if (this.Tiles[Tiles_index[waterType]].has(currentTileKey)) {
+                foundWaterTiles = true;
+                const nodes = this.sceneGraph.getNodesAt(currentPos);
+                for (let node of nodes) {
+                  if (node instanceof AnimatedSprite) {
+                    const animatedSprite = node as AnimatedSprite;
+                    this.Tiles[Tiles_index[waterType]].delete(currentTileKey);
+                    animatedSprite.animation.playIfNotAlready(Tiles_string.DESERT, true);
+                    this.Tiles[Tiles_index[Tiles_string.DESERT]].add(currentTileKey);
+      
+                    this.TilesTimer[Tiles_index[waterType]].delete(currentTileKey);
+                  }
                 }
-              }
       
-              this.initializeTileTimer(Tiles_index[Tiles_string.ROCK], rockTilePos, 1);
-              this.saveRemoveWaterPosition(rockTilePos, currentPos);
-            } else {
+                this.saveRemoveWaterPosition(waterType, rockTilePos, currentPos);
+              } else {
+                
+                this.deleteRemoveWaterPosition(waterType, rockTilePos);
+              }
+            });
+            if (!foundWaterTiles){
                 this.TilesTimer[Tiles_index[Tiles_string.ROCK]].delete(this.vec2ToString(rockTilePos));
-                this.deleteRemoveWaterPosition(rockTilePos);
                 this.Tiles[Tiles_index[Tiles_string.ROCK]].delete(this.vec2ToString(rockTilePos));
             }
+            this.initializeTileTimer(Tiles_index[Tiles_string.ROCK], rockTilePos, 1);
           } else {
             this.initializeTileTimer(Tiles_index[Tiles_string.ROCK], rockTilePos, removeWaterTimer);
           }
         }
       }
       
-      saveRemoveWaterPosition(rockTilePos: Vec2, currentPos: Vec2) {
+      saveRemoveWaterPosition(waterType: String, rockTilePos: Vec2, currentPos: Vec2) {
         if (!this.removeWaterPositions) {
-          this.removeWaterPositions = new Map<string, Vec2>();
+          this.removeWaterPositions = new Map<String, Map<string, Vec2>>();
         }
-        this.removeWaterPositions.set(this.vec2ToString(rockTilePos), currentPos);
+        let directionMap = this.removeWaterPositions.get(waterType);
+        if (!directionMap) {
+            directionMap = new Map<string, Vec2>();
+            this.removeWaterPositions.set(waterType, directionMap);
+            
+        } 
+
+        // Add the rock position and corresponding water position to the inner map
+        directionMap.set(this.vec2ToString(rockTilePos), currentPos);
+        this.removeWaterPositions.set(waterType, directionMap)
       }
       
-      getRemoveWaterPosition(rockTilePos: Vec2): Vec2 | undefined {
+      getRemoveWaterPosition(waterType: String, rockTilePos: Vec2): Vec2 | undefined {
         if (!this.removeWaterPositions) {
+            this.removeWaterPositions = new Map<String, Map<string, Vec2>>();
+          }
+        if (!this.removeWaterPositions.get(waterType)) {
           return undefined;
         }
-        return this.removeWaterPositions.get(this.vec2ToString(rockTilePos));
+        return this.removeWaterPositions.get(waterType).get(this.vec2ToString(rockTilePos));
       }
       
-      deleteRemoveWaterPosition(rockTilePos: Vec2) {
-        if (this.removeWaterPositions) {
-          this.removeWaterPositions.delete(this.vec2ToString(rockTilePos));
+      deleteRemoveWaterPosition(waterType: String, rockTilePos: Vec2) {
+        if (!this.removeWaterPositions) {
+            this.removeWaterPositions = new Map<String, Map<string, Vec2>>();
+          }
+        if (this.removeWaterPositions.get(waterType)) {
+          this.removeWaterPositions.get(waterType).delete(this.vec2ToString(rockTilePos));
         }
       }
     
@@ -413,7 +447,6 @@ export default class GameScene extends Scene {
                 //and then send the event to say size has changed
             }
         }
-        console.log(this.Tiles[12].size);
     }
 
 
@@ -435,6 +468,7 @@ export default class GameScene extends Scene {
     startScene(): void {
         // music
         this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "level_music", loop: true, holdReference: true});
+        
 
         // tile placement, next level
         this.subscribeToEvents();
@@ -534,7 +568,6 @@ export default class GameScene extends Scene {
             }
         }
         if (Input.isKeyJustPressed("enter")) {
-            console.log("cheat:" + this.cheat);
             this.cheat = !this.cheat;
             this.cheat_enabled.visible = <boolean>this.cheat;
         }
@@ -573,7 +606,6 @@ export default class GameScene extends Scene {
                 return;
             }
 
-            console.log("click ",`${position.y} ${position.x}`);
 
             // get the tile at this position
             const tileX = Math.floor(position.x / 32) * 32 + 16;  
@@ -585,7 +617,6 @@ export default class GameScene extends Scene {
             const vec2ToString = this.vec2ToString(tilePos);
             const nodes = this.sceneGraph.getNodesAt(tilePos);
 
-            console.log("click1");
 
         
             for (let node of nodes) {
@@ -606,7 +637,6 @@ export default class GameScene extends Scene {
                         animatedSprite.animation.playIfNotAlready(this.currentMode, true);
                         this.Tiles[Tiles_index[this.currentMode]].add(vec2ToString);
 
-                        console.log(Object.values(Objective_Event)[3])
 
                         // monitor number of tiles, play sfx                        
                         this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
@@ -623,7 +653,6 @@ export default class GameScene extends Scene {
                 return;
             }
 
-            console.log("click ",`${position.y} ${position.x}`);
 
             // get the tile at this position
             const tileX = Math.floor(position.x / 32) * 32 + 16;  
@@ -632,7 +661,6 @@ export default class GameScene extends Scene {
             const vec2ToString = this.vec2ToString(tilePos);
             const nodes = this.sceneGraph.getNodesAt(tilePos);
 
-            console.log("click1");
 
         
             for (let node of nodes) {
