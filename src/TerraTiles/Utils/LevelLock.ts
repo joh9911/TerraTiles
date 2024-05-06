@@ -1,1 +1,1 @@
-export const LevelLock = [1, 0, 0, 0, 0, 0];
+export let LevelLock = [1, 0, 0, 0, 0, 0];

@@ -15,7 +15,7 @@ export default class HaveFire extends ObjectivesConstructor{
         super(game_scene, pos);
         this.maxnum = num
         this.currentnum = 0;
-        this.text = this.createLabel("Have " + this.currentnum + "/" + this.maxnum + " Fires", new Vec2(pos.x + 140, pos.y))
+        this.text = this.createLabel("Start " + this.currentnum + "/" + this.maxnum + " Fires", new Vec2(pos.x + 140, pos.y))
         this.receiver.subscribe(Objective_Event.FIRESIZE)
     }
 
@@ -30,7 +30,7 @@ export default class HaveFire extends ObjectivesConstructor{
             else{
                 this.unsetCheck();
             }
-            this.text.text = ("Have " + this.currentnum + "/" + this.maxnum + " Fires");
+            this.text.text = ("Start " + this.currentnum + "/" + this.maxnum + " Fires");
         }
     }
 }

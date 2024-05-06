@@ -40,7 +40,7 @@ export default class Controls extends Scene{
         new Vec2(size.x, sizeY + yOffset * i++)
       );
       this.createLabel(
-        "arrow keys: Change the current",
+        "Arrow keys: Change the current",
         new Vec2(size.x, sizeY + yOffset * i++)
       );
  

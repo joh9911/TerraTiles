@@ -37,7 +37,7 @@ export default class Level_4 extends GameScene {
             this.sceneManager.changeToScene(Level_5);
         } else if (Input.isKeyPressed('6')) {
             this.sceneManager.changeToScene(Level_6);
-        } else if (Input.isKeyPressed('r')) {
+        } else if (Input.isKeyPressed('m')) {
             this.sceneManager.changeToScene(Level_4);
         }
 
@@ -88,7 +88,7 @@ export default class Level_4 extends GameScene {
             }
         }
         
-        this.objectives_bar.haveHouse(this.Tiles[Tiles_index[Tiles_string.MUD]].size);
+        this.objectives_bar.haveHouse(this.Tiles[Tiles_index[Tiles_string.HOUSE]].size);
         this.objectives_bar.NoMud(this.Tiles[Tiles_index[Tiles_string.MUD]].size);
     }
 
