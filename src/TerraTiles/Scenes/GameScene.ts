@@ -417,14 +417,12 @@ export default class GameScene extends Scene {
 
     spreadSpace(deltaT: number) {
         const newSpaceTiles: Set<String> = new Set<String>();
-        console.log(this.Tiles);
         
         for (let spaceTile of this.Tiles[Tiles_index[Tiles_string.SPACE]]) {
             let tileTimer = this.getTileTimer(Tiles_index[Tiles_string.SPACE], this.stringToVec2(spaceTile));
 
             // adjust time
             tileTimer -= deltaT;
-            console.log(tileTimer);
             
 
             // space spreads

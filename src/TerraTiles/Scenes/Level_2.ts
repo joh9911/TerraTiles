@@ -67,10 +67,8 @@ export default class Level_2 extends GameScene {
         this.addLayer(Layers_enum.TILES, 10);
         this.add.tilemap("level_2");
         let tilelayer = this.getLayer(Layers_enum.TILES);
-        console.log(tilelayer);
 
         // initialize sets for different types of tiles
-        console.log("레벨 초기화")
         let tile_arr = tilelayer.getItems();
         for (let i = 0; i < tile_arr.length; i++) {
             let tile_sprite = <AnimatedSprite>tile_arr[i];
