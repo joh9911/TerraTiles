@@ -33,6 +33,8 @@ export default class MainMenu extends Scene {
     public startScene(){
         const center = this.viewport.getCenter();
 
+
+
         
 		this.addLayer(Layers_enum.BACK, 0);
 
@@ -86,6 +88,7 @@ export default class MainMenu extends Scene {
 
         // used throughout the menus and levels
         this.load.keepAudio("cancel");
+        this.load.keepAudio("level_music");
 
         // pre-load for levels
         this.load.keepSpritesheet("tile_animations");

@@ -24,7 +24,8 @@ export default class Level_3 extends GameScene {
         this.load.tilemap("level_3", "Game_Resources/tilemaps/lvl_3.json");
 
         // load music, make sure the key is "level_music"
-        this.load.audio("level_music", "Game_Resources/music/level1.mp3"); // temp
+        this.load.audio("level_music", "Game_Resources/music/level3.mp3"); // temp
+        
     }
 
 
@@ -62,10 +63,8 @@ export default class Level_3 extends GameScene {
         this.add.tilemap("level_3");
         let tilelayer = this.getLayer(Layers_enum.TILES);
         let tile_arr = tilelayer.getItems();
-        console.log(tilelayer);
 
         // initialize sets for different types of tiles
-        console.log("레벨 초기화")
         for (let i = 0; i < tile_arr.length; i++) {
             let tile_sprite = <AnimatedSprite>tile_arr[i];
 
