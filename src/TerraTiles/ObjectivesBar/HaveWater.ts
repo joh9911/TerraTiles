@@ -49,6 +49,9 @@ export default class HaveFire extends ObjectivesConstructor{
             if (this.currentnum >= this.maxnum){
                 this.setCheck();
             }
+            else{
+                this.unsetCheck();
+            }
             this.text.text = ("Have " + this.currentnum + "/" + this.maxnum + " Water");
         }
     }

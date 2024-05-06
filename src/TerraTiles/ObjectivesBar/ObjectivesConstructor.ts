@@ -40,6 +40,10 @@ export default class ObjectivesConstructor{
         this.checkbox.color = Color.GREEN;
     }
 
+    protected unsetCheck(){
+        this.checkbox.color = Color.RED;
+    }
+
     public get checkBox(): Graphic{
         return this.checkbox
     }

@@ -13,6 +13,9 @@ import ObjectivesConstructor from "./ObjectivesConstructor";
 import Emitter from "../../Wolfie2D/Events/Emitter";
 import { Objective_Event } from "../Utils/Objective_Event";
 import HaveWater from "./HaveWater";
+import HaveHouse from "./HaveHouse";
+import ReachTime from "./ReachTime";
+import NoFire from "./NoFire";
 
 export default class ObjectivesManager{
     
@@ -44,17 +47,32 @@ export default class ObjectivesManager{
     }
 
     public haveFire(num: number){
-        this.list_objectives[this.num_objectives] = new HaveFire(this.game_scene, this.setObjectivePos(), 10);
+        this.list_objectives[this.num_objectives] = new HaveFire(this.game_scene, this.setObjectivePos(), num);
         this.num_objectives++;
     }
 
     public haveWater(num: number){
-        this.list_objectives[this.num_objectives] = new HaveWater(this.game_scene, this.setObjectivePos(), 10);
+        this.list_objectives[this.num_objectives] = new HaveWater(this.game_scene, this.setObjectivePos(), num);
         this.num_objectives++;
     }
 
     public NoMud(num: number){
         this.list_objectives[this.num_objectives] = new NoMud(this.game_scene, this.setObjectivePos(), num);
+        this.num_objectives++;
+    }
+
+    public NoFire(num: number){
+        this.list_objectives[this.num_objectives] = new NoFire(this.game_scene, this.setObjectivePos(), num);
+        this.num_objectives++;
+    }
+
+    public haveHouse(num: number){
+        this.list_objectives[this.num_objectives] = new HaveHouse(this.game_scene, this.setObjectivePos(), num);
+        this.num_objectives++;
+    }
+
+    public reachTime(num: number){//num is in seconds, automatically converts to milliseconds for timer
+        this.list_objectives[this.num_objectives] = new ReachTime(this.game_scene, this.setObjectivePos(), num);
         this.num_objectives++;
     }
 

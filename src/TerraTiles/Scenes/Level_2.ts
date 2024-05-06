@@ -59,10 +59,6 @@ export default class Level_2 extends GameScene {
         // water currently only goes up, so it will destroy houses in 30s, and there's no clear way to block it
         // this.locked_tiles = [true, true, true, true, false]
 
-        this.objectives_bar.createLand(10);
-        this.objectives_bar.haveWater(10);
-        this.objectives_bar.haveFire(10);
-
         // level_2 tilemap
         this.addLayer(Layers_enum.TILES, 10);
         this.add.tilemap("level_2");
@@ -86,6 +82,9 @@ export default class Level_2 extends GameScene {
                 this.Tiles[Tiles_index[Tiles_string.FIRE]].add(this.vec2ToString(tile_arr[i].position));
             }
         }
+        this.objectives_bar.haveHouse(this.Tiles[Tiles_index[Tiles_string.HOUSE]].size);
+        this.objectives_bar.NoFire(this.Tiles[Tiles_index[Tiles_string.FIRE]].size);
+        this.objectives_bar.reachTime(1);
     }
 
 }
