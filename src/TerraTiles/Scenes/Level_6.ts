@@ -21,7 +21,7 @@ export default class Level_6 extends GameScene {
         this.load.tilemap("level_6", "Game_Resources/tilemaps/lvl_6.json");
 
         // load music, make sure the key is "level_music"
-        this.load.audio("level_music", "Game_Resources/music/level1.mp3"); // temp
+        this.load.audio("level_music", "Game_Resources/music/level5.mp3"); // temp
     }
 
 
