@@ -21,7 +21,7 @@ export default class NoDisease extends ObjectivesConstructor{
         while(this.receiver.hasNextEvent()){
             let event = this.receiver.getNextEvent();
             this.currentnum = event.data.get("size");
-            console.log(event)
+            console.log(2)
             if (this.currentnum == 0){
                 this.setCheck();
             }

@@ -414,62 +414,6 @@ export default class GameScene extends Scene {
         this.Tiles[Tiles_index[Tiles_string.FIRE]] = new Set<String>([...this.Tiles[Tiles_index[Tiles_string.FIRE]], ...newFireTiles]);
     }
 
-    spreadSpace(deltaT: number) {
-        const newSpaceTiles: Set<String> = new Set<String>();
-        
-        for (let spaceTile of this.Tiles[Tiles_index[Tiles_string.SPACE]]) {
-            let tileTimer = this.getTileTimer(Tiles_index[Tiles_string.SPACE], this.stringToVec2(spaceTile));
-
-            // adjust time
-            tileTimer -= deltaT;
-            
-
-            // space spreads
-            if (tileTimer <= 2 && tileTimer + deltaT > 2) {
-
-                // space moves to adjacent tiles
-                const directions = [
-                    { dx: 0, dy: -1 },
-                    { dx: 1, dy: 0 },
-                    { dx: 0, dy: 1 },
-                    { dx: -1, dy: 0 }
-                ];
-
-                for (let {dx, dy} of directions) {
-
-                    // get positions
-                    let originPos = this.stringToVec2(spaceTile);
-                    let newPos = new Vec2(originPos.x + dx * 32, originPos.y + dy * 32);
-                    let vec2ToString = this.vec2ToString(newPos);
-
-                    // get the tile at this new position
-                    let nodes = this.sceneGraph.getNodesAt(newPos);
-                    for (let node of nodes) {
-                        if (node instanceof AnimatedSprite){
-                            let animated_sprite = node as AnimatedSprite;
-                            let animation_string = animated_sprite.animation.getcurrentAnimation().valueOf();
-
-                            if (animation_string == Tiles_string.DESERT) {
-                                animated_sprite.animation.playIfNotAlready(Tiles_string.SPACE, true);
-                                this.Tiles[Tiles_index[Tiles_string.SPACE]].add(vec2ToString);
-                                this.Tiles[Tiles_index[Tiles_string.DESERT]].delete(vec2ToString);
-                                
-                            } 
-                        }
-                    }
-                }
-            }
-            // adjust time
-            else {
-                this.initializeTileTimer(Tiles_index[Tiles_string.SPACE], this.stringToVec2(spaceTile), tileTimer);
-            }
-        } // per spaceTile
-        
-        // update space set
-        this.Tiles[Tiles_index[Tiles_string.SPACE]] = new Set<String>([...this.Tiles[Tiles_index[Tiles_string.SPACE]], ...newSpaceTiles]);
-    }
-    
-
 
     initializeTileTimer(tileType: number, tilePos: Vec2, countdown: number) {
         const tileKey = this.vec2ToString(tilePos);
@@ -492,6 +436,10 @@ export default class GameScene extends Scene {
     }
 
     update_tile_lengths(){
+        if (this.Tiles[Tiles_index[Tiles_string.DISEASE]].size != this.tile_lengths[Tiles_index[Tiles_string.DISEASE]]){
+            this.tile_lengths[Tiles_index[Tiles_string.DISEASE]] = this.Tiles[Tiles_index[Tiles_string.DISEASE]].size;
+            this.emitter.fireEvent(Objective_Event.DISEASESIZE, {size: this.tile_lengths[Tiles_index[Tiles_string.DISEASE]]});//If size changed, fire event
+        }
         for (const value in Object.values(Tiles_index)){
             if (this.Tiles[value].size != this.tile_lengths[value]){
                 this.tile_lengths[value] = this.Tiles[value].size
@@ -499,6 +447,7 @@ export default class GameScene extends Scene {
                 //and then send the event to say size has changed
             }
         }
+        
     }
 
 
@@ -608,7 +557,7 @@ export default class GameScene extends Scene {
         // update timed elements
         super.updateScene(deltaT);
         this.removeWaterTilesAboveRock(deltaT);
-        this.spreadSpace(deltaT);
+        // this.spreadSpace(deltaT);
         this.spreadFire(deltaT);
         this.spreadWater(deltaT);
         this.spreadDisease(deltaT);
