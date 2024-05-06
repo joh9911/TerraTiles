@@ -28,10 +28,10 @@ export const Tiles_index = {
     [Tiles_string.W_LEFT]: 8,
     [Tiles_string.W_RIGHT]: 9,
 
+    [Tiles_string.DISEASE]: 13,
     [Tiles_string.DIRT]: 10,
     [Tiles_string.HOUSE]: 11,
     [Tiles_string.MUD]: 12,
-    [Tiles_string.DISEASE]: 13,
 };
 
 export const Tile_manage = {
