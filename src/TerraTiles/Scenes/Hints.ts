@@ -7,7 +7,10 @@ import MainMenu from "./MainMenu";
 import { Layers_enum } from "../Utils/Layers_enum";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
-export default class Controls extends Scene{
+export default class Hints extends Scene{
+
+    public loadScene() {
+    }
 
     public startScene(): void {
       this.addUILayer(Layers_enum.MENU);
@@ -19,31 +22,50 @@ export default class Controls extends Scene{
       this.viewport.setFocus(size);
       this.viewport.setZoomLevel(1);
 
-      // Create title
-      const title = <Label>this.add.uiElement(UIElementType.LABEL, Layers_enum.MENU, {
-          position: new Vec2(size.x, sizeY - 100),
-          text: "Controls",
-      });
+    // Create title
+    const title = <Label>this.add.uiElement(UIElementType.LABEL, Layers_enum.MENU, {
+        position: new Vec2(size.x, sizeY - 100),
+        text: "Hints",
+    });
 
-      // Create info text
-      let i = 1;
-      this.createLabel(
-          "Click: Place down tiles and select tiles",
-          new Vec2(size.x, sizeY)
-      );
-      this.createLabel(
-          "p: Pause the game",
-          new Vec2(size.x, sizeY + yOffset * i++)
-      );
-      this.createLabel(
-        "q, w, e, r, t: Another way to select tiles",
+    // Create info text
+    let i = 1;
+    this.createLabel(
+        "Explore how different tiles interact",
+        new Vec2(size.x, sizeY)
+    );
+    
+    sizeY += 130;
+    this.createLabel(
+        "Here are some tile descriptions:",
         new Vec2(size.x, sizeY + yOffset * i++)
-      );
-      this.createLabel(
-        "arrow keys: Change the current",
+    );
+    
+    sizeY += 15;
+    this.createLabel(
+        "Desert creates new land",
         new Vec2(size.x, sizeY + yOffset * i++)
-      );
- 
+    );
+    this.createLabel(
+        "Dirt holds great potential",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );
+    this.createLabel(
+        "Fire spreads quickly",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );
+    this.createLabel(
+        "Water can flow in four possible currents",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );
+    this.createLabel(
+        "Rock holds strong. Are you strong for placing it",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );this.createLabel(
+        "or are you weak for not being able to pick it back up?",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );
+
 
       // Create a back button
       const back = this.add.uiElement(UIElementType.BUTTON, Layers_enum.MENU, {position: new Vec2(size.x, 2 * size.y - 60), text: "Back"});

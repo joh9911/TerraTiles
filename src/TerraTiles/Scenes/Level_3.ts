@@ -2,10 +2,6 @@ import GameScene from "./GameScene";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import { Layers_enum } from "../Utils/Layers_enum";
-import { SoundEvent } from "../Utils/SoundEvent";
-import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
-import TileManager from "../TileManager/TileManager";
-import { Objective_Event } from "../Utils/Objective_Event";
 import Input from "../../Wolfie2D/Input/Input";
 import Level_1 from "./Level_1";
 import Level_2 from "./Level_2";
@@ -82,6 +78,7 @@ export default class Level_3 extends GameScene {
                 this.Tiles[Tiles_index[Tiles_string.DESERT]].add(this.vec2ToString(tile_arr[i].position));
             }
         }
+
         this.objectives_bar.createLand(10);
         this.objectives_bar.NoMud(this.Tiles[Tiles_index[Tiles_string.MUD]].size);
     }

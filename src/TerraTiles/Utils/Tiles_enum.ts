@@ -65,8 +65,6 @@ export const TileMatrix = { // 1 indicates we can put the tile on it, 0 indicate
         [Tiles_string.W_DOWN]: 0,
         [Tiles_string.W_LEFT]: 0,
         [Tiles_string.W_RIGHT]: 0,
-
-        // change later?
         [Tiles_string.DIRT]: 0,
         [Tiles_string.HOUSE]: 0,
         [Tiles_string.MUD]: 0,
@@ -99,8 +97,6 @@ export const TileMatrix = { // 1 indicates we can put the tile on it, 0 indicate
         [Tiles_string.W_DOWN]: 0,
         [Tiles_string.W_LEFT]: 0,
         [Tiles_string.W_RIGHT]: 0,
-
-        // change later?
         [Tiles_string.DIRT]: 1,
         [Tiles_string.HOUSE]: 1,
         [Tiles_string.MUD]: 0,
@@ -118,8 +114,6 @@ export const TileMatrix = { // 1 indicates we can put the tile on it, 0 indicate
         [Tiles_string.W_DOWN]: 0,
         [Tiles_string.W_LEFT]: 0,
         [Tiles_string.W_RIGHT]: 0,
-
-        // change later?
         [Tiles_string.DIRT]: 1,
         [Tiles_string.HOUSE]: 1,
         [Tiles_string.MUD]: 0,
@@ -137,8 +131,6 @@ export const TileMatrix = { // 1 indicates we can put the tile on it, 0 indicate
         [Tiles_string.W_DOWN]: 0,
         [Tiles_string.W_LEFT]: 0,
         [Tiles_string.W_RIGHT]: 0,
-
-        // change later?
         [Tiles_string.DIRT]: 1,
         [Tiles_string.HOUSE]: 1,
         [Tiles_string.MUD]: 0,
@@ -156,8 +148,6 @@ export const TileMatrix = { // 1 indicates we can put the tile on it, 0 indicate
         [Tiles_string.W_DOWN]: 0,
         [Tiles_string.W_LEFT]: 0,
         [Tiles_string.W_RIGHT]: 0,
-
-        // change later?
         [Tiles_string.DIRT]: 1,
         [Tiles_string.HOUSE]: 1,
         [Tiles_string.MUD]: 0,
@@ -175,8 +165,6 @@ export const TileMatrix = { // 1 indicates we can put the tile on it, 0 indicate
         [Tiles_string.W_DOWN]: 0,
         [Tiles_string.W_LEFT]: 0,
         [Tiles_string.W_RIGHT]: 0,
-
-        // change later?
         [Tiles_string.DIRT]: 0,
         [Tiles_string.HOUSE]: 1,
         [Tiles_string.MUD]: 1,
@@ -193,8 +181,6 @@ export const TileMatrix = { // 1 indicates we can put the tile on it, 0 indicate
         [Tiles_string.W_DOWN]: 1,
         [Tiles_string.W_LEFT]: 1,
         [Tiles_string.W_RIGHT]: 1,
-
-        // change later?
         [Tiles_string.DIRT]: 1,
         [Tiles_string.HOUSE]: 0,
         [Tiles_string.MUD]: 1,
@@ -211,14 +197,10 @@ export const TileMatrix = { // 1 indicates we can put the tile on it, 0 indicate
         [Tiles_string.W_DOWN]: 1,
         [Tiles_string.W_LEFT]: 1,
         [Tiles_string.W_RIGHT]: 1,
-
-        // change later?
         [Tiles_string.DIRT]: 1,
         [Tiles_string.HOUSE]: 1,
         [Tiles_string.MUD]: 1,
         [Tiles_string.DISEASE]: 0,
-    },
-
-    // add more interactions later
+    }
     
 };

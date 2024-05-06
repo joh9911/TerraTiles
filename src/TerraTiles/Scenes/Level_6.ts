@@ -2,17 +2,12 @@ import GameScene from "./GameScene";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import { Layers_enum } from "../Utils/Layers_enum";
-import { SoundEvent } from "../Utils/SoundEvent";
-import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
-import TileManager from "../TileManager/TileManager";
-import { Objective_Event } from "../Utils/Objective_Event";
 import Input from "../../Wolfie2D/Input/Input";
 import Level_1 from "./Level_1";
 import Level_2 from "./Level_2";
 import Level_3 from "./Level_3";
 import Level_4 from "./Level_4";
 import Level_5 from "./Level_5";
-import MainMenu from "./MainMenu";
 import End from "./End";
 
 
@@ -46,7 +41,6 @@ export default class Level_6 extends GameScene {
 
         // fulfilled objectives        
         if (this.nextlevel == true) {
-            // this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: ??? , loop: false});
             this.sceneManager.changeToScene(End)
         }
 
@@ -58,8 +52,6 @@ export default class Level_6 extends GameScene {
     startScene(): void {
         // music, events, ui
         super.startScene();
-
-        this.objectives_bar.createLand(10);
 
         // level_6 tilemap
         this.addLayer(Layers_enum.TILES, 10);
@@ -84,6 +76,8 @@ export default class Level_6 extends GameScene {
                 this.Tiles[Tiles_index[Tiles_string.DESERT]].add(this.vec2ToString(tile_arr[i].position));
             }
         }
+
+        this.objectives_bar.createLand(10);
     }
 
 }
