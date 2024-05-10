@@ -776,7 +776,7 @@ export default class GameScene extends Scene {
     loadScene(): void {
         // load all sfx
         this.load.audio(Tiles_string.DESERT, "Game_Resources/sounds/Desert.mp3");
-        this.load.audio(Tiles_string.DIRT, "Game_Resources/sounds/Dirt.mp3");
+        this.load.audio(Tiles_string.DIRT, "Game_Resources/sounds/dirt_temp.mp3");
         this.load.audio(Tiles_string.FIRE, "Game_Resources/sounds/Fire.mp3");
         this.load.audio(Tiles_string.W_UP, "Game_Resources/sounds/Water.mp3");
         this.load.audio(Tiles_string.W_DOWN, "Game_Resources/sounds/Water.mp3");
