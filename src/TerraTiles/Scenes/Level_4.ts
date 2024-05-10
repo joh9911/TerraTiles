@@ -18,7 +18,7 @@ export default class Level_4 extends GameScene {
         super.loadScene();
 
         // load tilemap
-        this.load.tilemap("level_4", "Game_Resources/tilemaps/lvl_5.json");
+        this.load.tilemap("level_4", "Game_Resources/tilemaps/lvl_4.json");
 
         // load music, make sure the key is "level_music"
         this.load.audio("level_music", "Game_Resources/music/level3.mp3"); // temp
