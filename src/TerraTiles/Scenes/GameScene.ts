@@ -16,6 +16,7 @@ import { Objective_Event, Objective_mapping, Send_Objective_Event } from "../Uti
 import MainMenu from "./MainMenu";
 import { Keyboard_enum } from "../Utils/Keyboard_enum";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
+import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 
 
 export default class GameScene extends Scene {
@@ -555,11 +556,11 @@ export default class GameScene extends Scene {
             this.see_world_button.visible = false;
             this.emitter.fireEvent(Objective_Event.TIMER, {pause: this.pause});
         });
-        this.follow_mouse_box = this.add.graphic(GraphicType.RECT, Layers_enum.TILEMANAGER, {
+        this.follow_mouse_box = this.add.graphic(GraphicType.RECT, Layers_enum.TILEONMANAGER, {
             position: new Vec2(-100, -100),
             size: new Vec2(32, 32),
         });
-        this.follow_mouse_box.color = Color.RED
+        // this.follow_mouse_box.color = Color.RED
         this.nextlevel = false;
         this.clicktilepos = new Vec2(-1, -1);
         this.cheat = false
@@ -659,6 +660,32 @@ export default class GameScene extends Scene {
             waterdir_changed = true;
             this.currentMode = this.waterdir;
         }
+
+
+        const pos = Input.getGlobalMousePosition();
+        const teX = Math.floor(pos.x / 32) * 32 + 16;  
+        const teY = Math.floor(pos.y / 32) * 32 + 16;
+        const tPos = new Vec2(teX, teY);
+        const nodes = this.sceneGraph.getNodesAt(tPos);
+        for (let node of nodes) {
+            if (node instanceof AnimatedSprite) {
+                const animatedSprite = node as AnimatedSprite;
+                const currentAnimation = animatedSprite.animation.getcurrentAnimation();
+
+                this.follow_mouse_box.position = tPos;
+                if (TileMatrix[this.currentMode][currentAnimation]) {
+                    (<Rect>this.follow_mouse_box).setBorderColor(Color.GREEN);
+                    this.follow_mouse_box.color = Color.GREEN;
+                }
+                else {
+                    (<Rect>this.follow_mouse_box).setBorderColor(Color.RED);
+                    this.follow_mouse_box.color = Color.RED;
+                }
+                this.follow_mouse_box.alpha = 0.2;
+            }
+        }
+
+
         if (this.cheat && Input.isMousePressed()) {
             const position = Input.getGlobalMousePosition();
             if (position.y > 1088){ // in the tile select, so don't do add a tile
