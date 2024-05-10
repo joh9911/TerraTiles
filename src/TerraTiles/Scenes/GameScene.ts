@@ -545,13 +545,14 @@ export default class GameScene extends Scene {
                 this.see_world_button.text = "Unsee your world"
             }
         });
-        this.unpause_button = this.createButton("Resume", new Vec2(640, 580), () =>{
+        this.unpause_button = this.createButton("Return to World", new Vec2(640, 580), () =>{
             this.tile_manager.pause();
             this.pause = 0;
             this.pause_box.visible = false;
             this.abandon_world_button.visible = false;
             this.unpause_button.visible = false;
             this.see_world_button.visible = false;
+            this.emitter.fireEvent(Objective_Event.TIMER, {pause: this.pause});
         });
         this.nextlevel = false;
         this.clicktilepos = new Vec2(-1, -1);

@@ -61,12 +61,16 @@ export default class Level_2 extends GameScene {
         super.startScene();
 
         this.add.uiElement(UIElementType.LABEL, Layers_enum.TILEONMANAGER, {
-            position: new Vec2(1000, 1170),
-            text: "Arrow keys"
+            position: new Vec2(1010, 1150),
+            text: "Arrow Keys change the currents"
         });
         this.add.uiElement(UIElementType.LABEL, Layers_enum.TILEONMANAGER, {
-            position: new Vec2(1000, 1200),
-            text: "change the currents"
+            position: new Vec2(1010, 1190),
+            text: "Press \"m\" to restart the level"
+        });
+        this.add.uiElement(UIElementType.LABEL, Layers_enum.TILEONMANAGER, {
+            position: new Vec2(1010, 1220),
+            text: "Press \"p\" to pause the level"
         });
 
         // level_2 tilemap
