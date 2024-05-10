@@ -4,7 +4,8 @@ import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import GameScene from "../Scenes/GameScene";
 import { Layers_enum } from "../Utils/Layers_enum";
-import { Objective_Event } from "../Utils/Objective_Event";
+import { Objective_Event, Send_Objective_Event } from "../Utils/Objective_Event";
+import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import ObjectivesConstructor from "./ObjectivesConstructor";
 
 export default class NoMud extends ObjectivesConstructor{
@@ -15,6 +16,7 @@ export default class NoMud extends ObjectivesConstructor{
         this.currentnum = currentnum;
         this.text = this.createLabel("Dry out all " + this.currentnum + " mud", new Vec2(pos.x + 140, pos.y))
         this.receiver.subscribe(Objective_Event.MUDSIZE);
+        Send_Objective_Event[Tiles_index[Tiles_string.MUD]] = 1;
     }
 
     update(){

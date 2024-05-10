@@ -87,7 +87,7 @@ export default class Level_5 extends GameScene {
         }
 
         this.objectives_bar.haveHouse(85);
-        // this.objectives_bar.NoDisease(this.Tiles[Tiles_index[Tiles_string.DISEASE]].size);
+        this.objectives_bar.NoDisease(this.Tiles[Tiles_index[Tiles_string.DISEASE]].size);
         this.objectives_bar.reachTime(30, false);
     }
 

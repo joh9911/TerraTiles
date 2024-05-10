@@ -43,7 +43,7 @@ export default class ObjectivesManager{
         this.createLabel("Objectives", new Vec2(this.up_left.x + 120, this.up_left.y + 25));
         this.list_objectives = []
         this.num_objectives = 0
-        this.nextLevel = <Button>this.game_scene.add.uiElement(UIElementType.BUTTON, Layers_enum.BOXONMANAGER, {position: new Vec2(1100, 75), text: "Go to next world?"});
+        this.nextLevel = <Button>this.game_scene.add.uiElement(UIElementType.BUTTON, Layers_enum.BOXONMANAGER, {position: new Vec2(1100, 55), text: "Go to next world?"});
         this.nextLevel.size.set(300, 50);
         this.nextLevel.backgroundColor = Color.GRAY;
         this.nextLevel.visible = false;

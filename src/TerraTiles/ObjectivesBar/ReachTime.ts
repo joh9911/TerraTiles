@@ -5,7 +5,8 @@ import Timer from "../../Wolfie2D/Timing/Timer";
 import Color from "../../Wolfie2D/Utils/Color";
 import GameScene from "../Scenes/GameScene";
 import { Layers_enum } from "../Utils/Layers_enum";
-import { Objective_Event } from "../Utils/Objective_Event";
+import { Objective_Event, Send_Objective_Event } from "../Utils/Objective_Event";
+import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import ObjectivesConstructor from "./ObjectivesConstructor";
 
 export default class ReachTime extends ObjectivesConstructor{
@@ -29,9 +30,22 @@ export default class ReachTime extends ObjectivesConstructor{
         else{
             this.text = this.createLabel("Reach: " + (this.totaltime - Math.floor(this.timer.timeinSeconds())) + " / " + this.totaltime + " secs", new Vec2(pos.x + 140, pos.y));
         }
+        Send_Objective_Event[15] = 1;
+        this.receiver.subscribe(Objective_Event.TIMER);
     }
 
     update(){
+        while(this.receiver.hasNextEvent()){
+            let event = this.receiver.getNextEvent();
+            let pause = event.data.get("pause");
+            if (pause){
+                this.timer.pause();
+            }
+            else {
+                this.timer.continue(); 
+            }
+            console.log(event);
+        }
         if (this.end){
             this.setCheck();
         }

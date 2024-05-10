@@ -4,7 +4,8 @@ import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import GameScene from "../Scenes/GameScene";
 import { Layers_enum } from "../Utils/Layers_enum";
-import { Objective_Event } from "../Utils/Objective_Event";
+import { Objective_Event, Send_Objective_Event } from "../Utils/Objective_Event";
+import { Tiles_index, Tiles_string } from "../Utils/Tiles_enum";
 import ObjectivesConstructor from "./ObjectivesConstructor";
 
 export default class HaveHouse extends ObjectivesConstructor{
@@ -16,7 +17,9 @@ export default class HaveHouse extends ObjectivesConstructor{
         this.maxnum = num
         this.currentnum = 0;
         this.text = this.createLabel("Protect " + this.currentnum + "/" + this.maxnum + " Houses", new Vec2(pos.x + 140, pos.y))
-        this.receiver.subscribe(Objective_Event.HOUSESIZE)
+        this.receiver.subscribe(Objective_Event.HOUSESIZE);
+        Send_Objective_Event[Tiles_index[Tiles_string.HOUSE]] = 1;
+
     }
 
     update(){

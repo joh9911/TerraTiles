@@ -14,6 +14,7 @@ export enum Objective_Event {
     MUDSIZE = "mud_size",
     LANDMADE = "land_made",
     DISEASESIZE = "disease_size",
+    TIMER = "Timer",
     NEXTLEVEL = "next_level"
 }
 
@@ -31,7 +32,10 @@ export const Objective_mapping: { [key: number]: Objective_Event } = {
     10: Objective_Event.DIRTSIZE,
     11: Objective_Event.HOUSESIZE,
     12: Objective_Event.MUDSIZE,
-    13: Objective_Event.LANDMADE,
-    14: Objective_Event.DISEASESIZE,
-    15: Objective_Event.NEXTLEVEL
+    13: Objective_Event.DISEASESIZE,
+    14: Objective_Event.LANDMADE,
+    15: Objective_Event.TIMER,
+    16: Objective_Event.NEXTLEVEL
 };
+
+export const Send_Objective_Event = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];

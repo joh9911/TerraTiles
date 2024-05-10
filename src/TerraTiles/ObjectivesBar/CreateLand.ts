@@ -4,7 +4,7 @@ import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Color from "../../Wolfie2D/Utils/Color";
 import GameScene from "../Scenes/GameScene";
 import { Layers_enum } from "../Utils/Layers_enum";
-import { Objective_Event } from "../Utils/Objective_Event";
+import { Objective_Event, Send_Objective_Event } from "../Utils/Objective_Event";
 import ObjectivesConstructor from "./ObjectivesConstructor";
 
 export default class CreateLand extends ObjectivesConstructor{
@@ -17,6 +17,7 @@ export default class CreateLand extends ObjectivesConstructor{
         this.currentnum = 0;
         this.text = this.createLabel("Create " + this.currentnum + "/" + this.maxnum + " New Lands", new Vec2(pos.x + 140, pos.y))
         this.receiver.subscribe(Objective_Event.LANDMADE)
+        Send_Objective_Event[14] = 1;
     }
 
     update(){

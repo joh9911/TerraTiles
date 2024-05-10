@@ -12,7 +12,7 @@ import Graphic from "../../Wolfie2D/Nodes/Graphic";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import TileManager from "../TileManager/TileManager";
 import ObjectivesManager from "../ObjectivesBar/ObjectivesManager";
-import { Objective_Event, Objective_mapping } from "../Utils/Objective_Event";
+import { Objective_Event, Objective_mapping, Send_Objective_Event } from "../Utils/Objective_Event";
 import MainMenu from "./MainMenu";
 import { Keyboard_enum } from "../Utils/Keyboard_enum";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
@@ -30,9 +30,10 @@ export default class GameScene extends Scene {
     protected waterdir: string = Tiles_string.W_UP; // temporarily set the tile mode, default mode is DESERT
 
     // ui
-    protected pause: boolean;
+    protected pause: number;
     protected pause_box: Graphic
     protected pause_button: Button
+    protected see_world_button: Button
     protected tile_manager: TileManager
     protected tile_lengths: number[]
     protected objectives_bar: ObjectivesManager
@@ -436,21 +437,29 @@ export default class GameScene extends Scene {
     }
 
     update_tile_lengths(){
-        if (this.Tiles[Tiles_index[Tiles_string.DISEASE]].size != this.tile_lengths[Tiles_index[Tiles_string.DISEASE]]){
-            this.tile_lengths[Tiles_index[Tiles_string.DISEASE]] = this.Tiles[Tiles_index[Tiles_string.DISEASE]].size;
-            this.emitter.fireEvent(Objective_Event.DISEASESIZE, {size: this.tile_lengths[Tiles_index[Tiles_string.DISEASE]]});//If size changed, fire event
-        }
-        for (const value in Object.values(Tiles_index)){
-            if (this.Tiles[value].size != this.tile_lengths[value]){
-                this.tile_lengths[value] = this.Tiles[value].size
-                this.emitter.fireEvent(Objective_mapping[value], {size: this.tile_lengths[value]});//If size changed, fire event
-                //and then send the event to say size has changed
+        for (let value = 0; value < Object.keys(Objective_Event).length - 3; value++){
+            if (Send_Objective_Event[value]){
+                if (this.Tiles[value].size != this.tile_lengths[value]){
+                    this.tile_lengths[value] = this.Tiles[value].size
+                    this.emitter.fireEvent(Objective_mapping[value], {size: this.tile_lengths[value]});//If size changed, fire event
+                    //and then send the event to say size has changed
+                }
             }
         }
-        
+        // for (const value in Object.values(Tiles_index)){
+        //     if (this.Tiles[value].size != this.tile_lengths[value]){
+        //         this.tile_lengths[value] = this.Tiles[value].size
+        //         this.emitter.fireEvent(Objective_mapping[value], {size: this.tile_lengths[value]});//If size changed, fire event
+        //         //and then send the event to say size has changed
+        //     }
+        // }
     }
 
-
+    clear_send_objectives() {
+        for (let i = 0; i < Send_Objective_Event.length; i++){
+            Send_Objective_Event[i] = 0;
+        }
+    }
 
     protected subscribeToEvents(){
         this.receiver.subscribe([
@@ -496,7 +505,7 @@ export default class GameScene extends Scene {
         });
 
         // pause screen
-        this.pause = false;
+        this.pause = 0;
         this.pause_box = this.add.graphic(GraphicType.RECT, Layers_enum.PAUSE, {
             position: new Vec2(640, 640),
             size: new Vec2(1280, 1280),
@@ -515,11 +524,35 @@ export default class GameScene extends Scene {
             this.sceneManager.changeToScene(MainMenu);
         }
         this.pause_button.visible = false;
+        this.see_world_button = <Button>this.add.uiElement(UIElementType.BUTTON, Layers_enum.PAUSEBUTTON, {
+            position: new Vec2(1100, 160),
+            text: "See your world?"
+        })
+        this.see_world_button.size.set(300, 50);
+        this.see_world_button.borderWidth = 2;
+        this.see_world_button.borderColor = Color.WHITE;
+        this.see_world_button.backgroundColor = Color.BLACK;
+        this.see_world_button.onClick = () =>{
+            this.tile_manager.pause();
+            if (this.pause == 2){
+                this.pause = 1;
+                this.pause_box.visible = true;
+                this.pause_button.visible = true;
+                this.see_world_button.text = "See your world?"
+            }
+            else {
+                this.pause = 2;
+                this.pause_box.visible = false;
+                this.pause_button.visible = false;
+                this.see_world_button.text = "Unsee your world"
+            }
+        }
+        this.see_world_button.visible = false;
         this.nextlevel = false;
         this.clicktilepos = new Vec2(-1, -1);
         this.cheat = false
         this.cheat_enabled = <Label>this.add.uiElement(UIElementType.LABEL, Layers_enum.BOXONMANAGER, {
-            position: new Vec2(1100, 125),
+            position: new Vec2(1100, 105),
             text: "Cheats Enabled"
         });
         this.cheat_enabled.visible = false;
@@ -527,6 +560,7 @@ export default class GameScene extends Scene {
         for (const value in Object.values(Tiles_index)){
                 this.tile_lengths[value] = this.Tiles[value].size
         }
+        this.clear_send_objectives();
     }
     
     
@@ -543,26 +577,35 @@ export default class GameScene extends Scene {
             this.currentMode = event.type;
         }
 
+        this.objectives_bar.update()//moved before pause logic because timer needs to get whether to pause or not from receiver
+
         // pause
         if (Input.isKeyJustPressed('p') === true){
-            this.tile_manager.pause();
-            this.pause = !this.pause;
-            this.pause_box.visible = !this.pause_box.visible;
-            this.pause_button.visible = !this.pause_button.visible;
+            if (this.pause == 2){
+                this.see_world_button.text = "See your world?"
+            }
+            else{
+                this.tile_manager.pause();
+            }
+            if (this.pause){
+                this.pause = 0;
+                this.pause_box.visible = false;
+                this.pause_button.visible = false;
+                this.see_world_button.visible = false;
+            }
+            else{
+                this.pause = 1;
+                this.pause_box.visible = true;
+                this.pause_button.visible = true;
+                this.see_world_button.visible = true;
+            }
+            if (Send_Objective_Event[15]){
+                this.emitter.fireEvent(Objective_Event.TIMER, {pause: this.pause});
+            }
         }
-        if (this.pause){
+        if (this.pause == 1){
             return;
         }
-
-        // update timed elements
-        super.updateScene(deltaT);
-        this.removeWaterTilesAboveRock(deltaT);
-        // this.spreadSpace(deltaT);
-        this.spreadFire(deltaT);
-        this.spreadWater(deltaT);
-        this.spreadDisease(deltaT);
-        this.growGrassFromDirt(deltaT);
-        this.update_tile_lengths();
         
         // keyboard shortcuts for tile additions     
         for (const [key, value] of Object.entries(Tile_manage)){
@@ -596,7 +639,6 @@ export default class GameScene extends Scene {
         }
 
         this.tile_manager.update(this.currentMode)
-        this.objectives_bar.update()
 
         waterdir_changed = false
         if (this.currentMode == Tiles_string.W_UP){
@@ -634,15 +676,17 @@ export default class GameScene extends Scene {
                         if (currentAnimation != Tiles_string.COMET && currentAnimation != Tiles_string.SPACE){
                             this.Tiles[Tiles_index[currentAnimation]].delete(vec2ToString);
                         }
-                        else{//this means land was made from comet/space
+                        else if (Send_Objective_Event[14]){//this means land was made from comet/space
                             this.emitter.fireEvent(Objective_Event.LANDMADE);
                         }
                         animatedSprite.animation.playIfNotAlready(this.currentMode, true);
                         this.Tiles[Tiles_index[this.currentMode]].add(vec2ToString);
 
 
-                        // monitor number of tiles, play sfx                        
-                        this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
+                        // monitor number of tiles, play sfx  
+                        if (Send_Objective_Event[Tiles_index[this.currentMode]]){        
+                            this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
+                        }
                         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.currentMode , loop: false});
                     }    
 
@@ -680,7 +724,7 @@ export default class GameScene extends Scene {
                         if (currentAnimation != Tiles_string.COMET && currentAnimation != Tiles_string.SPACE){
                             this.Tiles[Tiles_index[currentAnimation]].delete(vec2ToString);
                         }
-                        else{//this means land was made from comet/space
+                        else if (Send_Objective_Event[14]){//this means land was made from comet/space
                             this.emitter.fireEvent(Objective_Event.LANDMADE);
                         }
                         animatedSprite.animation.playIfNotAlready(this.currentMode, true);
@@ -693,7 +737,9 @@ export default class GameScene extends Scene {
                         // }
 
                         // monitor number of tiles, play sfx                        
-                        this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
+                        if (Send_Objective_Event[Tiles_index[this.currentMode]]){        
+                            this.emitter.fireEvent(Object.values(Objective_Event)[Tiles_index[this.currentMode]], {size: this.Tiles[Tiles_index[this.currentMode]].size});//If we click we change the size. We still need to fire event for regular spreading.
+                        }
                         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.currentMode , loop: false});
                     }    
 
@@ -704,6 +750,19 @@ export default class GameScene extends Scene {
         if (waterdir_changed){
             this.currentMode = Tiles_string.W_UP
         }
+
+        if (this.pause == 2){
+            return;
+        }
+        // update timed elements
+        super.updateScene(deltaT);
+        this.removeWaterTilesAboveRock(deltaT);
+        // this.spreadSpace(deltaT);
+        this.spreadFire(deltaT);
+        this.spreadWater(deltaT);
+        this.spreadDisease(deltaT);
+        this.growGrassFromDirt(deltaT);
+        this.update_tile_lengths();
     }
 
     loadScene(): void {
