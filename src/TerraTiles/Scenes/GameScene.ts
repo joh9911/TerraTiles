@@ -546,13 +546,14 @@ export default class GameScene extends Scene {
                 this.see_world_button.text = "Unsee your world"
             }
         });
-        this.unpause_button = this.createButton("Unpause", new Vec2(640, 580), () =>{
+        this.unpause_button = this.createButton("Return to World", new Vec2(640, 580), () =>{
             this.tile_manager.pause();
             this.pause = 0;
             this.pause_box.visible = false;
             this.abandon_world_button.visible = false;
             this.unpause_button.visible = false;
             this.see_world_button.visible = false;
+            this.emitter.fireEvent(Objective_Event.TIMER, {pause: this.pause});
         });
         this.follow_mouse_box = this.add.graphic(GraphicType.RECT, Layers_enum.TILEMANAGER, {
             position: new Vec2(-100, -100),
@@ -781,7 +782,7 @@ export default class GameScene extends Scene {
     loadScene(): void {
         // load all sfx
         this.load.audio(Tiles_string.DESERT, "Game_Resources/sounds/Desert.mp3");
-        this.load.audio(Tiles_string.DIRT, "Game_Resources/sounds/Dirt.mp3");
+        this.load.audio(Tiles_string.DIRT, "Game_Resources/sounds/dirt_temp.mp3");
         this.load.audio(Tiles_string.FIRE, "Game_Resources/sounds/Fire.mp3");
         this.load.audio(Tiles_string.W_UP, "Game_Resources/sounds/Water.mp3");
         this.load.audio(Tiles_string.W_DOWN, "Game_Resources/sounds/Water.mp3");

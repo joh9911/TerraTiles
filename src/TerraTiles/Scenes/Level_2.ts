@@ -9,6 +9,8 @@ import Level_4 from "./Level_4";
 import Level_5 from "./Level_5";
 import Level_6 from "./Level_6";
 import { LevelLock } from "../Utils/LevelLock";
+import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
+import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 
 
 export default class Level_2 extends GameScene {
@@ -55,7 +57,21 @@ export default class Level_2 extends GameScene {
     startScene(): void {
 
         // music, events, ui
+        this.locked_tiles = [true, true, true, true, false]
         super.startScene();
+
+        this.add.uiElement(UIElementType.LABEL, Layers_enum.TILEONMANAGER, {
+            position: new Vec2(1010, 1150),
+            text: "Arrow Keys change the currents"
+        });
+        this.add.uiElement(UIElementType.LABEL, Layers_enum.TILEONMANAGER, {
+            position: new Vec2(1010, 1190),
+            text: "Press \"m\" to restart the level"
+        });
+        this.add.uiElement(UIElementType.LABEL, Layers_enum.TILEONMANAGER, {
+            position: new Vec2(1010, 1220),
+            text: "Press \"p\" to pause the level"
+        });
 
         // level_2 tilemap
         this.addLayer(Layers_enum.TILES, 10);
