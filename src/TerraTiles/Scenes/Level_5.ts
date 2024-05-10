@@ -17,7 +17,14 @@ export default class Level_5 extends GameScene {
         super.loadScene();
 
         // load tilemap
-        this.load.tilemap("level_5", "Game_Resources/tilemaps/lvl_5_3.json");
+        this.load.tilemap("level_5", "Game_Resources/tilemaps/lvl_5_7.json");
+            // 5_1 -- center block
+            // 5_2 -- ^ with half Xs
+            // 5_3 -- ^ with a reduced center block; 85 min.
+            // 5_4 -- 2 Xs
+            // 5_5 -- 1 lopsided X
+            // 5_6 -- reduced 5_3; 92/95 house min.
+            // 5_7 -- ^ so the bottom houses are actually affected; 72/75 min.
 
         // load music, make sure the key is "level_music"
         this.load.audio("level_music", "Game_Resources/music/level5.mp3"); // temp
@@ -75,20 +82,16 @@ export default class Level_5 extends GameScene {
             else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DIRT) {
                 this.Tiles[Tiles_index[Tiles_string.DIRT]].add(this.vec2ToString(tile_arr[i].position));
             }
-            // else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DESERT) {
-            //     this.Tiles[Tiles_index[Tiles_string.DESERT]].add(this.vec2ToString(tile_arr[i].position));
-            // }
             else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.DISEASE) {
                 this.Tiles[Tiles_index[Tiles_string.DISEASE]].add(this.vec2ToString(tile_arr[i].position));
             }
-            // else if (tile_sprite.animation.getcurrentAnimation() == Tiles_string.MUD) {
-            //     this.Tiles[Tiles_index[Tiles_string.MUD]].add(this.vec2ToString(tile_arr[i].position));
-            // }
         }
 
-        this.objectives_bar.haveHouse(85);
-        this.objectives_bar.NoDisease(this.Tiles[Tiles_index[Tiles_string.DISEASE]].size);
+        this.objectives_bar.haveHouse(75);
+        // this.objectives_bar.NoDisease(this.Tiles[Tiles_index[Tiles_string.DISEASE]].size);
         this.objectives_bar.reachTime(30, false);
     }
 
+
+ 
 }
