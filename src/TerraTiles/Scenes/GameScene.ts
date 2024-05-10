@@ -43,6 +43,7 @@ export default class GameScene extends Scene {
     protected cheat: Boolean
     protected cheat_enabled: Label
     protected locked_tiles: Boolean[] = null
+    protected follow_mouse_box: Graphic
 
     // method for comparing tiles' positions
     vec2ToString(vec: Vec2): string {
@@ -553,6 +554,11 @@ export default class GameScene extends Scene {
             this.unpause_button.visible = false;
             this.see_world_button.visible = false;
         });
+        this.follow_mouse_box = this.add.graphic(GraphicType.RECT, Layers_enum.TILEMANAGER, {
+            position: new Vec2(-100, -100),
+            size: new Vec2(32, 32),
+        });
+        this.follow_mouse_box.color = Color.RED
         this.nextlevel = false;
         this.clicktilepos = new Vec2(-1, -1);
         this.cheat = false
