@@ -10,14 +10,21 @@ import MainMenu from "./MainMenu";
 import Button from "../../Wolfie2D/Nodes/UIElements/Button";
 import { Layers_enum } from "../Utils/Layers_enum";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
+import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 
 export default class Splash extends Scene {    
 
     public loadScene() {
+         // Load menu music
+         this.load.audio("menu_music", "Game_Resources/music/menu_music.mp3");       
+
 		this.load.spritesheet("planet", "Game_Resources/sprites/terraform.json");
+
     }
 
     public startScene(): void {
+        this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "menu_music", loop: true, holdReference: true});
+
         const center = this.viewport.getCenter();
 
         this.addUILayer(Layers_enum.BACK);
@@ -41,6 +48,12 @@ export default class Splash extends Scene {
         fullScreen.onClick = () => {
             this.sceneManager.changeToScene(MainMenu);
         }
+
+    }
+
+    unloadScene(): void {
+        // stop music
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, { key: "menu_music" });
     }
 
 }
