@@ -44,7 +44,7 @@ export default class Controls extends Scene{
         new Vec2(size.x, sizeY + yOffset * i++)
       );
       this.createLabel(
-        "Arrow keys: Change the water current",
+        "Arrow keys: Change the current",
         new Vec2(size.x, sizeY + yOffset * i++)
       );
  
