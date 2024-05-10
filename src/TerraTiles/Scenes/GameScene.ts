@@ -32,7 +32,8 @@ export default class GameScene extends Scene {
     // ui
     protected pause: number;
     protected pause_box: Graphic
-    protected pause_button: Button
+    protected abandon_world_button: Button
+    protected unpause_button: Button
     protected see_world_button: Button
     protected tile_manager: TileManager
     protected tile_lengths: number[]
@@ -475,6 +476,18 @@ export default class GameScene extends Scene {
         ]);
     }
 
+    createButton(text: String, pos: Vec2, func: Function): Button {
+        let btn = <Button>this.add.uiElement(UIElementType.BUTTON, Layers_enum.PAUSEBUTTON, {position: pos, text: text});
+        btn.size.set(300, 50);
+        btn.borderWidth = 2;
+        btn.borderColor = Color.WHITE;
+        btn.backgroundColor = Color.BLACK;
+        btn.visible = false;
+        btn.onClick = func;
+        return btn;
+    }
+
+
     startScene(): void {
         // music
         this.emitter.fireEvent(GameEventType.PLAY_MUSIC, {key: "level_music", loop: true, holdReference: true});
@@ -512,42 +525,34 @@ export default class GameScene extends Scene {
         });
         this.pause_box.color = Color.BLACK;
         this.pause_box.visible = false;
-        this.pause_button = <Button>this.add.uiElement(UIElementType.BUTTON, Layers_enum.PAUSEBUTTON, {
-            position: new Vec2(640, 640),
-            text: "Abandon World?"
-        })
-        this.pause_button.size.set(300, 50);
-        this.pause_button.borderWidth = 2;
-        this.pause_button.borderColor = Color.WHITE;
-        this.pause_button.backgroundColor = Color.BLACK;
-        this.pause_button.onClick = () =>{
+        this.abandon_world_button = this.createButton("Abandon World?", new Vec2(640, 640), () =>{
             this.sceneManager.changeToScene(MainMenu);
-        }
-        this.pause_button.visible = false;
-        this.see_world_button = <Button>this.add.uiElement(UIElementType.BUTTON, Layers_enum.PAUSEBUTTON, {
-            position: new Vec2(1100, 160),
-            text: "See your world?"
-        })
-        this.see_world_button.size.set(300, 50);
-        this.see_world_button.borderWidth = 2;
-        this.see_world_button.borderColor = Color.WHITE;
-        this.see_world_button.backgroundColor = Color.BLACK;
-        this.see_world_button.onClick = () =>{
+        });
+        this.see_world_button = this.createButton("See your world?", new Vec2(1100, 160), () =>{
             this.tile_manager.pause();
             if (this.pause == 2){
                 this.pause = 1;
                 this.pause_box.visible = true;
-                this.pause_button.visible = true;
+                this.abandon_world_button.visible = true;
+                this.unpause_button.visible = true;
                 this.see_world_button.text = "See your world?"
             }
             else {
                 this.pause = 2;
                 this.pause_box.visible = false;
-                this.pause_button.visible = false;
+                this.abandon_world_button.visible = false;
+                this.unpause_button.visible = false;
                 this.see_world_button.text = "Unsee your world"
             }
-        }
-        this.see_world_button.visible = false;
+        });
+        this.unpause_button = this.createButton("Unpause", new Vec2(640, 580), () =>{
+            this.tile_manager.pause();
+            this.pause = 0;
+            this.pause_box.visible = false;
+            this.abandon_world_button.visible = false;
+            this.unpause_button.visible = false;
+            this.see_world_button.visible = false;
+        });
         this.nextlevel = false;
         this.clicktilepos = new Vec2(-1, -1);
         this.cheat = false
@@ -590,14 +595,16 @@ export default class GameScene extends Scene {
             if (this.pause){
                 this.pause = 0;
                 this.pause_box.visible = false;
-                this.pause_button.visible = false;
+                this.abandon_world_button.visible = false;
                 this.see_world_button.visible = false;
+                this.unpause_button.visible = false;
             }
             else{
                 this.pause = 1;
                 this.pause_box.visible = true;
-                this.pause_button.visible = true;
+                this.abandon_world_button.visible = true;
                 this.see_world_button.visible = true;
+                this.unpause_button.visible = true;
             }
             if (Send_Objective_Event[15]){
                 this.emitter.fireEvent(Objective_Event.TIMER, {pause: this.pause});
