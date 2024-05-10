@@ -18,6 +18,7 @@ import ReachTime from "./ReachTime";
 import NoFire from "./NoFire";
 import NoDisease from "./NoDisease";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
+import NoDesert from "./NoDesert";
 
 export default class ObjectivesManager{
     
@@ -80,6 +81,11 @@ export default class ObjectivesManager{
 
     public NoDisease(num: number){
         this.list_objectives[this.num_objectives] = new NoDisease(this.game_scene, this.setObjectivePos(), num);
+        this.num_objectives++;
+    }
+
+    public NoDesert(num: number){
+        this.list_objectives[this.num_objectives] = new NoDesert(this.game_scene, this.setObjectivePos(), num);
         this.num_objectives++;
     }
 

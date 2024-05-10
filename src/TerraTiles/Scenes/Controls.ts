@@ -36,11 +36,15 @@ export default class Controls extends Scene{
           new Vec2(size.x, sizeY + yOffset * i++)
       );
       this.createLabel(
+        "m: Restart the level",
+        new Vec2(size.x, sizeY + yOffset * i++)
+    );
+      this.createLabel(
         "q, w, e, r, t: Another way to select tiles",
         new Vec2(size.x, sizeY + yOffset * i++)
       );
       this.createLabel(
-        "Arrow keys: Change the current",
+        "Arrow keys: Change the water current",
         new Vec2(size.x, sizeY + yOffset * i++)
       );
  
